@@ -1,0 +1,123 @@
+<?php
+require_once __DIR__ . "/../src/init.php";
+require_once BASE_PATH . "/src/CLI/Utils.php";
+
+use \Core\Utils;
+
+$dbPath = DB_DIR . "/database.db";
+
+if(file_exists($dbPath)){
+    $yn = yesno("Zaten veritabanı var, sil baştan mı olsun?", false);
+    if($yn){
+        unlink($dbPath);
+    }
+    else{
+        echo(":: Tmm kolay gelsin o zaman."); echo("\n");
+        die();
+    }
+}
+
+$pdo = new PDO("sqlite:" . $dbPath);
+
+main();
+
+function main(){
+    tablolariOlustur(); echo("\n");
+    adminAyarla();
+
+    echo(":: Hayırlı olsun.");
+}
+
+function tablolariOlustur(){
+    global $pdo;
+
+    // yemekler
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS yemek (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            yemek TEXT NOT NULL,
+            kalori INTEGER NOT NULL,
+            tarih DATE NOT NULL,
+            puan INTEGER NOT NULL
+        )
+    ");
+    echo(":: Tablo oluşturuldu: yemek"); echo("\n");
+
+    // puanlar
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS puanlar (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            kullaniciid TEXT NOT NULL,
+            puan INTEGER NOT NULL,
+            tarih DATE NOT NULL
+        )
+    ");
+    echo(":: Tablo oluşturuldu: puanlar"); echo("\n");
+
+    // yorumlar
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS yorumlar (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            uuid TEXT NOT NULL,
+
+            yazaruuid TEXT NOT NULL,
+
+            ustyorum TEXT NOT NULL,
+
+            yorum TEXT NOT NULL,
+            puan INTEGER NOT NULL,
+            herkeseacik BOOLEAN NOT NULL,
+
+            like INTEGER NOT NULL,
+            dislike INTEGER NOT NULL,
+
+            zaman DATETIME NOT NULL
+        )
+    ");
+    echo(":: Tablo oluşturuldu: yorumlar"); echo("\n");
+
+    // layk/dislayk
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS likedislike (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            kullaniciid TEXT NOT NULL,
+            yorumid TEXT NOT NULL,
+            likemi BOOLEAN NOT NULL
+        )
+    ");
+    echo(":: Tablo oluşturuldu: likedislike"); echo("\n");
+
+    // kullanıcılar
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS kullanicilar (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            uuid TEXT NOT NULL,
+
+            kuladi TEXT NOT NULL,
+            isim TEXT NOT NULL,
+            hash TEXT NOT NULL,
+            email TEXT,
+            telno TEXT,
+            okulno TEXT,
+            foto TEXT,
+
+            katilmatarihi DATETIME NOT NULL,
+            admin BOOLEAN NOT NULL
+        )
+    ");
+    echo(":: Tablo oluşturuldu: kullanicilar"); echo("\n");
+}
+
+function adminAyarla(){
+    global $pdo;
+
+    $adminUUID = Utils::generateUUIDv4();
+    $adminUsername = soru("-> Admin kullanıcı adı ne olsun he?", "admin");
+    $adminName = soru("-> İsmi ne olsun peki?", "Yönetici");
+    $adminPass = soru("-> Şifre ne olsun abicim?", "aslanmax");
+    $adminHash = password_hash($adminPass, PASSWORD_BCRYPT);
+    $dateNow = date('Y-m-d H:i:s');
+    $pdo->prepare("INSERT INTO kullanicilar (uuid, kuladi, isim, hash, katilmatarihi, admin) VALUES (?, ?, ?, ?, ?, ?)")
+        ->execute([$adminUUID, $adminUsername, $adminName, $adminHash, $dateNow, true]);
+    echo(":: Admin eklendi."); echo("\n");
+}
