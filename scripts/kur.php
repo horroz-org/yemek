@@ -7,7 +7,7 @@ use \Core\Utils;
 $dbPath = DB_DIR . "/database.db";
 
 if(file_exists($dbPath)){
-    $yn = yesno("Zaten veritabanı var, sil baştan mı olsun?", false);
+    $yn = yesno("-> Zaten veritabanı var, sil baştan mı olsun?", false);
     if($yn){
         unlink($dbPath);
     }
@@ -15,17 +15,30 @@ if(file_exists($dbPath)){
         echo(":: Tmm kolay gelsin o zaman."); echo("\n");
         die();
     }
-}
 
-$pdo = new PDO("sqlite:" . $dbPath);
+    echo("\n");
+}
 
 main();
 
 function main(){
-    tablolariOlustur(); echo("\n");
-    adminAyarla();
+    echo("Horroz.org Yemek Veritabanı Kurulum Sihirbazı'na hoş geldiniz oğlum!\n");
+    if(!yesno("-> Hazır mısın?", true)){
+        echo(":: Hazır ol da gel o zaman.\n");
+        die();
+    }
+    echo("\n");
 
-    echo(":: Hayırlı olsun.");
+    global $pdo, $dbPath;
+    $pdo = new PDO("sqlite:" . $dbPath);
+
+    echo("Tablolar oluşturuluyor.\n");
+    tablolariOlustur(); echo("\n");
+
+    echo("Admin hesabı açılıyor.\n");
+    adminAyarla(); echo("\n");
+
+    echo("Hayırlı olsun.\n");
 }
 
 function tablolariOlustur(){
@@ -41,7 +54,7 @@ function tablolariOlustur(){
             puan INTEGER NOT NULL
         )
     ");
-    echo(":: Tablo oluşturuldu: yemek"); echo("\n");
+    echo(":: Tablo oluşturuldu: yemek\n");
 
     // puanlar
     $pdo->exec("
@@ -52,7 +65,7 @@ function tablolariOlustur(){
             tarih DATE NOT NULL
         )
     ");
-    echo(":: Tablo oluşturuldu: puanlar"); echo("\n");
+    echo(":: Tablo oluşturuldu: puanlar\n");
 
     // yorumlar
     $pdo->exec("
@@ -74,7 +87,7 @@ function tablolariOlustur(){
             zaman DATETIME NOT NULL
         )
     ");
-    echo(":: Tablo oluşturuldu: yorumlar"); echo("\n");
+    echo(":: Tablo oluşturuldu: yorumlar\n");
 
     // layk/dislayk
     $pdo->exec("
@@ -85,7 +98,7 @@ function tablolariOlustur(){
             likemi BOOLEAN NOT NULL
         )
     ");
-    echo(":: Tablo oluşturuldu: likedislike"); echo("\n");
+    echo(":: Tablo oluşturuldu: likedislike\n");
 
     // kullanıcılar
     $pdo->exec("
@@ -105,14 +118,14 @@ function tablolariOlustur(){
             admin BOOLEAN NOT NULL
         )
     ");
-    echo(":: Tablo oluşturuldu: kullanicilar"); echo("\n");
+    echo(":: Tablo oluşturuldu: kullanicilar\n");
 }
 
 function adminAyarla(){
     global $pdo;
 
     $adminUUID = Utils::generateUUIDv4();
-    $adminUsername = soru("-> Admin kullanıcı adı ne olsun he?", "admin");
+    $adminUsername = soru("-> Admin kullanıcı adı ne olsun?", "admin");
     $adminName = soru("-> İsmi ne olsun peki?", "Yönetici");
     $adminPass = soru("-> Şifre ne olsun abicim?", "aslanmax");
     $adminHash = password_hash($adminPass, PASSWORD_BCRYPT);
