@@ -1,0 +1,154 @@
+body {
+    margin: 0;
+
+    font-family: monospace;
+}
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.topbar {
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 1rem;
+}
+
+.topbar-logo {
+    height: 30px;
+}
+
+.border {
+    border: 1px solid black;
+}
+
+.kocadiv {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.ortalayandiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.anakutu {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.ickutu {
+    flex: 1;
+    padding: 1rem;
+    padding-top: 0;
+    background-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .anakutu {
+    flex-direction: column;
+  }
+  .layout {
+    height: calc(200vh - 50px);
+  }
+}
+
+/* LINKLER */
+a:link,
+a:visited {
+    text-decoration: none;
+    color: #0000EE;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* MENU EKRANI */
+/** OKLAR **/
+.arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+}
+
+.right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+.left {
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+}
+
+.up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+}
+
+.down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
+.sagyemekok,
+.solyemekok {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.1);
+
+    cursor: pointer;
+    z-index: 10;
+
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.sagyemekok:hover,
+.solyemekok:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.sagyemekok:active,
+.solyemekok:active {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.sagyemekok {
+    right: 0;
+}
+
+.solyemekok {
+    left: 0;
+}
+
+/** TARIH **/
+.yemektarih {
+    position: absolute;
+
+    top: 0;
+    height: 2rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
+}
