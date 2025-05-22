@@ -71,6 +71,9 @@ body {
   .layout {
     height: calc(200vh - 50px);
   }
+  .kocadiv {
+    overflow: visible;
+  }
 }
 
 /* TOPBAR */
@@ -285,10 +288,9 @@ a:hover {
     flex-direction: column;
     
     border: 1px solid gray;
-
-    margin: 0.8rem;
+    
+    margin-bottom: 0.8rem;
     padding: 0.5rem;
-
     gap: 0.5rem;
 }
 
