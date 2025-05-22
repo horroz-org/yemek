@@ -1,3 +1,5 @@
+/* GENEL */
+
 body {
     margin: 0;
 
@@ -8,21 +10,6 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
-}
-
-.topbar {
-    height: 50px;
-
-    display: flex;
-    align-items: center;
-
-    justify-content: space-between;
-
-    padding: 0 1rem;
-}
-
-.topbar-logo {
-    height: 30px;
 }
 
 .border {
@@ -37,6 +24,7 @@ body {
 
 .ortalayandiv {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -50,8 +38,23 @@ body {
 .ickutu {
     flex: 1;
     padding: 1rem;
-    padding-top: 0;
     background-color: transparent;
+}
+
+.buton {
+    padding: 0.7rem;
+    background-color: rgb(0, 0, 0, 0.03);
+    border: 1px solid black;
+
+    cursor: pointer;
+}
+
+.buton:hover {
+    background-color: rgb(0, 0, 0, 0.1);
+}
+
+.gizli {
+    display: none;
 }
 
 @media (max-width: 768px) {
@@ -61,6 +64,38 @@ body {
   .layout {
     height: calc(200vh - 50px);
   }
+}
+
+/* TOPBAR */
+.topbar {
+    position: sticky;
+    top: 0;
+    height: 50px;
+
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+
+    z-index: 1000;
+}
+
+.topbar-sol {
+    display: flex;
+    align-items: center;
+}
+
+.topbar-baslik {
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-left: 0.8rem;
+}
+
+.topbar-logo {
+    height: 30px;
 }
 
 /* LINKLER */
@@ -116,7 +151,6 @@ a:hover {
     background-color: rgba(0, 0, 0, 0.1);
 
     cursor: pointer;
-    z-index: 10;
 
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
@@ -151,4 +185,80 @@ a:hover {
     justify-content: center;
 
     font-weight: bold;
+}
+
+/** PUAN YAZISI **/
+.puan-wrapper {
+    margin-top: 1rem;
+
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.puan {
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+.puanbolen {
+    align-self: flex-end;
+    margin-bottom: 0.15rem;
+}
+
+/** PUAN BUTONLARI **/
+.butonlar {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.butongrid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    gap: 0.4rem;
+    
+    margin-top: 2rem;
+}
+
+.puanbuton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 2rem;
+    height: 2rem;
+
+    border: 1px solid green;
+    border-radius: 50%;
+
+    background-color: rgba(0, 255, 0, 0.1);
+    cursor: pointer;
+}
+
+.puanbuton:hover {
+    background-color: rgba(0, 255, 0, 0.3);
+}
+
+.secildi {
+    border-color: blueviolet;
+    background-color: rgb(138, 43, 226, 0.2);
+}
+
+.secildi:hover {
+    background-color: rgba(138, 43, 226, 0.3);
+}
+
+.yorumyazbuton {
+    position: absolute;
+
+    bottom: 0;
+    margin-bottom: 1rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
