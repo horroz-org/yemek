@@ -321,12 +321,20 @@ a:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-.vote-secildi i {
+.upvote.vote-secildi i {
     border-color: orangered;
 }
 
-.vote-ok:hover i {
-    border-color: rgb(209, 58, 2);
+.downvote.vote-secildi i {
+    border-color: royalblue;
+}
+
+.upvote.vote-ok:hover i {
+    border-color: rgb(145, 43, 6);
+}
+
+.downvote.vote-ok:hover i {
+    border-color: rgb(25, 44, 99);
 }
 
 .yorum-ust {
@@ -335,7 +343,7 @@ a:hover {
     justify-content: space-between;
 }
 
-#yorum-tarih {
+.yorum-tarih {
     color: gray;
 }
 
@@ -357,18 +365,9 @@ a:hover {
     align-content: center;
     justify-content: center;
 
-    gap: 0.5rem;
-}
-
-.vote-kutulari {
-    display: flex;
-    flex-direction: row;
-    
-    align-content: center;
-
     gap: 1rem;
 }
 
-#cevap-buton {
+.cevap-buton {
     padding: 0.2rem;
 }
