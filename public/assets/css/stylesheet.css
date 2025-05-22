@@ -271,24 +271,38 @@ a:hover {
     background-color: rgba(138, 43, 226, 0.3);
 }
 
-#yorumyazbuton {
+/* YORUMLAR */
+.yorum-menu {
     position: absolute;
 
     bottom: 0;
     margin-bottom: 1rem;
+}
 
+.yorum-bilgi {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: center;
+    
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+#yorumyazbuton {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* YORUMLAR */
 .yorumkutu {
     display: flex;
     flex-direction: column;
     
     border: 1px solid gray;
-    
+
     margin-bottom: 0.8rem;
     padding: 0.5rem;
     gap: 0.5rem;
@@ -328,6 +342,11 @@ a:hover {
 .yorum-alt {
     display: flex;
     flex-direction: row;
+    
+    align-items: center;
+    justify-content: space-between;
+
+    padding-left: 0.4rem;
     gap: 1rem;
 }
 
@@ -339,4 +358,17 @@ a:hover {
     justify-content: center;
 
     gap: 0.5rem;
+}
+
+.vote-kutulari {
+    display: flex;
+    flex-direction: row;
+    
+    align-content: center;
+
+    gap: 1rem;
+}
+
+#cevap-buton {
+    padding: 0.2rem;
 }
