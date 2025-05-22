@@ -79,6 +79,9 @@ body {
   .kocadiv {
     overflow: visible;
   }
+  .topbar-baslik {
+    display: none;
+  }
 }
 
 /* TOPBAR */

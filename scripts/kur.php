@@ -110,8 +110,9 @@ function tablolariOlustur(){
             isim TEXT NOT NULL,
             hash TEXT NOT NULL,
             email TEXT,
-            
+
             prestij INTEGER NOT NULL,
+            rutbe TEXT,
 
             katilmatarihi DATETIME NOT NULL,
             admin BOOLEAN NOT NULL
