@@ -55,6 +55,10 @@ body {
     border: 1px solid black;
 
     cursor: pointer;
+
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .buton:hover {
@@ -99,6 +103,14 @@ body {
     align-items: center;
 }
 
+.topbar-sol-butonlar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    margin-left: 1rem;
+}
+
 .topbar-baslik {
     font-weight: 500;
     font-size: 1.1rem;
@@ -127,6 +139,8 @@ a:hover {
     border-width: 0 3px 3px 0;
     display: inline-block;
     padding: 3px;
+
+    --kayma: calc(3px * sqrt(2) / 4);
 }
 
 .big-arrow {
@@ -134,6 +148,8 @@ a:hover {
     border-width: 0 4px 4px 0;
     display: inline-block;
     padding: 4px;
+    
+    --kayma: calc(4px * sqrt(2) / 4);
 }
 
 .right {
@@ -147,13 +163,13 @@ a:hover {
 }
 
 .up {
-    transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
+    transform: translateY(var(--kayma)) rotate(-135deg) ;
+    -webkit-transform: translateY(var(--kayma)) rotate(-135deg);
 }
 
 .down {
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
+    transform: translateY(calc(-1 * var(--kayma))) rotate(45deg);
+    -webkit-transform: translateY(calc(-1 * var(--kayma))) rotate(45deg);
 }
 
 #sagyemekok,
@@ -256,7 +272,10 @@ a:hover {
     background-color: rgba(0, 255, 0, 0.1);
     cursor: pointer;
 
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);   
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);  
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .puanbuton:hover {
@@ -333,10 +352,41 @@ a:hover {
     border-color: rgb(25, 44, 99);
 }
 
+.vote-sayi {
+    font-weight: bold;
+}
+
 .yorum-ust {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.yorum-ust-sag {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.7rem;
+    padding-right: 0.3rem;
+}
+
+.rapor-buton {
+    padding: 0;
+    background-color: rgb(255, 0, 0, 0.1);
+    border: 1px solid red;
+    
+    width: 1rem;
+    height: 1rem;
+
+    text-align: center;
+    font-weight: bold;
+    color: red;
+
+
+}
+
+.rapor-buton:hover {
+    background-color: rgb(255, 0, 0, 0.2);
 }
 
 .yorum-tarih {
