@@ -2,8 +2,9 @@
 
 body {
     margin: 0;
-
     font-family: monospace;
+
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.2);
 }
 
 .layout {
@@ -310,15 +311,10 @@ a:hover {
 
 .vote-ok {
     cursor: pointer;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 .vote-ok i {
     font-size: 6rem;
-}
-
-.vote-ok:active {
-    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .upvote.vote-secildi i {
