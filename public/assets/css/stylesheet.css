@@ -16,10 +16,29 @@ body {
     border: 1px solid black;
 }
 
+.anakutu {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+
+    min-height: 0;
+}
+
+.ickutu {
+    flex: 1;
+    padding: 1rem;
+    background-color: transparent;
+
+    max-height: 100%;
+    min-height: 0;
+}
+
 .kocadiv {
     height: 100%;
     width: 100%;
     position: relative;
+
+    overflow: auto;
 }
 
 .ortalayandiv {
@@ -27,18 +46,6 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-.anakutu {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-}
-
-.ickutu {
-    flex: 1;
-    padding: 1rem;
-    background-color: transparent;
 }
 
 .buton {
@@ -111,11 +118,18 @@ a:hover {
 
 /* MENU EKRANI */
 /** OKLAR **/
-.arrow {
+.mid-arrow {
     border: solid black;
     border-width: 0 3px 3px 0;
     display: inline-block;
     padding: 3px;
+}
+
+.big-arrow {
+    border: solid black;
+    border-width: 0 4px 4px 0;
+    display: inline-block;
+    padding: 4px;
 }
 
 .right {
@@ -237,6 +251,8 @@ a:hover {
 
     background-color: rgba(0, 255, 0, 0.1);
     cursor: pointer;
+
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);   
 }
 
 .puanbuton:hover {
@@ -278,6 +294,15 @@ a:hover {
 
 .vote-ok {
     cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.vote-ok i {
+    font-size: 6rem;
+}
+
+.vote-ok:active {
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .vote-secildi i {
