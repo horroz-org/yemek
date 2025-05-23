@@ -51,7 +51,8 @@ function tablolariOlustur(){
             yemek TEXT NOT NULL,
             kalori INTEGER NOT NULL,
             tarih DATE NOT NULL,
-            puan INTEGER NOT NULL
+            puan INTEGER NOT NULL,
+            puansayisi INTEGER NOT NULL,
         )
     ");
     echo(":: Tablo oluşturuldu: yemek\n");
@@ -83,6 +84,8 @@ function tablolariOlustur(){
 
             like INTEGER NOT NULL,
             dislike INTEGER NOT NULL,
+
+            kaldirildi BOOLEAN NOT NULL,
 
             zaman DATETIME NOT NULL
         )
