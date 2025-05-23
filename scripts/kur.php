@@ -51,7 +51,7 @@ function tablolariOlustur(){
             menu TEXT NOT NULL,
             tarih DATE NOT NULL,
             puan INTEGER NOT NULL,
-            puansayisi INTEGER NOT NULL,
+            puansayisi INTEGER NOT NULL
         )
     ");
     echo(":: Tablo oluşturuldu: yemek\n");
@@ -132,7 +132,7 @@ function adminAyarla(){
     $adminPass = soru("-> Şifre ne olsun abicim?", "aslanmax");
     $adminHash = password_hash($adminPass, PASSWORD_BCRYPT);
     $dateNow = date('Y-m-d H:i:s');
-    $pdo->prepare("INSERT INTO kullanicilar (uuid, kuladi, isim, hash, katilmatarihi, admin) VALUES (?, ?, ?, ?, ?, ?)")
-        ->execute([$adminUUID, $adminUsername, $adminName, $adminHash, $dateNow, true]);
+    $pdo->prepare("INSERT INTO kullanicilar (uuid, kuladi, isim, hash, prestij, rutbe, katilmatarihi, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+        ->execute([$adminUUID, $adminUsername, $adminName, $adminHash, 0, "Pro", $dateNow, true]);
     echo(":: Admin eklendi."); echo("\n");
 }
