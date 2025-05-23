@@ -50,7 +50,7 @@ function tablolariOlustur(){
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             menu TEXT NOT NULL,
             tarih DATE NOT NULL,
-            puan INTEGER NOT NULL,
+            puan REAL NOT NULL,
             puansayisi INTEGER NOT NULL
         )
     ");
