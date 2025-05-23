@@ -35,18 +35,18 @@
                         </div>
                         <div class="butongrid">
                             <div class="butonlar">
-                                <div class="puanbuton">1</div>
-                                <div class="puanbuton">2</div>
-                                <div class="puanbuton">3</div>
-                                <div class="puanbuton">4</div>
-                                <div class="puanbuton">5</div>
+                                <div id="puan1" class="puanbuton">1</div>
+                                <div id="puan2" class="puanbuton">2</div>
+                                <div id="puan3" class="puanbuton">3</div>
+                                <div id="puan4" class="puanbuton">4</div>
+                                <div id="puan5" class="puanbuton">5</div>
                             </div>
                             <div class="butonlar">
-                                <div class="puanbuton puan-secildi">6</div>
-                                <div class="puanbuton">7</div>
-                                <div class="puanbuton">8</div>
-                                <div class="puanbuton">9</div>
-                                <div class="puanbuton">10</div>
+                                <div id="puan6" class="puanbuton">6</div>
+                                <div id="puan7" class="puanbuton">7</div>
+                                <div id="puan8" class="puanbuton">8</div>
+                                <div id="puan9" class="puanbuton">9</div>
+                                <div id="puan10" class="puanbuton">10</div>
                             </div>
                         </div>
 
@@ -59,28 +59,29 @@
                     </div>
                 </div>
                 <div class="ickutu">
-                    <div class="kocadiv" id="yorumlar-liste">
-                        <template id="yorum-template">
-                            <div id="yorum-uuid" class="yorumkutu">
-                                <div class="yorum-ust">
-                                    <a href="#" class="yorum-sahip"></a>
-                                    <div class="yorum-ust-sag">
-                                        <div class="yorum-tarih"></div>
-                                        <div class="rapor-buton buton">!</div>
-                                    </div>
+                    <div class="kocadiv" id="yorumlar-liste"></div>
+
+                    <!-- Yorum template -->
+                    <template id="yorum-template">
+                        <div id="yorum-uuid" class="yorumkutu">
+                            <div class="yorum-ust">
+                                <a href="#" class="yorum-yazar"></a>
+                                <div class="yorum-ust-sag">
+                                    <div class="yorum-tarih"></div>
+                                    <div class="rapor-buton buton">!</div>
                                 </div>
-                                <div class="yorum-metin"></div>
-                                <div class="yorum-alt">
-                                    <div class="vote-kutu">
-                                        <div class="upvote vote-ok"><i class="big-arrow up"></i></div>
-                                        <div class="vote-sayi"></div>
-                                        <div class="downvote vote-ok"><i class="big-arrow down"></i></div>
-                                    </div>
-                                    <div class="cevap-buton buton">Cevap Ver</div>
+                            </div>
+                            <div class="yorum-metin"></div>
+                            <div class="yorum-alt">
+                                <div class="vote-kutu">
+                                    <div class="upvote vote-ok"><i class="big-arrow up"></i></div>
+                                    <div class="vote-sayi"></div>
+                                    <div class="downvote vote-ok"><i class="big-arrow down"></i></div>
                                 </div>
-                                </div>
-                        </template>
-                    </div>
+                                <div class="cevap-buton buton">Cevap Ver</div>
+                            </div>
+                            </div>
+                    </template>
                 </div>
             </div>
         </div>

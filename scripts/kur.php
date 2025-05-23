@@ -48,8 +48,7 @@ function tablolariOlustur(){
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS yemek (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            yemek TEXT NOT NULL,
-            kalori INTEGER NOT NULL,
+            menu TEXT NOT NULL,
             tarih DATE NOT NULL,
             puan INTEGER NOT NULL,
             puansayisi INTEGER NOT NULL,

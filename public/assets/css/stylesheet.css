@@ -287,6 +287,7 @@ a:hover {
 
 .puan-secildi {
     border-color: blueviolet;
+    border-width: 2px;
     background-color: rgb(138, 43, 226, 0.2);
 }
 

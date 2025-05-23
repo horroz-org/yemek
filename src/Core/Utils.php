@@ -39,4 +39,9 @@ class Utils {
             return \Core\Dotenv::getValue("DEBUG_MODE");
         }
     }
+
+    public static function isIsoDate($str){
+        $regex = "^\d{4}-([0][1-9]|1[0-2])-([0][1-9]|[1-2]\d|3[01])$";
+        return preg_match($regex, $date);
+    }
 }
