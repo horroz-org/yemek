@@ -2,8 +2,9 @@
 namespace Yemek;
 
 use Core\Utils;
+use Core\OutputManager;
 
-class Yemek {
+class YemekUzmani {
     /**
      * Gayet açık bir ismi var.
      * 
@@ -11,7 +12,34 @@ class Yemek {
      */
     const dbPath = DB_DIR . "/database.db";
 
+    /**
+     * O tarihte yemek yazılmamışsa bu yazacak menü yerine.
+     * 
+     * @var string moops
+     */
     const yemekYokMenu = "Daha bu tarihteki yemekle ilgili elimize bir bilgi geçmedi oğlum!";
+
+    /**
+     * PDO
+     * 
+     * @var \PDO
+     */
+    private $pdo = null;
+
+    /**
+     * Konstrüktör.
+     * 
+     * @param bool $anonim Anonim adam mı istiyor bunu? İstiyorsa kullanabilir ama sadece görür elleyemez.
+     */
+    public function __construct($anonim = false) {
+        if(!file_exists(self::dbPath)){
+            http_response_code(500);
+            OutputManager::outputPlain("Ulan kurmamışsın sen bunu? He? Şunu çalıştır: scripts/kur.php");
+            die();
+        }
+
+        $this->pdo = new \PDO("sqlite:" . self::dbPath);
+    }
 
     /**
      * Verilen tarihteki yemeği alır.
@@ -20,17 +48,15 @@ class Yemek {
      * 
      * @return array Yemek hakkında ne varsa döner.
      */
-    public static function yemekAl($tarih): array {
+    public function yemekAl($tarih): array {
         if(!Utils::isIsoDate($tarih)){
             Utils::buAdamBiseylerYapmayaCalisiyo();
         }
-        
-        $pdo = new \PDO("sqlite:" . self::dbPath);
 
         $sql = "SELECT * FROM yemek WHERE tarih = ?";
-        $stmt = $pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$tarih]); 
-        $row = $stmt->fetch();
+        $row = $stmt->fetch(); // 1 row olacak zaten
         if($row === false){
             return [
                 "menu" => self::yemekYokMenu,
@@ -55,20 +81,19 @@ class Yemek {
      * 
      * @return array Yorumların listesi döner, yorum yoksa boş liste döner.
      */
-    public static function yorumlariAl($tarih): array {
+    public function yorumlariAl($tarih): array {
         if(!Utils::isIsoDate($tarih)){
             Utils::buAdamBiseylerYapmayaCalisiyo();
         }
 
-        $pdo = new \PDO("sqlite:" . self::dbPath);
-
-        $gunBaslangic = (new DateTime($tarih))->setTime(0, 0, 0)->format('Y-m-d H:i:s');
-        $gunBitis = (new DateTime($tarih))->modify('+1 day')->setTime(0, 0, 0)->format('Y-m-d H:i:s');
+        $gunBaslangic = (new \DateTime($tarih))->setTime(0, 0, 0)->format('Y-m-d H:i:s');
+        $gunBitis = (new \DateTime($tarih))->modify('+1 day')->setTime(0, 0, 0)->format('Y-m-d H:i:s');
 
         $sql = "SELECT * FROM yorumlar WHERE zaman >= ? AND zaman < ?";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$gunBaslangic, $gunBitis]); 
-        $rows = $stmt->fetch();
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$gunBaslangic, $gunBitis]);
+
+        $rows = $stmt->fetchAll();
         if($row === false){
             return [];
         }
@@ -83,14 +108,14 @@ class Yemek {
                 "ustyorumid" => $row["ustyorumid"],
 
                 "yorum" => $row["yorum"],
-                "puan" => $row["puan"],
+                "adaminyemekpuani" => $row["puan"],
                 "herkeseacik" => $row["herkeseacik"],
 
                 "like" => $row["like"],
                 "dislike" => $row["dislike"],
 
                 "kaldirildi" => $row["kaldirildi"],
-                "zaman" => $row["zaman"]
+                "zaman" => (new \DateTime($row["zaman"]))->format('Y-m-d H:i:s'), // emin olalım
             ];
         }
 
@@ -102,23 +127,39 @@ class Yemek {
      * Şaka şaka, adam puan verdiyse puan, vermediyse null döndürür.
      * 
      * @param string $adamId adamın uuid
-     * @param string $yorumId yorumun uuid
+     * @param string $yemekTarih yemegin tarihi
      * 
      * @return ?int Adamın verdiği puan, vermediyse null.
      */
-    public static function adaminYemegeVerdigiPuaniAl($uuid): ?int {
+    public function adaminYemegeVerdigiPuaniAl($adamId, $yemekTarih): ?int {
+        $sql = "SELECT * FROM puanlar WHERE kullaniciid = ? AND tarih = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$adamId, $yemekTarih]);
+        $row = $stmt->fetch();
+        if($row === false){
+            return null;
+        }
 
+        return $row["puan"];
     }
 
     /**
-     * Adam yoruma puan verdiyse up->true down->false, vermediyse null döndürür.
+     * Adam yoruma oy verdiyse up->true down->false, vermediyse null döndürür.
      * 
      * @param string $adamId adamın uuid
      * @param string $yorumId yorumun uuid
      * 
      * @return ?bool Adam like filan attıysa onlar, atmadıysa null.
      */
-    public static function adaminYorumaVerdigiPuaniAl($adamId, $yorumId): ?bool {
+    public function adaminYorumaVerdigiOyuAl($adamId, $yorumId): ?bool {
+        $sql = "SELECT * FROM likedislike WHERE kullaniciid = ? AND yorumid = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$adamId, $yorumId]);
+        $row = $stmt->fetch();
+        if($row === false){
+            return null;
+        }
 
+        return $row["likemi"];
     }
 }

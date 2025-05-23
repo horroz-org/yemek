@@ -78,7 +78,7 @@ function tablolariOlustur(){
             ustyorumid TEXT,
 
             yorum TEXT NOT NULL,
-            puan INTEGER NOT NULL,
+            adaminyemekpuani INTEGER NOT NULL,
             herkeseacik BOOLEAN NOT NULL,
 
             like INTEGER NOT NULL,
