@@ -1,6 +1,8 @@
 <?php
 namespace Core;
 
+use Core\OutputManager;
+
 class Utils {
     public static function generateUUIDv7() {
         static $last_timestamp = 0;
@@ -43,5 +45,10 @@ class Utils {
     public static function isIsoDate($str){
         $regex = "/^\d{4}-([0][1-9]|1[0-2])-([0][1-9]|[1-2]\d|3[01])$/";
         return preg_match($regex, $str);
+    }
+
+    public static function buAdamBiseylerYapmayaCalisiyo(){
+        OutputManager::outputPlain("Sen çok mu akıllısın he?");
+        die();
     }
 }
