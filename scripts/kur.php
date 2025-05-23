@@ -75,7 +75,7 @@ function tablolariOlustur(){
 
             yazaruuid TEXT NOT NULL,
 
-            ustyorum TEXT NOT NULL,
+            ustyorumid TEXT,
 
             yorum TEXT NOT NULL,
             puan INTEGER NOT NULL,
