@@ -4,3 +4,5 @@ database/*
 logs/*
 !logs/.gitkeep
 vendor/
+.vscode/
+test/
