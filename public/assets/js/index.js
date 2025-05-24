@@ -60,11 +60,11 @@ function yorumlariGoster(yorumlar, siralama){
 
     yorumlar.sort(siralama);
     yorumlar.forEach(function(yorum){
-        yorumEkle(yorum.id, yorum.yazar, yorum.tarih, yorum.metin, yorum.puan);
+        yorumEkle(yorum.id, yorum.yazar, yorum.tarih, yorum.metin, yorum.like - yorum.dislike, yorum.adaminOyu);
     });
 }
 
-function yorumEkle(id, yazar, tarih, metin, puan, oyVerildi, oyBegeni){
+function yorumEkle(id, yazar, tarih, metin, puan, oyBegeni){
     const template = document.getElementById("yorum-template");
     const clone = template.content.cloneNode(true);
 
@@ -73,7 +73,7 @@ function yorumEkle(id, yazar, tarih, metin, puan, oyVerildi, oyBegeni){
     clone.querySelector(".yorum-tarih").textContent = tarih;
     clone.querySelector(".yorum-metin").textContent = metin;
     clone.querySelector(".vote-sayi").textContent = puan;
-    if(oyVerildi){
+    if(oyBegeni !== null){
         if(oyBegeni){
             clone.querySelector(".upvote").classList.add("vote-secildi");
         }

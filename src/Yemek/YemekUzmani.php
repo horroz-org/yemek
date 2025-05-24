@@ -27,6 +27,13 @@ class YemekUzmani {
     private $pdo = null;
 
     /**
+     * Adam anonim mi?
+     * 
+     * @var bool
+     */
+    private $anonim;
+
+    /**
      * Konstrüktör.
      * 
      * @param bool $anonim Anonim adam mı istiyor bunu? İstiyorsa kullanabilir ama sadece görür elleyemez.
@@ -38,6 +45,7 @@ class YemekUzmani {
             die();
         }
 
+        $this->anonim = $anonim;
         $this->pdo = new \PDO("sqlite:" . self::dbPath);
     }
 
@@ -62,7 +70,7 @@ class YemekUzmani {
                 "menu" => self::yemekYokMenu,
                 "tarih" => $tarih,
                 "puan" => 0,
-                "puansayisi" => 0
+                "puanSayisi" => 0
             ];
         }
 
@@ -70,7 +78,7 @@ class YemekUzmani {
             "menu" => $row["menu"],
             "tarih" => $row["tarih"],
             "puan" => $row["puan"],
-            "puansayisi" => $row["puansayisi"]
+            "puanSayisi" => $row["puanSayisi"]
         ];
     }
 
@@ -103,13 +111,13 @@ class YemekUzmani {
             $yorumlar[] = [
                 "uuid" => $row["uuid"],
 
-                "yazaruuid" => $row["yazaruuid"],
+                "yazarUuid" => $row["yazarUuid"],
 
-                "ustyorumid" => $row["ustyorumid"],
+                "ustYorumId" => $row["ustYorumId"],
 
                 "yorum" => $row["yorum"],
-                "adaminyemekpuani" => $row["puan"],
-                "herkeseacik" => $row["herkeseacik"],
+                "adaminYemekPuani" => $row["puan"],
+                "herkeseAcik" => $row["herkeseAcik"],
 
                 "like" => $row["like"],
                 "dislike" => $row["dislike"],
@@ -132,7 +140,11 @@ class YemekUzmani {
      * @return ?int Adamın verdiği puan, vermediyse null.
      */
     public function adaminYemegeVerdigiPuaniAl($adamId, $yemekTarih): ?int {
-        $sql = "SELECT * FROM puanlar WHERE kullaniciid = ? AND tarih = ?";
+        if($this->anonim){
+            return null;
+        }
+
+        $sql = "SELECT * FROM puanlar WHERE kullaniciId = ? AND tarih = ?";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$adamId, $yemekTarih]);
         $row = $stmt->fetch();
@@ -152,7 +164,11 @@ class YemekUzmani {
      * @return ?bool Adam like filan attıysa onlar, atmadıysa null.
      */
     public function adaminYorumaVerdigiOyuAl($adamId, $yorumId): ?bool {
-        $sql = "SELECT * FROM likedislike WHERE kullaniciid = ? AND yorumid = ?";
+        if($this->anonim){
+            return null;
+        }
+        
+        $sql = "SELECT * FROM likedislike WHERE kullaniciId = ? AND yorumId = ?";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$adamId, $yorumId]);
         $row = $stmt->fetch();
@@ -160,6 +176,6 @@ class YemekUzmani {
             return null;
         }
 
-        return $row["likemi"];
+        return $row["like"];
     }
 }

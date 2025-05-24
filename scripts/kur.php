@@ -51,7 +51,7 @@ function tablolariOlustur(){
             menu TEXT NOT NULL,
             tarih DATE NOT NULL,
             puan REAL NOT NULL,
-            puansayisi INTEGER NOT NULL
+            puanSayisi INTEGER NOT NULL
         )
     ");
     echo(":: Tablo oluşturuldu: yemek\n");
@@ -60,7 +60,7 @@ function tablolariOlustur(){
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS puanlar (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            kullaniciid TEXT NOT NULL,
+            kullaniciId TEXT NOT NULL,
             puan INTEGER NOT NULL,
             tarih DATE NOT NULL
         )
@@ -73,13 +73,13 @@ function tablolariOlustur(){
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             uuid TEXT NOT NULL,
 
-            yazaruuid TEXT NOT NULL,
+            yazarUuid TEXT NOT NULL,
 
-            ustyorumid TEXT,
+            ustYorumId TEXT,
 
             yorum TEXT NOT NULL,
-            adaminyemekpuani INTEGER NOT NULL,
-            herkeseacik BOOLEAN NOT NULL,
+            adaminYemekPuani INTEGER NOT NULL,
+            herkeseAcik BOOLEAN NOT NULL,
 
             like INTEGER NOT NULL,
             dislike INTEGER NOT NULL,
@@ -95,9 +95,9 @@ function tablolariOlustur(){
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS likedislike (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            kullaniciid TEXT NOT NULL,
-            yorumid TEXT NOT NULL,
-            likemi BOOLEAN NOT NULL
+            kullaniciId TEXT NOT NULL,
+            yorumId TEXT NOT NULL,
+            like BOOLEAN NOT NULL
         )
     ");
     echo(":: Tablo oluşturuldu: likedislike\n");
@@ -108,7 +108,7 @@ function tablolariOlustur(){
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             uuid TEXT NOT NULL,
 
-            kuladi TEXT NOT NULL,
+            kullaniciAdi TEXT NOT NULL,
             isim TEXT NOT NULL,
             hash TEXT NOT NULL,
             email TEXT,
@@ -116,7 +116,7 @@ function tablolariOlustur(){
             prestij INTEGER NOT NULL,
             rutbe TEXT,
 
-            katilmatarihi DATETIME NOT NULL,
+            katilmaTarihi DATETIME NOT NULL,
             admin BOOLEAN NOT NULL
         )
     ");
@@ -132,7 +132,7 @@ function adminAyarla(){
     $adminPass = soru("-> Şifre ne olsun abicim?", "aslanmax");
     $adminHash = password_hash($adminPass, PASSWORD_BCRYPT);
     $dateNow = date('Y-m-d H:i:s');
-    $pdo->prepare("INSERT INTO kullanicilar (uuid, kuladi, isim, hash, prestij, rutbe, katilmatarihi, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+    $pdo->prepare("INSERT INTO kullanicilar (uuid, kullaniciAdi, isim, hash, prestij, rutbe, katilmaTarihi, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
         ->execute([$adminUUID, $adminUsername, $adminName, $adminHash, 0, "Pro", $dateNow, true]);
     echo(":: Admin eklendi."); echo("\n");
 }
