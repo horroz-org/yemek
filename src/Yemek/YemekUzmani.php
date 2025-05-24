@@ -178,4 +178,33 @@ class YemekUzmani {
 
         return $row["like"];
     }
+
+    /**
+     * Adamın bilgilerini alır.
+     * 
+     * @param string $adamId adamın uuid
+     * 
+     * @return ?array Adamın bilgileri, yoksa nulliye.
+     */
+    public function kullaniciAl($adamId): ?array {
+        $sql = "SELECT * FROM kullanicilar WHERE uuid = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$adamId]);
+        $row = $stmt->fetch();
+        if($row === false){
+            return null;
+        }
+
+        return [
+            "uuid" => $row["uuid"],
+            "kullaniciAdi" => $row["kullaniciAdi"],
+            "isim" => $row["isim"],
+            "hash" => $row["hash"],
+            "email" => $row["email"],
+            "prestij" => $row["prestij"],
+            "rutbe" => $row["rutbe"],
+            "katilmaTarihi" => $row["katilmaTarihi"],
+            "admin" => $row["admin"]
+        ];
+    }
 }

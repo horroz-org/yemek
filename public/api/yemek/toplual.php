@@ -27,6 +27,7 @@ $yemek["verilenPuan"] = $yu->adaminYemegeVerdigiPuaniAl($adaminId, $tarih);
 $yorumlar = $yu->yorumlariAl($tarih);
 foreach($yorumlar as &$yorum){
     $yorum["adaminOyu"] = $yu->adaminYorumaVerdigiOyuAl($adaminId, $yorum["uuid"]);
+    $yorum["yazarKullaniciAdi"] = $yu->kullaniciAl($yorum["yazarUuid"])["kullaniciAdi"];
 }
 
 OutputManager::outputJSON([
