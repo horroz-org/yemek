@@ -12,6 +12,16 @@ class OutputManager{
         ]);
     }
 
+    public static function info($message, $statusCode = 200){
+        if($statusCode != 0 && $statusCode != null){
+            http_response_code($statusCode);
+        }
+        
+        self::outputJSON([
+            "info" => $message
+        ]);
+    }
+
     public static function outputJSON($obj){
         header("Content-Type: application/json");
         echo json_encode($obj);

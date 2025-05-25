@@ -21,6 +21,11 @@ $kullanici = Auth::bizimkiKim();
 $yu = new YemekUzmani($kullanici);
 
 $yemek = $yu->yemekAl($tarih);
+if($yemek === null){
+    OutputManager::error("Yemek yok hocam.");
+    die();
+}
+
 $yemek["verilenPuan"] = $yu->bizimkininYemegeVerdigiPuaniAl($tarih);
 
 $yorumlar = $yu->yorumlariAl($tarih);

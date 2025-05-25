@@ -37,7 +37,7 @@ class Utils {
     public static function getPostData($checkKeys = [], $defaults = []) {
         $postBody = file_get_contents("php://input");
         if (!json_validate($postBody)) {
-            Output::error("Bu nasıl json oğlum?", 400);
+            OutputManager::error("Bu nasıl json oğlum?", 400);
             die();
         }
 
@@ -46,7 +46,7 @@ class Utils {
         if (!empty($checkKeys)) {
             foreach ($checkKeys as $key) {
                 if (!array_key_exists($key, $json)) {
-                    Output::error("'$key' lazım efendiler?", 400);
+                    OutputManager::error("'$key' lazım efendiler?", 400);
                     die();
                 }
                 $finalData[$key] = $json[$key];

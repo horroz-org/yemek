@@ -49,7 +49,7 @@ function tablolariOlustur(){
         CREATE TABLE IF NOT EXISTS yemek (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             menu TEXT NOT NULL,
-            tarih DATE NOT NULL,
+            tarih DATE UNIQUE NOT NULL,
             puan REAL NOT NULL,
             puanSayisi INTEGER NOT NULL
         )
@@ -71,7 +71,7 @@ function tablolariOlustur(){
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS yorumlar (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            uuid TEXT NOT NULL,
+            uuid TEXT UNIQUE NOT NULL,
 
             yazarUuid TEXT NOT NULL,
 
@@ -106,7 +106,7 @@ function tablolariOlustur(){
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS kullanicilar (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            uuid TEXT NOT NULL,
+            uuid TEXT UNIQUE NOT NULL,
 
             kullaniciAdi TEXT NOT NULL,
             isim TEXT NOT NULL,

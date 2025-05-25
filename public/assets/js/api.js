@@ -6,11 +6,7 @@ async function apiGet(endpoint) {
         xhr.open("GET", apiUrl + endpoint, true);
 
         xhr.onload = function () {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                resolve(xhr);
-            } else {
-                reject(new Error(`HTTP Error: ${xhr.status}`));
-            }
+            resolve(xhr);
         };
 
         xhr.onerror = function () {
@@ -37,11 +33,7 @@ async function apiPost(endpoint, data) {
         xhr.responseType = "json";
 
         xhr.onload = function () {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                resolve(xhr);
-            } else {
-                reject(new Error(`HTTP Error: ${xhr.status}`));
-            }
+            resolve(xhr);
         };
 
         xhr.onerror = function () {
@@ -111,8 +103,25 @@ async function topluAl(tarih) {
 }
 
 async function yorumOyla(id, begenBool) {
-    return await apiPost("yorum/oyla.php", {
+    return await apiPost("yemek/oyver.php", {
         id: id,
         begen: begenBool
     });
+}
+
+async function yemegePuanVer(puan, tarih) {
+    var xhr = await apiPost("yemek/puanver.php", {
+        puan: puan,
+        tarih: tarih
+    });
+
+    return xhr.status === 200;
+}
+
+async function yemekPuaniSil(tarih) {
+    var xhr = await apiPost("yemek/puansil.php", {
+        tarih: tarih
+    });
+
+    return xhr.status === 200;
 }

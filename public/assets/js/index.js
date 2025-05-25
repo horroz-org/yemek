@@ -9,7 +9,13 @@ function basla(){
     uiAyarla();
     authBak();
 
-    suAnkiTarih = new Date("2025-01-01");
+    const tParam = getQueryParam("t");
+    if(tParam !== null && isIsoDate(tParam)){
+        suAnkiTarih = new Date(tParam);
+    }
+    else{
+        suAnkiTarih = new Date();
+    }
 
     var simdiIsoDate = isoDate(suAnkiTarih); // yyyy-mm-dd
     herseyiGoster(simdiIsoDate);
@@ -50,23 +56,72 @@ function adamAyarla(kullanici){
 // tarih yyyy-mm-dd olacak
 function herseyiGoster(tarih){
     if(tarih in yemekCache){
-        var yemek = yemekCache[tarih].yemek;
-        var yorumlar = yemekCache[tarih].yorumlar;
+        if ("error" in yemekCache[tarih]) {
+            uiYemekYok();
+        }
+        else {
+            var yemek = yemekCache[tarih].yemek;
+            var yorumlar = yemekCache[tarih].yorumlar;
 
-        yemekGoster(yemek);
-        yorumlariGoster(yorumlar, Siralama.varsayilan);
-    }
-    else{
-        topluAl(tarih).then(bilgiler => {
-            var yemek = bilgiler.yemek;
-            var yorumlar = bilgiler.yorumlar;
+            uiYemekVar();
 
             yemekGoster(yemek);
             yorumlariGoster(yorumlar, Siralama.varsayilan);
-
-            yemekCache[tarih] = bilgiler;
-        });
+        }
     }
+    else{
+        yemekBilgiAlGoster(tarih);
+    }
+}
+
+// cache yenilemek için başka yerlerde kullanacaz diye ayırdım bunu herseyiGoster'den
+function yemekBilgiAlGoster(tarih){
+    topluAl(tarih).then(bilgiler => {
+        if("error" in bilgiler){
+            uiYemekYok();
+        }
+        else{
+            var yemek = bilgiler.yemek;
+            var yorumlar = bilgiler.yorumlar;
+            
+            uiYemekVar();
+
+            yemekGoster(yemek);
+            yorumlariGoster(yorumlar, Siralama.varsayilan);
+        }
+
+        yemekCache[tarih] = bilgiler;
+    });
+}
+
+function uiYemekYok(){
+    var tarihElement = document.getElementById("yemektarih");
+    var menuElement = document.getElementById("menu");
+    var puanWrapperElement = document.querySelector(".puan-wrapper");
+    var butonGridElement = document.querySelector(".butongrid");
+    var pyBilgiElement = document.querySelector(".puan-yorum-bilgi");
+    var yorumYazButon = document.getElementById("yorumyazbuton");
+
+    const formatter = new Intl.DateTimeFormat("tr-TR", { dateStyle: 'long' });
+    tarihElement.textContent = formatter.format(suAnkiTarih);
+
+    menuElement.textContent = "Bilmiyoruz.";
+    puanWrapperElement.style.visibility = "hidden";
+    butonGridElement.style.visibility = "hidden";
+    pyBilgiElement.style.visibility = "hidden";
+    yorumYazButon.style.visibility = "hidden";
+}
+
+function uiYemekVar(){
+    var puanWrapperElement = document.querySelector(".puan-wrapper");
+    var butonGridElement = document.querySelector(".butongrid");
+    var pyBilgiElement = document.querySelector(".puan-yorum-bilgi");
+    var yorumYazButon = document.getElementById("yorumyazbuton");
+
+    puanWrapperElement.style.removeProperty("visibility");
+    butonGridElement.style.removeProperty("visibility");
+    pyBilgiElement.style.removeProperty("visibility");
+    yorumYazButon.style.removeProperty("visibility");
 }
 
 function yemekGoster(yemek){
@@ -105,6 +160,9 @@ function yorumlariGoster(yorumlar, siralama){
     yorumSirala(tree, siralama);
 
     yorumlariEkle(tree);
+
+    yorumCevapButonEvent();
+    yorumSikayetButonEvent();
 }
 
 function yorumlariEkle(tree, derinlik = 0) {
@@ -142,17 +200,40 @@ function yorumEkle(id, yazar, tarih, metin, puan, oyBegeni, derinlik = 0){
 
 function sonrakiYemek(){
     suAnkiTarih = new Date(suAnkiTarih.getTime() + 86400000); // 1 gün ms
-    herseyiGoster(isoDate(suAnkiTarih));
+    var suAnkiIsoDate = isoDate(suAnkiTarih);
+    setQueryParam("t", suAnkiIsoDate);
+    herseyiGoster(suAnkiIsoDate);
 }
 
 function oncekiYemek() {
     suAnkiTarih = new Date(suAnkiTarih.getTime() - 86400000); // 1 gün ms
+    var suAnkiIsoDate = isoDate(suAnkiTarih);
+    setQueryParam("t", suAnkiIsoDate);
     herseyiGoster(isoDate(suAnkiTarih));
 }
 
-async function yemegePuanVer(puan){
-    // api
-    alert("tebrikler " + puan + " puan verdiniz");
+function cevapVer(yorumId){
+    alert("yoruma cevap verdiniz tebrikler " + yorumId);
+}
+
+function sikayetEt(yorumId) {
+    alert("yorumu şikayet ettiniz tebrikler " + yorumId);
+}
+
+function yorumCevapButonEvent(){
+    document.querySelectorAll('.yorumkutu').forEach(yorumkutu => {
+        yorumkutu.querySelector(".cevap-buton").addEventListener("click", () => {
+            cevapVer(yorumkutu.id);
+        });
+    });
+}
+
+function yorumSikayetButonEvent() {
+    document.querySelectorAll('.yorumkutu').forEach(yorumkutu => {
+        yorumkutu.querySelector(".sikayet-buton").addEventListener("click", () => {
+            sikayetEt(yorumkutu.id);
+        });
+    });
 }
 
 function uiAyarla(){
@@ -174,15 +255,32 @@ function uiAyarla(){
 
     document.querySelectorAll('.puanbuton').forEach(puanbuton => {
         puanbuton.addEventListener("click", async () => {
-            await yemegePuanVer(parseInt(puanbuton.textContent));
+            if(!puanbuton.classList.contains("puan-secildi")){
+                // seçildiyse sil
+                /**
+                 * var sonuc = await yemekPuaniSil(isoDate(suAnkiTarih));
+                 * if(sonuc === true){
+                 *     puanbuton.classList.remove("puan-secildi");
+                 * }
+                 * 
+                 * vazgeçtim, silmeyiversinler. pr at ekle, ne boş duruyon? ne okuyon buraları deyyus?
+                 */
+
+                // seçilmediyse seç, puan ver
+                var sonuc = await yemegePuanVer(parseInt(puanbuton.textContent), isoDate(suAnkiTarih));
+                if (sonuc === true) {
+                    document.querySelector(".puan-secildi").classList.remove("puan-secildi");
+                    puanbuton.classList.add("puan-secildi");
+                }
+            }
+
+            // yemek bilgilerini yeniden yükleyek
+            yemekBilgiAlGoster(isoDate(suAnkiTarih));
         });
     });
 
-    document.querySelectorAll('.yorumkutu').forEach(yorumkutu => {
-        yorumkutu.querySelector(".cevap-buton").addEventListener("click", async () => {
-            yemegePuanVer(parseInt(puanbuton.textContent));
-        });
-    });
+    yorumCevapButonEvent();
+    yorumSikayetButonEvent();
 }
 
 window.addEventListener("load", basla);

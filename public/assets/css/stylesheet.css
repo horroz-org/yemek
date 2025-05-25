@@ -310,7 +310,7 @@ a:hover {
     margin-bottom: 1rem;
 }
 
-.yorum-bilgi {
+.puan-yorum-bilgi {
     display: flex;
     flex-direction: row;
 
@@ -381,7 +381,7 @@ a:hover {
     padding-right: 0.3rem;
 }
 
-.rapor-buton {
+.sikayet-buton {
     padding: 0;
     background-color: rgb(255, 0, 0, 0.1);
     border: 1px solid red;
@@ -392,11 +392,9 @@ a:hover {
     text-align: center;
     font-weight: bold;
     color: red;
-
-
 }
 
-.rapor-buton:hover {
+.sikayet-buton:hover {
     background-color: rgb(255, 0, 0, 0.2);
 }
 

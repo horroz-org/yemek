@@ -57,9 +57,9 @@ class YemekUzmani {
      * 
      * @param string $tarih yyyy-mm-dd formatında tarih
      * 
-     * @return array Yemek hakkında ne varsa döner.
+     * @return ?array Yemek hakkında ne varsa döner, yemek varsa tabi. Yoksa null.
      */
-    public function yemekAl($tarih): array {
+    public function yemekAl($tarih): ?array {
         if(!Utils::isIsoDate($tarih)){
             Utils::buAdamBiseylerYapmayaCalisiyo();
         }
@@ -69,12 +69,7 @@ class YemekUzmani {
         $stmt->execute([$tarih]); 
         $row = $stmt->fetch(); // 1 row olacak zaten
         if($row === false){
-            return [
-                "menu" => self::yemekYokMenu,
-                "tarih" => $tarih,
-                "puan" => 0,
-                "puanSayisi" => 0
-            ];
+            return null;
         }
 
         return [
@@ -274,5 +269,89 @@ class YemekUzmani {
         unset($kullaniciData["hash"]);
         unset($kullaniciData["email"]);
         return $kullaniciData;
+    }
+
+    /**
+     * Bizimkinin yemeğe puan vermesini sağlıyoruz.
+     * 
+     * @param int $yemekTarih Ne zaman yedin bre oğlum? Breh breh.
+     * @param int $puan Kaç puan verdin bre oğlum? İboya söyleme ha.
+     */
+    public function yemegePuanVer($yemekTarih, $puan){
+        if($this->bizimki === null){
+            return false;
+        }
+
+        $yemek = $this->yemekAl($yemekTarih);
+        if($yemek === null){
+            OutputManager::error("Sen çok akıllısın heralde?");
+            die();
+        }
+
+        // burada upsert olacak ama nasıl yapılıyo bilmiyom
+        // baktım azıcık bissürü şey var yeni eski bol keseden
+        // o yüzden varsa update, yoksa insert => toplam 2 işlemde halledecez
+        // atomik oluyo heralde o internettekiler ama olsun 5-10 ms götümüze giriversin dimi?
+
+        $sql = "SELECT * FROM puanlar WHERE kullaniciId = ? AND tarih = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$this->bizimki["uuid"], $yemekTarih]);
+        $row = $stmt->fetch();
+        $eskiPuan = null;
+        if($row !== false){
+            // varmış, update.
+            $sql = "UPDATE puanlar SET puan = ? WHERE kullaniciId = ? AND tarih = ?";
+            $eskiPuan = $row["puan"];
+        }
+        else{
+            // yokmuş, insert.
+            $sql = "INSERT INTO puanlar (puan, kullaniciId, tarih) VALUES (?, ?, ?)";
+        }
+        $stmt = $this->pdo->prepare($sql);
+        $kontrol = $stmt->execute([$puan, $this->bizimki["uuid"], $yemekTarih]);
+
+        if($kontrol === false){
+            return false;
+        }
+
+        // burda da yemeğin ortalamasını değiştirmeye geldik,
+        // değiştirme:
+        // ortalama = (ortalama * kac_kisi + yeni_puan - eski_puan) / kac_kisi
+        // ekleme:
+        // ortalama = (ortalama * kac_kisi + yeni_puan) / (kac_kisi + 1)
+        // ama kac_kisi = 1 ise 0 olacak falan filan sql'de if mif gerekecek diye
+        // hiç uğraşmıyorum, 5-10 ms daha götüme sokuyorum
+        $eskiOrtalama = $yemek["puan"];
+        $kacKisi = $yemek["puanSayisi"];
+        $yeniOrtalama = 0;
+        if($eskiPuan === null){
+            // ilk defa giriyoruz bu işe
+            $yeniOrtalama = ($eskiOrtalama * $kacKisi + $puan) / ($kacKisi + 1);
+            $kacKisi += 1;
+        }
+        else{
+            // yıllardır içindeyiz bu bokun
+            $yeniOrtalama = $eskiOrtalama + ($puan - $eskiPuan) / $kacKisi;
+        }
+
+        $sql = "UPDATE yemek SET puan = ?, puanSayisi = ? WHERE tarih = ?";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([$yeniOrtalama, $kacKisi, $yemekTarih]);
+    }
+
+    /**
+     * Bizimki verdiği puandan vazgeçmiş, silmek istiyormuş breh breh.
+     * İzin vermem.
+     * 
+     * ### NOT: Çalışmamakta, vazgeçmiş durumdayım. İstersen gel sen ekle, pr at vallahi kabul ederim.
+     * 
+     * @param int $yemekTarih Ne zaman yedin bre oğlum?
+     */
+    public function yemekPuanSil($yemekTarih){
+        if($this->bizimki === null){
+            return false;
+        }
+
+        // Vazgeçtim, puan silmeyiversinler.
     }
 }
