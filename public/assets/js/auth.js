@@ -1,4 +1,4 @@
-function girisYapildiMi() {
+async function girisYapildiMi() {
     /** eğer cookie varsa api çağrısı yapalım
       * yoksa direkt false zaten ekstra api çağrısı olmasın
       * 
@@ -16,7 +16,7 @@ function girisYapildiMi() {
     }
 
     try{
-        const xhr = apiGet("hesap/girisKontrol.php");
+        const xhr = await apiGet("hesap/girisKontrol.php");
         if(xhr.status === 200){
             return JSON.parse(xhr.response);
         }

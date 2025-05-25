@@ -1,29 +1,63 @@
 const apiUrl = window.location.origin + "/api/";
 
-function apiGet(endpoint) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", apiUrl + endpoint, false);
+async function apiGet(endpoint) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", apiUrl + endpoint, true);
 
-    try {
-        xhr.send();
-        return xhr;
-    } catch (error) {
-        throw new Error("Hata.");
-    }
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(xhr);
+            } else {
+                reject(new Error(`HTTP Error: ${xhr.status}`));
+            }
+        };
+
+        xhr.onerror = function () {
+            reject(new Error("Internet hatası."));
+        };
+
+        xhr.ontimeout = function () {
+            reject(new Error("Timeout."));
+        };
+
+        try {
+            xhr.send();
+        } catch (error) {
+            reject(new Error("Ulen?"));
+        }
+    });
 }
 
-function apiPost(endpoint, data) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", apiUrl + endpoint, false);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.responseType = "json";
+async function apiPost(endpoint, data) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", apiUrl + endpoint, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.responseType = "json";
 
-    try {
-        xhr.send(JSON.stringify(data));
-        return xhr;
-    } catch (error) {
-        throw new Error("Hata.");
-    }
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(xhr);
+            } else {
+                reject(new Error(`HTTP Error: ${xhr.status}`));
+            }
+        };
+
+        xhr.onerror = function () {
+            reject(new Error("Internet hatası."));
+        };
+
+        xhr.ontimeout = function () {
+            reject(new Error("Timeout."));
+        };
+
+        try {
+            xhr.send(JSON.stringify(data));
+        } catch (error) {
+            reject(new Error("Ulen?"));
+        }
+    });
 }
 
 function yorumTreeYap(yorumlar) {
@@ -67,8 +101,8 @@ function yorumSirala(tree, siralama) {
     });
 }
 
-function topluAl(tarih) {
-    const xhr = apiGet("yemek/toplual.php?tarih=" + tarih);
+async function topluAl(tarih) {
+    const xhr = await apiGet("yemek/toplual.php?tarih=" + tarih);
     try{
         return JSON.parse(xhr.response);
     } catch{
@@ -76,8 +110,8 @@ function topluAl(tarih) {
     }
 }
 
-function yorumOyla(id, begenBool) {
-    return apiPost("yorum/oyla.php", {
+async function yorumOyla(id, begenBool) {
+    return await apiPost("yorum/oyla.php", {
         id: id,
         begen: begenBool
     });

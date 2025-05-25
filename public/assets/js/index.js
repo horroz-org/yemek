@@ -24,13 +24,14 @@ function basla(){
  * giriş yapmışsa da kullanıcı adını sağ üste yazdıracağım ben
 */
 function authBak(){
-    const userData = girisYapildiMi();
-    if(userData === false){
-        anonimAyarla();
-        return;
-    }
+    girisYapildiMi().then(userData => {
+        if (userData === false) {
+            anonimAyarla();
+            return;
+        }
 
-    adamAyarla(userData);
+        adamAyarla(userData);
+    });
 }
 
 function anonimAyarla(){
@@ -47,12 +48,13 @@ function adamAyarla(kullanici){
 
 // tarih yyyy-mm-dd olacak
 function herseyiGoster(tarih){
-    var bilgiler = topluAl(tarih);
-    var yemek = bilgiler.yemek;
-    var yorumlar = bilgiler.yorumlar;
+    topluAl(tarih).then(bilgiler => {
+        var yemek = bilgiler.yemek;
+        var yorumlar = bilgiler.yorumlar;
 
-    yemekGoster(yemek);
-    yorumlariGoster(yorumlar, Siralama.varsayilan);
+        yemekGoster(yemek);
+        yorumlariGoster(yorumlar, Siralama.varsayilan);
+    });
 }
 
 function yemekGoster(yemek){
