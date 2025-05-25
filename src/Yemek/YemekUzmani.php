@@ -207,4 +207,26 @@ class YemekUzmani {
             "admin" => $row["admin"]
         ];
     }
+
+    /**
+     * Güvenli şekilde al, sadece şu bilgiler olacak:
+     * uuid, kullaniciAdi, isim, prestij, rutbe, katilmaTarihi, admin
+     * 
+     * şunlar yok:
+     * hash, email
+     * 
+     * @param string $adamId adamın uuid
+     * 
+     * @return ?array Adamın bilgileri, yoksa null.
+     */
+    public function kullaniciAlGuvenli($adamId): ?array {
+        $kullaniciData = $this->kullaniciAl($adamId);
+        if($kullaniciData === null){
+            return null;
+        }
+        
+        unset($kullaniciData["hash"]);
+        unset($kullaniciData["email"]);
+        return $kullaniciData;
+    }
 }

@@ -1,20 +1,48 @@
-class Siralama {
-    varsayilan(a, b) { return this.enYuksekOy(a, b);}
-    enYuksekOy(a, b) { return (b.like - b.dislike) - (a.like - a.dislike); }
-    enYeni(a, b) { return new Date(b.tarih) - new Date(a.tarih); }
-    enEski(a, b) { return new Date(a.tarih) - new Date(b.tarih);}
-};
-
-const apiUrl = window.location.origin + "/api/";
-
 var yemekCache = [];
 var yorumCache = [];
 
 const yorumDerinlikRem = 2;
 
+var suAnkiTarih;
+
 function basla(){
-    // var bugunTarih = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
-    herseyiGoster("2025-01-01");
+    uiAyarla();
+    authBak();
+
+    suAnkiTarih = new Date("2025-01-01");
+
+    var simdiIsoDate = isoDate(suAnkiTarih); // yyyy-mm-dd
+    herseyiGoster(simdiIsoDate);
+}
+
+/**
+ * Bakalım giriş yapmış mı
+ * yapmamışsa cevap yaz yorum yaz yemeğe puan verme yoruma oy verme report butonları khapaly olacak
+ * aslında report açık olabilir ama her yorum için 1 kere tutarım dbde
+ * ve uyarı çıkar eğer giriş yapmadan rapor ederseniz ip'niz kaydedilir diye
+ * 
+ * giriş yapmışsa da kullanıcı adını sağ üste yazdıracağım ben
+*/
+function authBak(){
+    const userData = girisYapildiMi();
+    if(userData === false){
+        anonimAyarla();
+        return;
+    }
+
+    adamAyarla(userData);
+}
+
+function anonimAyarla(){
+    var kullaniciAdiElement = document.getElementById("kullanici-adi");
+    kullaniciAdiElement.textContent = "Giriş Yap";
+    kullaniciAdiElement.href = "/giris.html";
+}
+
+function adamAyarla(kullanici){
+    var kullaniciAdiElement = document.getElementById("kullanici-adi");
+    kullaniciAdiElement.textContent = kullanici.kullaniciAdi;
+    kullaniciAdiElement.href = "/profil.html";
 }
 
 // tarih yyyy-mm-dd olacak
@@ -27,22 +55,16 @@ function herseyiGoster(tarih){
     yorumlariGoster(yorumlar, Siralama.varsayilan);
 }
 
-function topluAl(tarih){
-    return apiGet("yemek/toplual.php?tarih=" + tarih);
-}
-
-function yorumOyla(id, begenBool){
-    // api
-    return [];
-}
-
 function yemekGoster(yemek){
     var tarihElement = document.getElementById("yemektarih");
     var menuElement = document.getElementById("menu");
     var puanElement = document.getElementById("puan");
     var puanSayisiElement = document.getElementById("degerlendirme-sayisi");
 
-    tarihElement.textContent = yemek.tarih;
+    // tarih
+    const formatter = new Intl.DateTimeFormat("tr-TR", { dateStyle: 'long' });
+    tarihElement.textContent = formatter.format(new Date(yemek.tarih));
+
     menuElement.textContent = yemek.menu;
     puanElement.textContent = yemek.puan;
     puanSayisiElement.textContent = yemek.puanSayisi;
@@ -63,70 +85,18 @@ function yorumlariGoster(yorumlar, siralama){
     var yorumlarListe = document.getElementById("yorumlar-liste");
     yorumlarListe.innerHTML = "";
 
-
-    /** 
-     * burası bütün yorumları sıralamakta idir
-     * ama her yorum aynı yükseklikte değil idir
-     * aynı grupta hiç değil idir
-     * ona göre sıralayacağız ve ekleyeceğiz idir
-     * 
-     *    root
-     *     /\
-     *    A  E                
-     *   / \  \
-     *  C   B  F
-     *   \
-     *    D
-     * 
-     * ağaç yapacağız idir
-     */
-
+    // Yorumları sıralamak için
+    // ağaç yapacağız idir
     var tree = yorumTreeYap(yorumlar);
     yorumSirala(tree, siralama);
 
     yorumlariEkle(tree);
 }
 
-function yorumTreeYap(yorumlar) {
-    var uuidMap = new Map();
-
-    yorumlar.forEach(function (yorum) {
-        yorum.children = [];
-        uuidMap.set(yorum.uuid, yorum);
-    });
-
-    yorumlar.forEach(yorum => {
-        if (yorum.ustYorumId !== null) {
-            var parent = uuidMap.get(yorum.ustYorumId);
-            parent.children.push(yorum);
-        }
-    });
-
-    var root = [];
-    yorumlar.forEach(yorum => {
-        if (yorum.ustYorumId === null) {
-            root.push(yorum);
-        }
-    });
-
-    return root;
-}
-
-function yorumSirala(tree, siralama){
-    tree.sort(siralama);
-    tree.forEach(function(yorum) {
-        if(yorum.children.length > 0){
-            yorumSirala(yorum.children, siralama);
-        }
-    });
-}
-
 function yorumlariEkle(tree, derinlik = 0) {
     tree.forEach(function (yorum) {
-        console.log("Yorum Ekle:", yorum, derinlik);
         yorumEkle(yorum.uuid, yorum.yazarKullaniciAdi, yorum.zaman, yorum.yorum, yorum.like - yorum.dislike, yorum.adaminOyu, derinlik);
         if (yorum.children.length > 0) {
-            console.log("Alt Yorumlar:", yorum.children);
             yorumlariEkle(yorum.children, derinlik + 1);
         }
     });
@@ -155,42 +125,32 @@ function yorumEkle(id, yazar, tarih, metin, puan, oyBegeni, derinlik = 0){
     document.getElementById("yorumlar-liste").appendChild(clone);
 }
 
-function alertPopup(message){
-    alert(message);
+function sonrakiYemek(){
+    suAnkiTarih = new Date(suAnkiTarih.getTime() + 86400000); // 1 gün ms
+    herseyiGoster(isoDate(suAnkiTarih));
 }
 
-function apiGet(endpoint) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", apiUrl + endpoint, false);
-    
-    try {
-        xhr.send();
-        if (xhr.status === 200) {
-            return JSON.parse(xhr.response);
-        } else {
-            throw new Error("API Hatası: " + xhr.status);
-        }
-    } catch (error) {
-        throw new Error("Hata.");
-    }
+function oncekiYemek() {
+    suAnkiTarih = new Date(suAnkiTarih.getTime() - 86400000); // 1 gün ms
+    herseyiGoster(isoDate(suAnkiTarih));
 }
 
-function apiPost(endpoint, data) {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", apiUrl + endpoint, false);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.responseType = "json";
-    
-    try {
-        xhr.send(JSON.stringify(data));
-        if (xhr.status === 200) {
-            return JSON.parse(xhr.response);
-        } else {
-            throw new Error("API Hatası: " + xhr.status);
-        }
-    } catch (error) {
-        throw new Error("Hata.");
-    }
+function uiAyarla(){
+    document.getElementsByClassName("topbar-logovebaslik")[0].addEventListener("click", () => {
+        window.location.href = "/";
+    });
+
+    document.getElementById("yorumyazbuton").addEventListener("click", () => {
+        alert("yorum yazdınız tebrikler");
+    });
+
+    document.getElementById("sagyemekok").addEventListener("click", () => {
+        sonrakiYemek();
+    });
+
+    document.getElementById("solyemekok").addEventListener("click", () => {
+        oncekiYemek();
+    });
 }
 
 window.addEventListener("load", basla);

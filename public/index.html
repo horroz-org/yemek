@@ -6,31 +6,36 @@
         <title>Horroz.org Yemek</title>
         <link rel="stylesheet" href="/assets/css/stylesheet.css">
         <script src="/assets/js/index.js"></script>
+        <script src="/assets/js/auth.js"></script>
+        <script src="/assets/js/api.js"></script>
+        <script src="/assets/js/utils.js"></script>
     </head>
     <body>
         <div class="layout">
             <div class="topbar">
                 <div class="topbar-sol">
-                    <img src="/assets/img/logo.png" alt="Horroz.org Logo" class="topbar-logo">
-                    <div class="topbar-baslik">yemek.horroz.org</div>
+                    <div class="topbar-logovebaslik">
+                        <img src="/assets/img/logo.png" alt="Horroz.org Logo" class="topbar-logo">
+                        <div class="topbar-baslik">yemek.horroz.org</div>
+                    </div>
                     <div class="topbar-sol-butonlar">
-                        <a href="#">GitHub</a>
-                        <a href="#">Bağış</a>
+                        <a href="https://github.com/horroz-org/yemek">GitHub</a>
+                        <a href="https://wiki.horroz.org/wiki/Horrozpedi:Bağış">Bağış</a>
                     </div>
                 </div>
                 <div class="topbar-sag">
-                    <a href="#">admin</a>
+                    <a id="kullanici-adi" href="#">Giriş Yap</a>
                 </div>
             </div>
             <div class="anakutu">
                 <div class="ickutu">
                     <div class="kocadiv border ortalayandiv">
-                        <div id="yemektarih">22 Mayıs 2025</div>
+                        <div id="yemektarih"></div>
                         <div id="sagyemekok"><i class="mid-arrow right"></i></div>
                         <div id="solyemekok"><i class="mid-arrow left"></i></div>
-                        <div id="menu">DJ (A*D) (5)<br>İskender (A*D) (102)<br>Izgara Miksteyp (201)<br>Jeopard (105)<br>*Muks (A) (946)</div>
+                        <div id="menu"></div>
                         <div class="puan-wrapper">
-                            <div id="puan">4.6</div>
+                            <div id="puan">0</div>
                             <div id="puanbolen">/10</div>
                         </div>
                         <div class="butongrid">
@@ -51,7 +56,7 @@
                         </div>
 
                         <div class="yorum-menu">
-                            <div class="yorum-bilgi"><div id="degerlendirme-sayisi">8</div>değerlendirme ve <div id="yorum-sayisi">2</div>yorum</div>
+                            <div class="yorum-bilgi"><div id="degerlendirme-sayisi"></div>değerlendirme ve <div id="yorum-sayisi"></div>yorum</div>
                             <div id="yorumyazbuton" class="buton">
                                 Yorum Yaz
                             </div>

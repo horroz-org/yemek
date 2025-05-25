@@ -3,12 +3,11 @@ namespace Core;
 
 class OutputManager{
     public static function error($message, $statusCode = 400){
-        header("Content-Type: application/json");
         if($statusCode != 0 && $statusCode != null){
             http_response_code($statusCode);
         }
         
-        echo json_encode([
+        self::outputJSON([
             "error" => $message
         ]);
     }
@@ -40,5 +39,10 @@ class OutputManager{
     public static function outputPlain($text){
         header("Content-Type: text/plain; charset=UTF-8");
         echo $text;
+    }
+
+    public static function handleCORS($path){
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: *");
     }
 }

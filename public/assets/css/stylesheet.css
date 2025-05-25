@@ -120,6 +120,13 @@ body {
     margin-left: 0.8rem;
 }
 
+.topbar-logovebaslik {
+    display: flex;
+    align-items: center;
+
+    cursor: pointer;
+}
+
 .topbar-logo {
     height: 30px;
 }
