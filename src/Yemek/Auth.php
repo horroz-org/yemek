@@ -48,24 +48,22 @@ class Auth {
         return $base62->encode($dataJson) . "." . $base62->encode(hash_hmac("sha3-256", $dataJson, $secret, true));
     }
 
-    public static function girisYapiliMi(){
+    public static function giriliKullaniciyiAl(){
         if(!isset($_COOKIE["YEMEK_SESSION"])){
-            throw new \Exception("Sen ne iş?");
-            return;
+            return null;
         }
         
         $token = $_COOKIE["YEMEK_SESSION"];
         $tokenData = self::verifyToken($token);
         if($tokenData === false){
-            throw new \Exception("Yaş yetmiş, iş bitmiş.");
-            return;
+            return null;
         }
         
         $yu = new YemekUzmani(false); // anonim çünkü kontrol noktasındayız oğlum
         $kullanici = $yu->kullaniciAlGuvenli($tokenData["uid"]);
 
         if($kullanici === null){
-            throw new \Exception("Bloks.");
+            return null;
         }
         
         return $kullanici;

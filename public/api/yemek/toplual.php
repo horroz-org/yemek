@@ -1,5 +1,4 @@
 <?php
-
 require_once dirname(__DIR__, 3) . "/src/init.php";
 
 use Core\Utils;
@@ -17,16 +16,9 @@ if(!Utils::isIsoDate($_GET["tarih"])){
     Utils::buAdamBiseylerYapmayaCalisiyo();
 }
 
-$anonim = false; //Auth::control();
-$kullanici = null;
+$kullanici = Auth::giriliKullaniciyiAl();
 
-try {
-    $kullanici = Auth::girisYapiliMi();
-} catch (\Throwable $th) {
-    $anonim = true;
-}
-
-$yu = new YemekUzmani($anonim);
+$yu = new YemekUzmani($kullanici);
 
 $yemek = $yu->yemekAl($tarih);
 $yemek["verilenPuan"] = $yu->adaminYemegeVerdigiPuaniAl($kullanici["uuid"], $tarih);

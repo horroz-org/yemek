@@ -33,6 +33,38 @@ class Utils {
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
+    // bu utils.php nin tamamını diğer projemden koparmıştım, bunu da koparayım modern çağa atlayalım efendiler
+    public static function getPostData($checkKeys = [], $defaults = []) {
+        $postBody = file_get_contents("php://input");
+        if (!json_validate($postBody)) {
+            Output::error("Bu nasıl json oğlum?", 400);
+            die();
+        }
+
+        $json = json_decode($postBody, true);
+        $finalData = [];
+        if (!empty($checkKeys)) {
+            foreach ($checkKeys as $key) {
+                if (!array_key_exists($key, $json)) {
+                    Output::error("'$key' lazım efendiler?", 400);
+                    die();
+                }
+                $finalData[$key] = $json[$key];
+            }
+        }
+
+        // varsayilanlari da ekle
+        foreach ($defaults as $key => $value) {
+            if (array_key_exists($key, $json)) {
+                $finalData[$key] = $json[$key];
+            } else {
+                $finalData[$key] = $value;
+            }
+        }
+
+        return $finalData;
+    }
+
     public static function isDebugModeOn(){
         if(php_sapi_name() === "cli"){
             return true;

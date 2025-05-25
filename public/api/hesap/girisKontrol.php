@@ -17,11 +17,24 @@ use Core\OutputManager;
 use Yemek\Auth;
 use Yemek\YemekUzmani;
 
-try {
-    $kullanici = Auth::girisYapiliMi();
-} catch (\Throwable $th) {
-    OutputManager::error($th->getMessage(), 401);
-    die();
+// Buradan sonrası aslında Auth.php'deydi ama Exception filan vardı mesajlar için
+// O yüzden bu burda kalsın şimdilik, belki geri taşırız sonra
+
+if(!isset($_COOKIE["YEMEK_SESSION"])){
+    OutputManager::error("Sen ne iş?", 401);
+}
+
+$token = $_COOKIE["YEMEK_SESSION"];
+$tokenData = Auth::verifyToken($token);
+if($tokenData === false){
+    OutputManager::error("Yaş yetmiş, iş bitmiş.", 401);
+}
+
+$yu = new YemekUzmani(false); // anonim çünkü kontrol noktasındayız oğlum
+$kullanici = $yu->kullaniciAlGuvenli($tokenData["uid"]);
+
+if($kullanici === null){
+    OutputManager::error("Bloks.", 401);
 }
 
 OutputManager::outputJSON($kullanici);

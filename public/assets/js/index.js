@@ -1,9 +1,9 @@
 var yemekCache = [];
-var yorumCache = [];
 
 const yorumDerinlikRem = 2;
-
+var kullanici;
 var suAnkiTarih;
+
 
 function basla(){
     uiAyarla();
@@ -30,6 +30,7 @@ function authBak(){
             return;
         }
 
+        kullanici = userData;
         adamAyarla(userData);
     });
 }
@@ -48,13 +49,24 @@ function adamAyarla(kullanici){
 
 // tarih yyyy-mm-dd olacak
 function herseyiGoster(tarih){
-    topluAl(tarih).then(bilgiler => {
-        var yemek = bilgiler.yemek;
-        var yorumlar = bilgiler.yorumlar;
+    if(tarih in yemekCache){
+        var yemek = yemekCache[tarih].yemek;
+        var yorumlar = yemekCache[tarih].yorumlar;
 
         yemekGoster(yemek);
         yorumlariGoster(yorumlar, Siralama.varsayilan);
-    });
+    }
+    else{
+        topluAl(tarih).then(bilgiler => {
+            var yemek = bilgiler.yemek;
+            var yorumlar = bilgiler.yorumlar;
+
+            yemekGoster(yemek);
+            yorumlariGoster(yorumlar, Siralama.varsayilan);
+
+            yemekCache[tarih] = bilgiler;
+        });
+    }
 }
 
 function yemekGoster(yemek){
@@ -110,6 +122,7 @@ function yorumEkle(id, yazar, tarih, metin, puan, oyBegeni, derinlik = 0){
 
     clone.querySelector(".yorumkutu").id = id;
     clone.querySelector(".yorum-yazar").textContent = yazar;
+    clone.querySelector(".yorum-yazar").href = "/profil.html?u=" + yazar;
     clone.querySelector(".yorum-tarih").textContent = tarih;
     clone.querySelector(".yorum-metin").textContent = metin;
     clone.querySelector(".vote-sayi").textContent = puan;
@@ -137,8 +150,13 @@ function oncekiYemek() {
     herseyiGoster(isoDate(suAnkiTarih));
 }
 
+async function yemegePuanVer(puan){
+    // api
+    alert("tebrikler " + puan + " puan verdiniz");
+}
+
 function uiAyarla(){
-    document.getElementsByClassName("topbar-logovebaslik")[0].addEventListener("click", () => {
+    document.querySelector(".topbar-logovebaslik").addEventListener("click", () => {
         window.location.href = "/";
     });
 
@@ -152,6 +170,18 @@ function uiAyarla(){
 
     document.getElementById("solyemekok").addEventListener("click", () => {
         oncekiYemek();
+    });
+
+    document.querySelectorAll('.puanbuton').forEach(puanbuton => {
+        puanbuton.addEventListener("click", async () => {
+            await yemegePuanVer(parseInt(puanbuton.textContent));
+        });
+    });
+
+    document.querySelectorAll('.yorumkutu').forEach(yorumkutu => {
+        yorumkutu.querySelector(".cevap-buton").addEventListener("click", async () => {
+            yemegePuanVer(parseInt(puanbuton.textContent));
+        });
     });
 }
 

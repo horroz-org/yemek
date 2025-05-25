@@ -27,25 +27,28 @@ class YemekUzmani {
     private $pdo = null;
 
     /**
-     * Adam anonim mi?
+     * Adam kim? Biz kime çalışıyoruz oğlum?
+     * null'sa anonim, değilse kullanıcı
      * 
-     * @var bool
+     * @var ?array
      */
-    private $anonim;
+    private $kullanici = null;
 
     /**
      * Konstrüktör.
      * 
-     * @param bool $anonim Anonim adam mı istiyor bunu? İstiyorsa kullanabilir ama sadece görür elleyemez.
+     * @param ?array $adam Daha önce de dediğim gibi, sen kime çalışıyorsun?
+     * null ise anonim, değilse klasik kullanıcı.
+     * Anonim burayı istiyorsa kullanabilir ama sadece görür elleyemez.
      */
-    public function __construct($anonim = false) {
+    public function __construct($adam = null) {
         if(!file_exists(self::dbPath)){
             http_response_code(500);
             OutputManager::outputPlain("Ulan kurmamışsın sen bunu? He? Şunu çalıştır: scripts/kur.php");
             die();
         }
 
-        $this->anonim = $anonim;
+        $this->kullanici = $adam;
         $this->pdo = new \PDO("sqlite:" . self::dbPath);
     }
 
