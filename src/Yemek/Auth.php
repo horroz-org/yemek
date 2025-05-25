@@ -48,7 +48,12 @@ class Auth {
         return $base62->encode($dataJson) . "." . $base62->encode(hash_hmac("sha3-256", $dataJson, $secret, true));
     }
 
-    public static function giriliKullaniciyiAl(){
+    /**
+     * Bizimki kim? Kim giriş yapmış şu an? Bizimki nerelerde? Ne içiyor nereler ide?
+     * 
+     * @return ?array Bizimki giriş yapmışsa kimdir onu döndürür, giriş yapmamışsa anonim yani null.
+     */
+    public static function bizimkiKim(){
         if(!isset($_COOKIE["YEMEK_SESSION"])){
             return null;
         }
@@ -61,10 +66,6 @@ class Auth {
         
         $yu = new YemekUzmani(false); // anonim çünkü kontrol noktasındayız oğlum
         $kullanici = $yu->kullaniciAlGuvenli($tokenData["uid"]);
-
-        if($kullanici === null){
-            return null;
-        }
         
         return $kullanici;
     }

@@ -27,28 +27,28 @@ class YemekUzmani {
     private $pdo = null;
 
     /**
-     * Adam kim? Biz kime çalışıyoruz oğlum?
-     * null'sa anonim, değilse kullanıcı
+     * Bizim adam kim? Biz kime çalışıyoruz oğlum?
+     * null'sa anonim, değilse bizimki varmış yani gerçekmiş, anladın?
      * 
      * @var ?array
      */
-    private $kullanici = null;
+    private $bizimki = null;
 
     /**
      * Konstrüktör.
      * 
-     * @param ?array $adam Daha önce de dediğim gibi, sen kime çalışıyorsun?
+     * @param ?array $bizimki Daha önce de dediğim gibi, sen kime çalışıyorsun? Bizimkine çalışıyorsun
      * null ise anonim, değilse klasik kullanıcı.
      * Anonim burayı istiyorsa kullanabilir ama sadece görür elleyemez.
      */
-    public function __construct($adam = null) {
+    public function __construct($bizimki = null) {
         if(!file_exists(self::dbPath)){
             http_response_code(500);
             OutputManager::outputPlain("Ulan kurmamışsın sen bunu? He? Şunu çalıştır: scripts/kur.php");
             die();
         }
 
-        $this->kullanici = $adam;
+        $this->bizimki = $bizimki;
         $this->pdo = new \PDO("sqlite:" . self::dbPath);
     }
 
@@ -105,7 +105,7 @@ class YemekUzmani {
         $stmt->execute([$gunBaslangic, $gunBitis]);
 
         $rows = $stmt->fetchAll();
-        if($row === false){
+        if($rows === false){
             return [];
         }
 
@@ -119,7 +119,7 @@ class YemekUzmani {
                 "ustYorumId" => $row["ustYorumId"],
 
                 "yorum" => $row["yorum"],
-                "adaminYemekPuani" => $row["puan"],
+                "adaminYemekPuani" => $row["adaminYemekPuani"],
                 "herkeseAcik" => $row["herkeseAcik"],
 
                 "like" => $row["like"],
@@ -143,7 +143,7 @@ class YemekUzmani {
      * @return ?int Adamın verdiği puan, vermediyse null.
      */
     public function adaminYemegeVerdigiPuaniAl($adamId, $yemekTarih): ?int {
-        if($this->anonim){
+        if($adamId === null){
             return null;
         }
 
@@ -159,6 +159,21 @@ class YemekUzmani {
     }
 
     /**
+     * Bizimki yemeğe güzel bi puan verdiyse 10, vermediyse 0 döndürür.
+     * Şaka şaka, adam puan verdiyse puan, vermediyse null döndürür.
+     * 
+     * @param string $yemekTarih yemegin tarihi
+     * 
+     * @return ?int Bizimkinin verdiği puan, vermediyse null.
+     */
+    public function bizimkininYemegeVerdigiPuaniAl($yemekTarih): ?int {
+        if($this->bizimki === null){
+            return null;
+        }
+        return $this->adaminYemegeVerdigiPuaniAl($this->bizimki["uuid"], $yemekTarih);
+    }
+
+    /**
      * Adam yoruma oy verdiyse up->true down->false, vermediyse null döndürür.
      * 
      * @param string $adamId adamın uuid
@@ -167,7 +182,7 @@ class YemekUzmani {
      * @return ?bool Adam like filan attıysa onlar, atmadıysa null.
      */
     public function adaminYorumaVerdigiOyuAl($adamId, $yorumId): ?bool {
-        if($this->anonim){
+        if($adamId === null){
             return null;
         }
         
@@ -180,6 +195,21 @@ class YemekUzmani {
         }
 
         return $row["like"];
+    }
+
+    /**
+     * Bizimki yoruma oy verdiyse up->true down->false, vermediyse null döndürür.
+     * 
+     * @param string $yorumId yorumun uuid
+     * 
+     * @return ?bool Bizimki like filan attıysa onlar, atmadıysa null.
+     */
+    public function bizimkininYorumaVerdigiOyuAl($yorumId): ?bool {
+        if($this->bizimki === null){
+            return null;
+        }
+
+        return $this->adaminYorumaVerdigiOyuAl($this->bizimki["uuid"], $yorumId);
     }
 
     /**
@@ -209,6 +239,19 @@ class YemekUzmani {
             "katilmaTarihi" => $row["katilmaTarihi"],
             "admin" => $row["admin"]
         ];
+    }
+
+    /**
+     * Bizimkinin bilgilerini alır.
+     * 
+     * @return ?array Bizimkinin bilgileri, yoksa null.
+     */
+    public function bizimkiniAl(): ?array {
+        if($this->bizimki === null){
+            return null;
+        }
+
+        return $this->kullaniciAl($this->bizimki["uuid"]);
     }
 
     /**

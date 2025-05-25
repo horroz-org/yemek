@@ -16,16 +16,16 @@ if(!Utils::isIsoDate($_GET["tarih"])){
     Utils::buAdamBiseylerYapmayaCalisiyo();
 }
 
-$kullanici = Auth::giriliKullaniciyiAl();
+$kullanici = Auth::bizimkiKim();
 
 $yu = new YemekUzmani($kullanici);
 
 $yemek = $yu->yemekAl($tarih);
-$yemek["verilenPuan"] = $yu->adaminYemegeVerdigiPuaniAl($kullanici["uuid"], $tarih);
+$yemek["verilenPuan"] = $yu->bizimkininYemegeVerdigiPuaniAl($tarih);
 
 $yorumlar = $yu->yorumlariAl($tarih);
 foreach($yorumlar as &$yorum){
-    $yorum["adaminOyu"] = $yu->adaminYorumaVerdigiOyuAl($kullanici["uuid"], $yorum["uuid"]);
+    $yorum["bizimkininOyu"] = $yu->bizimkininYorumaVerdigiOyuAl($yorum["uuid"]);
     $yorum["yazarKullaniciAdi"] = $yu->kullaniciAl($yorum["yazarUuid"])["kullaniciAdi"];
 }
 

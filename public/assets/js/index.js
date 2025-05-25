@@ -109,7 +109,7 @@ function yorumlariGoster(yorumlar, siralama){
 
 function yorumlariEkle(tree, derinlik = 0) {
     tree.forEach(function (yorum) {
-        yorumEkle(yorum.uuid, yorum.yazarKullaniciAdi, yorum.zaman, yorum.yorum, yorum.like - yorum.dislike, yorum.adaminOyu, derinlik);
+        yorumEkle(yorum.uuid, yorum.yazarKullaniciAdi, yorum.zaman, yorum.yorum, yorum.like - yorum.dislike, yorum.bizimkininOyu, derinlik);
         if (yorum.children.length > 0) {
             yorumlariEkle(yorum.children, derinlik + 1);
         }
