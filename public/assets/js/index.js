@@ -162,8 +162,48 @@ function yorumlariGoster(yorumlar, siralama){
 
     yorumlariEkle(tree);
 
-    yorumCevapButonEvent();
-    yorumSikayetButonEvent();
+    yorumUiEventAyarla();
+}
+
+function yorumTreeYap(yorumlar) {
+    var uuidMap = new Map();
+
+    yorumlar.forEach(function (yorum) {
+        yorum.children = [];
+        uuidMap.set(yorum.uuid, yorum);
+    });
+
+    yorumlar.forEach(yorum => {
+        if (yorum.ustYorumId !== null) {
+            var parent = uuidMap.get(yorum.ustYorumId);
+            parent.children.push(yorum);
+        }
+    });
+
+    var root = [];
+    yorumlar.forEach(yorum => {
+        if (yorum.ustYorumId === null) {
+            root.push(yorum);
+        }
+    });
+
+    return root;
+}
+
+class Siralama {
+    varsayilan(a, b) { return this.enYuksekOy(a, b); }
+    enYuksekOy(a, b) { return (b.like - b.dislike) - (a.like - a.dislike); }
+    enYeni(a, b) { return new Date(b.tarih) - new Date(a.tarih); }
+    enEski(a, b) { return new Date(a.tarih) - new Date(b.tarih); }
+};
+
+function yorumSirala(tree, siralama) {
+    tree.sort(siralama);
+    tree.forEach(function (yorum) {
+        if (yorum.children.length > 0) {
+            yorumSirala(yorum.children, siralama);
+        }
+    });
 }
 
 function yorumlariEkle(tree, derinlik = 0) {
@@ -221,18 +261,64 @@ function sikayetEt(yorumId) {
     alert("yorumu şikayet ettiniz tebrikler " + yorumId);
 }
 
-function yorumCevapButonEvent(){
+function yorumUiEventAyarla(){
     document.querySelectorAll('.yorumkutu').forEach(yorumkutu => {
         yorumkutu.querySelector(".cevap-buton").addEventListener("click", () => {
             cevapVer(yorumkutu.id);
         });
-    });
-}
 
-function yorumSikayetButonEvent() {
-    document.querySelectorAll('.yorumkutu').forEach(yorumkutu => {
         yorumkutu.querySelector(".sikayet-buton").addEventListener("click", () => {
             sikayetEt(yorumkutu.id);
+        });
+
+        yorumkutu.querySelectorAll(".vote-ok").forEach(voteOk => {
+            voteOk.addEventListener("click", async () => {
+                if(kullanici === null){
+                    window.location.href = "/giris/";
+                    return;
+                }
+
+                var yorumUuid = yorumkutu.id;
+                var likeDislike = voteOk.classList.contains("upvote");
+                
+                if(voteOk.classList.contains("vote-secildi")){
+                    // seçiliye bastıysa silsin
+
+                    voteOk.classList.remove("vote-secildi");
+                    
+                    var guncelOylar = await yorumOySil(yorumUuid);
+                    if(guncelOylar === null){
+                        // hata çıktı, eski haline getir
+                        voteOk.classList.add("vote-secildi");
+                    }
+                    else{
+                        yorumOyGuncelle(yorumUuid, null, guncelOylar);
+                    }
+                }
+                else {
+                    // yeni oy veriyoz / değiştiriyoz
+
+                    var seciliOk = yorumkutu.querySelectorAll(".vote-secildi");
+                    if(seciliOk.length > 0){
+                        // önceki seçiliyi kaldır
+                        seciliOk[0].classList.remove("vote-secildi");
+                    }
+
+                    voteOk.classList.add("vote-secildi");
+
+                    var guncelOylar = await yorumOyVer(yorumUuid, likeDislike);
+                    if (guncelOylar === null) {
+                        // hata çıktı, eski haline getir
+                        voteOk.classList.remove("vote-secildi");
+                        if (seciliOk.length > 0) {
+                            seciliOk[0].classList.add("vote-secildi");
+                        }
+                    }
+                    else {
+                        yorumOyGuncelle(yorumUuid, likeDislike, guncelOylar);
+                    }
+                }
+            });
         });
     });
 }
@@ -248,6 +334,22 @@ function puanGuncelle(puan, puanSayisi, verilenPuan){
     yemekCache[isoDate(suAnkiTarih)].yemek.puan = puan;
     yemekCache[isoDate(suAnkiTarih)].yemek.puanSayisi = puanSayisi;
     yemekCache[isoDate(suAnkiTarih)].yemek.verilenPuan = verilenPuan;
+}
+
+function yorumOyGuncelle(yorumUuid, likeDislike, oylar){
+    var yorumkutu = document.getElementById(yorumUuid);
+
+    yorumkutu.querySelector(".vote-sayi").textContent = oylar.like - oylar.dislike;
+
+    // cache
+    yemekCache[isoDate(suAnkiTarih)].yorumlar.forEach(yorum => {
+        if(yorum.uuid === yorumUuid){
+            yorum.like = oylar.like;
+            yorum.dislike = oylar.dislike;
+            yorum.bizimkininOyu = likeDislike;
+            return;
+        }
+    });
 }
 
 function uiAyarla(){
@@ -312,15 +414,10 @@ function uiAyarla(){
                     puanGuncelle(sonuc.puan, sonuc.puanSayisi, basilanPuan);
                 }
             }
-
-            // yemek bilgilerini yeniden yükleyek
-            // yemekBilgiAlGoster(isoDate(suAnkiTarih));
-            // gerek kalmadı artık güncel puanlar geliyor apiden
         });
     });
 
-    yorumCevapButonEvent();
-    yorumSikayetButonEvent();
+    yorumUiEventAyarla();
 }
 
 window.addEventListener("load", basla);

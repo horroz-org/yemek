@@ -52,47 +52,6 @@ async function apiPost(endpoint, data) {
     });
 }
 
-function yorumTreeYap(yorumlar) {
-    var uuidMap = new Map();
-
-    yorumlar.forEach(function (yorum) {
-        yorum.children = [];
-        uuidMap.set(yorum.uuid, yorum);
-    });
-
-    yorumlar.forEach(yorum => {
-        if (yorum.ustYorumId !== null) {
-            var parent = uuidMap.get(yorum.ustYorumId);
-            parent.children.push(yorum);
-        }
-    });
-
-    var root = [];
-    yorumlar.forEach(yorum => {
-        if (yorum.ustYorumId === null) {
-            root.push(yorum);
-        }
-    });
-
-    return root;
-}
-
-class Siralama {
-    varsayilan(a, b) { return this.enYuksekOy(a, b); }
-    enYuksekOy(a, b) { return (b.like - b.dislike) - (a.like - a.dislike); }
-    enYeni(a, b) { return new Date(b.tarih) - new Date(a.tarih); }
-    enEski(a, b) { return new Date(a.tarih) - new Date(b.tarih); }
-};
-
-function yorumSirala(tree, siralama) {
-    tree.sort(siralama);
-    tree.forEach(function (yorum) {
-        if (yorum.children.length > 0) {
-            yorumSirala(yorum.children, siralama);
-        }
-    });
-}
-
 async function topluAl(tarih) {
     const xhr = await apiGet("yemek/toplual.php?tarih=" + tarih);
     try{
@@ -102,11 +61,21 @@ async function topluAl(tarih) {
     }
 }
 
-async function yorumOyla(id, begenBool) {
-    return await apiPost("yemek/oyver.php", {
-        id: id,
-        begen: begenBool
+async function yorumOyVer(yorumUuid, likeDislike) {
+    var xhr = await apiPost("yorum/oyver.php", {
+        yorumUuid: yorumUuid,
+        like: likeDislike
     });
+
+    return xhr.status === 200 ? xhr.response : null;
+}
+
+async function yorumOySil(yorumUuid) {
+    var xhr = await apiPost("yorum/oysil.php", {
+        yorumUuid: yorumUuid,
+    });
+
+    return xhr.status === 200 ? xhr.response : null;
 }
 
 async function yemegePuanVer(puan, tarih) {
