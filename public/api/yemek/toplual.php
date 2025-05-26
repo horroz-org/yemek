@@ -29,6 +29,11 @@ if($yemek === null){
 $yemek["verilenPuan"] = $yu->bizimkininYemegeVerdigiPuaniAl($tarih);
 
 $yorumlar = $yu->yorumlariAl($tarih);
+
+if($yorumlar === null){
+    Utils::buAdamBiseylerYapmayaCalisiyo();
+}
+
 foreach($yorumlar as &$yorum){
     $yorum["bizimkininOyu"] = $yu->bizimkininYorumaVerdigiOyuAl($yorum["uuid"]);
     $yorum["yazarKullaniciAdi"] = $yu->kullaniciAl($yorum["yazarUuid"])["kullaniciAdi"];

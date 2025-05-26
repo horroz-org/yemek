@@ -115,7 +115,7 @@ async function yemegePuanVer(puan, tarih) {
         tarih: tarih
     });
 
-    return xhr.status === 200;
+    return xhr.status === 200 ? xhr.response : null;
 }
 
 async function yemekPuaniSil(tarih) {
@@ -123,5 +123,5 @@ async function yemekPuaniSil(tarih) {
         tarih: tarih
     });
 
-    return xhr.status === 200;
+    return xhr.status === 200 ? xhr.response : null;
 }

@@ -68,6 +68,7 @@ class YemekUzmani {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$tarih]); 
         $row = $stmt->fetch(); // 1 row olacak zaten
+        $stmt->closeCursor();
         if($row === false){
             return null;
         }
@@ -89,7 +90,7 @@ class YemekUzmani {
      */
     public function yorumlariAl($tarih): array {
         if(!Utils::isIsoDate($tarih)){
-            Utils::buAdamBiseylerYapmayaCalisiyo();
+            return null;
         }
 
         $gunBaslangic = (new \DateTime($tarih))->setTime(0, 0, 0)->format('Y-m-d H:i:s');
@@ -100,6 +101,7 @@ class YemekUzmani {
         $stmt->execute([$gunBaslangic, $gunBitis]);
 
         $rows = $stmt->fetchAll();
+        $stmt->closeCursor();
         if($rows === false){
             return [];
         }
@@ -146,6 +148,7 @@ class YemekUzmani {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$adamId, $yemekTarih]);
         $row = $stmt->fetch();
+        $stmt->closeCursor();
         if($row === false){
             return null;
         }
@@ -185,6 +188,7 @@ class YemekUzmani {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$adamId, $yorumId]);
         $row = $stmt->fetch();
+        $stmt->closeCursor();
         if($row === false){
             return null;
         }
@@ -219,6 +223,7 @@ class YemekUzmani {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$adamId]);
         $row = $stmt->fetch();
+        $stmt->closeCursor();
         if($row === false){
             return null;
         }
@@ -279,79 +284,173 @@ class YemekUzmani {
      */
     public function yemegePuanVer($yemekTarih, $puan){
         if($this->bizimki === null){
-            return false;
-        }
-
-        $yemek = $this->yemekAl($yemekTarih);
-        if($yemek === null){
-            OutputManager::error("Sen çok akıllısın heralde?");
-            die();
+            return null;
         }
 
         // burada upsert olacak ama nasıl yapılıyo bilmiyom
         // baktım azıcık bissürü şey var yeni eski bol keseden
         // o yüzden varsa update, yoksa insert => toplam 2 işlemde halledecez
         // atomik oluyo heralde o internettekiler ama olsun 5-10 ms götümüze giriversin dimi?
+        //
+        // Güncelleme: transaction'a aldım hepsini, götümüz rahat olsun
 
-        $sql = "SELECT * FROM puanlar WHERE kullaniciId = ? AND tarih = ?";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$this->bizimki["uuid"], $yemekTarih]);
-        $row = $stmt->fetch();
-        $eskiPuan = null;
-        if($row !== false){
-            // varmış, update.
-            $sql = "UPDATE puanlar SET puan = ? WHERE kullaniciId = ? AND tarih = ?";
-            $eskiPuan = $row["puan"];
-        }
-        else{
-            // yokmuş, insert.
-            $sql = "INSERT INTO puanlar (puan, kullaniciId, tarih) VALUES (?, ?, ?)";
-        }
-        $stmt = $this->pdo->prepare($sql);
-        $kontrol = $stmt->execute([$puan, $this->bizimki["uuid"], $yemekTarih]);
+        try{
+            $this->pdo->beginTransaction();
 
-        if($kontrol === false){
-            return false;
+            // bu yemekAl kısmını da transaction'un içine soktum
+            // olur heralde
+            $yemek = $this->yemekAl($yemekTarih);
+            if($yemek === null){
+                $this->pdo->rollBack();
+                return null;
+            }
+
+            $sql = "SELECT * FROM puanlar WHERE kullaniciId = ? AND tarih = ?";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$this->bizimki["uuid"], $yemekTarih]);
+            $row = $stmt->fetch();
+            $stmt->closeCursor();
+            
+            $eskiPuan = null;
+            if($row !== false){
+                // varmış, update.
+                $sql = "UPDATE puanlar SET puan = ? WHERE kullaniciId = ? AND tarih = ?";
+                $eskiPuan = $row["puan"];
+            }
+            else{
+                // yokmuş, insert.
+                $sql = "INSERT INTO puanlar (puan, kullaniciId, tarih) VALUES (?, ?, ?)";
+            }
+            $stmt = $this->pdo->prepare($sql);
+            $kontrol = $stmt->execute([$puan, $this->bizimki["uuid"], $yemekTarih]);
+    
+            if($kontrol === false){
+                // yemeğe puan veremiyoruz -> update/insert yapamıyoruz
+                // neden? bilmem. puan, kullaniciId, tarih filan yanlış olabilir belki
+                \Core\Logger::warning("Burada garip şeyler oluyor, yemegePuanVer puan ekleme kısmı.\npuan: $puan\kullaniciId: bizimki (".$this->bizimki["uuid"].")\ntarih: $yemekTarih");
+                
+                $this->pdo->rollBack();
+                return null;
+            }
+    
+            // burda da yemeğin ortalamasını değiştirmeye geldik,
+            // değiştirme:
+            // ortalama = (ortalama * kac_kisi + yeni_puan - eski_puan) / kac_kisi
+            // ekleme:
+            // ortalama = (ortalama * kac_kisi + yeni_puan) / (kac_kisi + 1)
+            // ama kac_kisi = 1 ise 0 olacak falan filan sql'de if mif gerekecek diye
+            // hiç uğraşmıyorum, 5-10 ms daha götüme sokuyorum
+            //
+            // Güncelleme: transaction'a aldım hepsini, götümüz rahat olsun
+
+            $eskiOrtalama = $yemek["puan"];
+            $kacKisi = $yemek["puanSayisi"];
+            $yeniOrtalama = 0;
+            if($eskiPuan === null){
+                // ilk defa giriyoruz bu işe
+                $yeniOrtalama = ($eskiOrtalama * $kacKisi + $puan) / ($kacKisi + 1);
+                $kacKisi += 1;
+            }
+            else{
+                // yıllardır içindeyiz bu bokun
+                $yeniOrtalama = $eskiOrtalama + ($puan - $eskiPuan) / $kacKisi;
+            }
+    
+            $sql = "UPDATE yemek SET puan = ?, puanSayisi = ? WHERE tarih = ? RETURNING puan, puanSayisi";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$yeniOrtalama, $kacKisi, $yemekTarih]);
+
+            $guncelPuan = $stmt->fetch();
+            $stmt->closeCursor();
+
+            if($guncelPuan === false){
+                // yemeğin puanlarını güncelleyemiyoruz.
+                // puan ve puanSayisi bir garip olabilir, loglara yazsın
+                \Core\Logger::warning("Burada garip şeyler oluyor, yemegePuanVer.\npuan: $yeniOrtalama\npuanSayisi: $kacKisi\ntarih: $yemekTarih");
+                
+                $this->pdo->rollBack();
+                return null;
+            }
+
+            $this->pdo->commit();
+        } catch(\PDOException $e){
+            \Core\Logger::error("yemegePuanVer PDOException\n" . $e->getMessage());
+            return null;
         }
 
-        // burda da yemeğin ortalamasını değiştirmeye geldik,
-        // değiştirme:
-        // ortalama = (ortalama * kac_kisi + yeni_puan - eski_puan) / kac_kisi
-        // ekleme:
-        // ortalama = (ortalama * kac_kisi + yeni_puan) / (kac_kisi + 1)
-        // ama kac_kisi = 1 ise 0 olacak falan filan sql'de if mif gerekecek diye
-        // hiç uğraşmıyorum, 5-10 ms daha götüme sokuyorum
-        $eskiOrtalama = $yemek["puan"];
-        $kacKisi = $yemek["puanSayisi"];
-        $yeniOrtalama = 0;
-        if($eskiPuan === null){
-            // ilk defa giriyoruz bu işe
-            $yeniOrtalama = ($eskiOrtalama * $kacKisi + $puan) / ($kacKisi + 1);
-            $kacKisi += 1;
-        }
-        else{
-            // yıllardır içindeyiz bu bokun
-            $yeniOrtalama = $eskiOrtalama + ($puan - $eskiPuan) / $kacKisi;
-        }
-
-        $sql = "UPDATE yemek SET puan = ?, puanSayisi = ? WHERE tarih = ?";
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$yeniOrtalama, $kacKisi, $yemekTarih]);
+        return [
+            "puan" => $guncelPuan["puan"],
+            "puanSayisi" => $guncelPuan["puanSayisi"]
+        ];
     }
 
     /**
      * Bizimki verdiği puandan vazgeçmiş, silmek istiyormuş breh breh.
-     * İzin vermem.
-     * 
-     * ### NOT: Çalışmamakta, vazgeçmiş durumdayım. İstersen gel sen ekle, pr at vallahi kabul ederim.
      * 
      * @param int $yemekTarih Ne zaman yedin bre oğlum?
+     * 
+     * @return ?array Başardıysak güncel puan ve kaç kişi, başaramadıysak null.
      */
     public function yemekPuanSil($yemekTarih){
         if($this->bizimki === null){
-            return false;
+            return null;
         }
 
-        // Vazgeçtim, puan silmeyiversinler.
+        // önce eski puanı alacaz hatırlayacaz, sonra silecez
+        // select + delete 2 işlem olacak
+        // bunu tekte yapan vardır kesin ama ben bilmiyorum
+        // sonra da yemeğin ortalamasını filan değiştiricez
+        // bunda da select + update 2 işlem
+        //
+        // buldum, DELETE ... RETURNING *; yapınca silinen rowlar geliyormuş
+
+        try{
+            $this->pdo->beginTransaction();
+
+            $stmt = $this->pdo->prepare("DELETE FROM puanlar WHERE kullaniciId = ? AND tarih = ? RETURNING *");
+            $stmt->execute([$this->bizimki["uuid"], $yemekTarih]);
+            $eskiData = $stmt->fetch();
+            $stmt->closeCursor();
+    
+            if($eskiData === false){
+                // sen var ya sen çok akıllısın heralde?
+                $this->pdo->rollBack();
+                return null;
+            }
+    
+            $stmt = $this->pdo->prepare("
+            UPDATE yemek
+            SET 
+                puan = 
+                    CASE 
+                        WHEN puanSayisi = 1 THEN 0
+                        ELSE (puan * puanSayisi - :puan) / (puanSayisi - 1)
+                    END,
+                puanSayisi = puanSayisi - 1
+            WHERE tarih = :tarih
+            RETURNING puan, puanSayisi
+            ");
+            $stmt->execute(['puan' => $eskiData["puan"], 'tarih' => $yemekTarih]);
+    
+            $guncelPuan = $stmt->fetch();
+            $stmt->closeCursor();
+
+            if($guncelPuan === false){
+                \Core\Logger::warning("Burada garip şeyler oluyor, yemegePuanVer.\npuan: $yeniOrtalama\npuanSayisi: $kacKisi\ntarih: $yemekTarih");
+                $this->pdo->rollBack();
+                return null;
+            }
+
+            $this->pdo->commit();
+        } catch (\PDOException $e) {
+            \Core\Logger::error("yemegePuanVer PDOException\n" . $e->getMessage());
+            $this->pdo->rollBack();
+            return null;
+        }
+
+        return [
+            "puan" => $guncelPuan["puan"],
+            "puanSayisi" => $guncelPuan["puanSayisi"]
+        ];
     }
 }

@@ -80,7 +80,7 @@ class Utils {
     }
 
     public static function buAdamBiseylerYapmayaCalisiyo(){
-        OutputManager::outputPlain("Sen çok mu akıllısın he?");
+        OutputManager::error("Sen çok mu akıllısın he?");
         die();
     }
 }

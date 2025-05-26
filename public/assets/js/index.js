@@ -42,6 +42,7 @@ function authBak(){
 }
 
 function anonimAyarla(){
+    kullanici = null;
     var kullaniciAdiElement = document.getElementById("kullanici-adi");
     kullaniciAdiElement.textContent = "Giriş Yap";
     kullaniciAdiElement.href = "/giris.html";
@@ -236,6 +237,19 @@ function yorumSikayetButonEvent() {
     });
 }
 
+function puanGuncelle(puan, puanSayisi, verilenPuan){
+    var puanElement = document.getElementById("puan");
+    var puanSayisiElement = document.getElementById("degerlendirme-sayisi");
+
+    puanElement.textContent = puan;
+    puanSayisiElement.textContent = puanSayisi;
+
+    // cache
+    yemekCache[isoDate(suAnkiTarih)].yemek.puan = puan;
+    yemekCache[isoDate(suAnkiTarih)].yemek.puanSayisi = puanSayisi;
+    yemekCache[isoDate(suAnkiTarih)].yemek.verilenPuan = verilenPuan;
+}
+
 function uiAyarla(){
     document.querySelector(".topbar-logovebaslik").addEventListener("click", () => {
         window.location.href = "/";
@@ -255,27 +269,53 @@ function uiAyarla(){
 
     document.querySelectorAll('.puanbuton').forEach(puanbuton => {
         puanbuton.addEventListener("click", async () => {
-            if(!puanbuton.classList.contains("puan-secildi")){
-                // seçildiyse sil
-                /**
-                 * var sonuc = await yemekPuaniSil(isoDate(suAnkiTarih));
-                 * if(sonuc === true){
-                 *     puanbuton.classList.remove("puan-secildi");
-                 * }
-                 * 
-                 * vazgeçtim, silmeyiversinler. pr at ekle, ne boş duruyon? ne okuyon buraları deyyus?
-                 */
+            if(kullanici == null){
+                window.location.href = "/giris.html";
+                return;
+            }
 
-                // seçilmediyse seç, puan ver
-                var sonuc = await yemegePuanVer(parseInt(puanbuton.textContent), isoDate(suAnkiTarih));
-                if (sonuc === true) {
-                    document.querySelector(".puan-secildi").classList.remove("puan-secildi");
+            if(puanbuton.classList.contains("puan-secildi")){
+                // seçildiyse sil
+
+                puanbuton.classList.remove("puan-secildi");
+                var sonuc = await yemekPuaniSil(isoDate(suAnkiTarih));
+                if (sonuc === null) {
+                    // ters gitti
                     puanbuton.classList.add("puan-secildi");
+                }
+                else{
+                    // keyfimin kahyası gelmiş, güncel edelim
+                    puanGuncelle(sonuc.puan, sonuc.puanSayisi, null);
+                }
+            }
+            else{
+                // yeni puan ekliyoruz veya değiştiriyoruz
+                // adam seçili olmayan butona bastı
+
+                var seciliButon = document.querySelectorAll(".puan-secildi");
+                if(seciliButon.length > 0){
+                    seciliButon[0].classList.remove("puan-secildi");
+                }
+
+                puanbuton.classList.add("puan-secildi");
+                var basilanPuan = parseInt(puanbuton.textContent);
+                var sonuc = await yemegePuanVer(basilanPuan, isoDate(suAnkiTarih));
+                if (sonuc === null) {
+                    // hata çıktı, eski haline getir
+                    puanbuton.classList.remove("puan-secildi");
+                    if (seciliButon.length > 0) {
+                        seciliButon[0].classList.add("puan-secildi");
+                    }
+                }
+                else{
+                    // herşey güzel, güncel puanlar geldi onları güncelleyek
+                    puanGuncelle(sonuc.puan, sonuc.puanSayisi, basilanPuan);
                 }
             }
 
             // yemek bilgilerini yeniden yükleyek
-            yemekBilgiAlGoster(isoDate(suAnkiTarih));
+            // yemekBilgiAlGoster(isoDate(suAnkiTarih));
+            // gerek kalmadı artık güncel puanlar geliyor apiden
         });
     });
 

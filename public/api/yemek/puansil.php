@@ -1,11 +1,9 @@
 <?php
 /**
- * JSON body var bunda.
+ * JSON body var bunda, puanVer gibi ama puan yok.
  * {
- *     "puan": 5,
  *     "tarih": "2025-01-01"
  * }
- * gibi.
  */
 
 require_once dirname(__DIR__, 3) . "/src/init.php";
@@ -15,27 +13,26 @@ use Core\OutputManager;
 use Yemek\YemekUzmani;
 use Yemek\Auth;
 
-$zorunluKeyler = ["puan", "tarih"];
+$zorunluKeyler = ["tarih"];
 $postData = Utils::getPostData($zorunluKeyler);
 
-$puan = $postData["puan"];
 $tarih = $postData["tarih"];
 
-if(!is_int($puan) || !Utils::isIsoDate($tarih)){
+if(!Utils::isIsoDate($tarih)){
     Utils::buAdamBiseylerYapmayaCalisiyo();
 }
 
 $bizimki = Auth::bizimkiKim();
 if($bizimki === null){
-    OutputManager::error("Ulan sen kendini ne sandın? Giriş yapmadan puan mu verilir denyo? Bunlarla uğraşacağına bi hesap açıver?");
+    OutputManager::error("Ulan sen nesin? Hem giriş yapmamış, hem de puan silmeye çalışıyo denyoya bak?");
     die();
 }
 
 $yu = new YemekUzmani($bizimki);
-$guncelPuan = $yu->yemegePuanVer($tarih, $puan);
+$guncelPuan = $yu->yemekPuanSil($tarih);
 
 if($guncelPuan === null){
-    OutputManager::error("Kötü kötü şeyler getirdiler buralara emi? Sen gerizekalı mısın oğlum?");
+    OutputManager::error("Kötü kötü şeyler getirdiler buralara emi?");
     die();
 }
 
