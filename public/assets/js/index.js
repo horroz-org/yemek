@@ -45,13 +45,13 @@ function anonimAyarla(){
     kullanici = null;
     var kullaniciAdiElement = document.getElementById("kullanici-adi");
     kullaniciAdiElement.textContent = "Giriş Yap";
-    kullaniciAdiElement.href = "/giris.html";
+    kullaniciAdiElement.href = "/giris/";
 }
 
 function adamAyarla(kullanici){
     var kullaniciAdiElement = document.getElementById("kullanici-adi");
     kullaniciAdiElement.textContent = kullanici.kullaniciAdi;
-    kullaniciAdiElement.href = "/profil.html";
+    kullaniciAdiElement.href = "/profil/";
 }
 
 // tarih yyyy-mm-dd olacak
@@ -181,7 +181,7 @@ function yorumEkle(id, yazar, tarih, metin, puan, oyBegeni, derinlik = 0){
 
     clone.querySelector(".yorumkutu").id = id;
     clone.querySelector(".yorum-yazar").textContent = yazar;
-    clone.querySelector(".yorum-yazar").href = "/profil.html?u=" + yazar;
+    clone.querySelector(".yorum-yazar").href = "/profil/?u=" + yazar;
     clone.querySelector(".yorum-tarih").textContent = tarih;
     clone.querySelector(".yorum-metin").textContent = metin;
     clone.querySelector(".vote-sayi").textContent = puan;
@@ -270,7 +270,7 @@ function uiAyarla(){
     document.querySelectorAll('.puanbuton').forEach(puanbuton => {
         puanbuton.addEventListener("click", async () => {
             if(kullanici == null){
-                window.location.href = "/giris.html";
+                window.location.href = "/giris/";
                 return;
             }
 
