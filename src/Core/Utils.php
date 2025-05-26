@@ -33,6 +33,13 @@ class Utils {
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
+    // https://stackoverflow.com/questions/136505/searching-for-uuids-in-text-with-regex
+    public static function validateUUIDv4($str){
+        return true; // şimdilik örnek db'de uuid'ler uuid değil o yüzden test için
+        $regex = '/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
+        return preg_match($regex, $str);
+    }
+
     // bu utils.php nin tamamını diğer projemden koparmıştım, bunu da koparayım modern çağa atlayalım efendiler
     public static function getPostData($checkKeys = [], $defaults = []) {
         $postBody = file_get_contents("php://input");

@@ -22,12 +22,14 @@ use Yemek\YemekUzmani;
 
 if(!isset($_COOKIE["YEMEK_SESSION"])){
     OutputManager::error("Sen ne iş?", 401);
+    die();
 }
 
 $token = $_COOKIE["YEMEK_SESSION"];
 $tokenData = Auth::verifyToken($token);
 if($tokenData === false){
     OutputManager::error("Yaş yetmiş, iş bitmiş.", 401);
+    die();
 }
 
 $yu = new YemekUzmani(false); // anonim çünkü kontrol noktasındayız oğlum
@@ -35,6 +37,7 @@ $kullanici = $yu->kullaniciAlGuvenli($tokenData["uid"]);
 
 if($kullanici === null){
     OutputManager::error("Bloks.", 401);
+    die();
 }
 
 OutputManager::outputJSON($kullanici);

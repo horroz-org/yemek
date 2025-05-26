@@ -93,13 +93,9 @@ class YemekUzmani {
             return null;
         }
 
-        $gunBaslangic = (new \DateTime($tarih))->setTime(0, 0, 0)->format('Y-m-d H:i:s');
-        $gunBitis = (new \DateTime($tarih))->modify('+1 day')->setTime(0, 0, 0)->format('Y-m-d H:i:s');
-
-        $sql = "SELECT * FROM yorumlar WHERE zaman >= ? AND zaman < ?";
+        $sql = "SELECT * FROM yorumlar WHERE yemekTarih = ? AND kaldirildi = 0";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$gunBaslangic, $gunBitis]);
-
+        $stmt->execute([$tarih]);
         $rows = $stmt->fetchAll();
         $stmt->closeCursor();
         if($rows === false){
@@ -123,7 +119,9 @@ class YemekUzmani {
                 "dislike" => $row["dislike"],
 
                 "kaldirildi" => $row["kaldirildi"],
-                "zaman" => (new \DateTime($row["zaman"]))->format('Y-m-d H:i:s'), // emin olalım
+                
+                "yemekTarih" => (new \DateTime($row["yemekTarih"]))->format('Y-m-d'), // emin olalım
+                "zaman" => (new \DateTime($row["zaman"]))->format('Y-m-d H:i:s') // emin olalım
             ];
         }
 
@@ -281,8 +279,10 @@ class YemekUzmani {
      * 
      * @param int $yemekTarih Ne zaman yedin bre oğlum? Breh breh.
      * @param int $puan Kaç puan verdin bre oğlum? İboya söyleme ha.
+     * 
+     * @return ?array Başarıyla puan verdiysek güncel puan ve kaç kişi, başaramadıysak null.
      */
-    public function yemegePuanVer($yemekTarih, $puan){
+    public function yemegePuanVer($yemekTarih, $puan): ?array{
         if($this->bizimki === null){
             return null;
         }
@@ -374,6 +374,7 @@ class YemekUzmani {
 
             $this->pdo->commit();
         } catch(\PDOException $e){
+            $this->pdo->rollBack();
             \Core\Logger::error("yemegePuanVer PDOException\n" . $e->getMessage());
             return null;
         }
@@ -391,7 +392,7 @@ class YemekUzmani {
      * 
      * @return ?array Başardıysak güncel puan ve kaç kişi, başaramadıysak null.
      */
-    public function yemekPuanSil($yemekTarih){
+    public function yemekPuanSil($yemekTarih): ?array {
         if($this->bizimki === null){
             return null;
         }
@@ -437,20 +438,366 @@ class YemekUzmani {
 
             if($guncelPuan === false){
                 \Core\Logger::warning("Burada garip şeyler oluyor, yemegePuanVer.\npuan: $yeniOrtalama\npuanSayisi: $kacKisi\ntarih: $yemekTarih");
+
                 $this->pdo->rollBack();
                 return null;
             }
 
             $this->pdo->commit();
         } catch (\PDOException $e) {
-            \Core\Logger::error("yemegePuanVer PDOException\n" . $e->getMessage());
             $this->pdo->rollBack();
+            \Core\Logger::error("yemegePuanVer PDOException\n" . $e->getMessage());
             return null;
         }
 
         return [
             "puan" => $guncelPuan["puan"],
             "puanSayisi" => $guncelPuan["puanSayisi"]
+        ];
+    }
+
+    /**
+     * Uuid verilen yorumun bilgilerini al
+     * 
+     * @param string $yorumUuid yorumun uuid'si
+     * 
+     * @return ?array Yorum varsa bilgiler, yoksa null.
+     */
+    public function yorumBilgisiAl($yorumUuid){
+        $sql = "SELECT * FROM yorumlar WHERE uuid = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$yorumUuid]);
+        $row = $stmt->fetch();
+        $stmt->closeCursor();
+        if($row === false){
+            return null;
+        }
+
+        return [
+            "uuid" => $row["uuid"],
+
+            "yazarUuid" => $row["yazarUuid"],
+
+            "ustYorumId" => $row["ustYorumId"],
+
+            "yorum" => $row["yorum"],
+            "adaminYemekPuani" => $row["adaminYemekPuani"],
+            "herkeseAcik" => $row["herkeseAcik"],
+
+            "like" => $row["like"],
+            "dislike" => $row["dislike"],
+
+            "kaldirildi" => $row["kaldirildi"],
+            
+            "yemekTarih" => (new \DateTime($row["yemekTarih"]))->format('Y-m-d'), // emin olalım
+            "zaman" => (new \DateTime($row["zaman"]))->format('Y-m-d H:i:s') // emin olalım
+        ];
+    }
+
+    /**
+     * Adam yemeğe yorum yazmak istiyor, bu fonksiyonla yazdırıyoruz.
+     * 
+     * @param string $yemekTarih Yemeğin tarihi.
+     * @param string $yorum Yorum metni.
+     * @param bool $herkeseAcik Yorum herkese açık mı?
+     * @param ?string $ustYorumId Yorum başka yoruma cevapsa üst yorumun uuid, değilse null.
+     * 
+     * @return ?array Yorumun bilgileri (oluşturulmuş uuid filan), hata olduysa null.
+     */
+    public function yorumYaz($yemekTarih, $yorum, $herkeseAcik = true, $ustYorumId = null): ?array {
+        if($this->bizimki === null){
+            return null;
+        }
+
+        // önce yorumda değişik karakterler filan kullanmış mı değişik şeyler yapmış mı
+        // bi kontrol edelim
+        // aslında gerek yok, sonra yaparız
+        // burayı okuyan varsa kendisi yapsın pr atsın, ben mi yapacam her şeyi?
+        // yemek varsa insert, bu kadar.
+
+        if($this->yemekAl($yemekTarih) === null){
+            return null;
+        }
+
+        // üst yorum var mı yoksa adam bizi kandırmaya mı çalışıyor
+        if($ustYorumId !== null && $this->yorumBilgisiAl($ustYorumId) === null){
+            // vay vay sen çok akıllısın he?
+            return null;
+        }
+
+        $yorumUuid = Utils::generateUUIDv4();
+        $simdi = (new \DateTime())->format('Y-m-d H:i:s');
+
+        $sql = "INSERT INTO yorumlar (uuid, yazarUuid, ustYorumId, yorum, adaminYemekPuani, herkeseAcik, like, dislike, kaldirildi, yemekTarih, zaman) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->pdo->prepare($sql);
+        $kontrol = $stmt->execute([$yorumUuid, $this->bizimki["uuid"], $ustYorumId, $yorum, $this->bizimkininYemegeVerdigiPuaniAl($yemekTarih), $herkeseAcik, 0, 0, 0, $yemekTarih, $simdi]);
+
+        if($kontrol === false){
+            // yorum yazamadık, neden? bilmem. yemeğin tarihi, yazarUuid filan yanlış olabilir belki
+            \Core\Logger::warning("Burada garip şeyler oluyor, yorumYaz.\nyemekTarih: $yemekTarih\nyorum: $yorum\nherkeseAcik: $herkeseAcik\nustYorumId: $ustYorumId");
+            return null;
+        }
+
+        return [
+            "uuid" => $yorumUuid,
+            "yazarUuid" => $this->bizimki["uuid"],
+            "ustYorumId" => $ustYorumId,
+
+            "yorum" => $yorum,
+
+            "adaminYemekPuani" => $this->bizimkininYemegeVerdigiPuaniAl($yemekTarih),
+            "herkeseAcik" => $herkeseAcik,
+
+            "like" => 0,
+            "dislike" => 0,
+            "kaldirildi" => 0,
+
+            "yemekTarih" => $yemekTarih,
+            "zaman" => $simdi
+        ];
+    }
+
+    /**
+     * Bizimki yorumu silmek istemiş, utanmış.
+     * 
+     * @param string $yorumUuid Yorumun uuid'si
+     * 
+     * @return ?array Silinen yorumun bilgileri, hata olduysa null.
+     */
+    public function yorumSil($yorumUuid): ?array {
+        if($this->bizimki === null){
+            return null;
+        }
+
+        // önce yorum var mı yok mu kontrol edelim
+        // ayrıca bizimki mi yazmış yoksa başkası mı yazmış
+        $yorum = $this->yorumBilgisiAl($yorumUuid);
+        if($yorum === null || $yorum["yazarUuid"] !== $this->bizimki["uuid"]){
+            return null;
+        }
+
+        // siliyoz tamamen
+        $sql = "DELETE FROM yorumlar WHERE uuid = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $kontrol = $stmt->execute([$yorumUuid]);
+
+        if($kontrol === false){
+            \Core\Logger::warning("Burada garip şeyler oluyor, yorumSil.\nyorumUuid: $yorumUuid");
+            return null;
+        }
+
+        // zaten aynı bilgiler
+        return $yorum;
+    }
+
+    /**
+     * Yorumu kaldır, silme.
+     * 
+     * @param string $yorumUuid Yorumun uuid'si
+     * 
+     * @return ?array Kaldırılan yorumun bilgileri, hata olduysa null.
+     */
+    public function yorumKaldir($yorumUuid): ?array {
+        if($this->bizimki === null){
+            return null;
+        }
+
+        // önce yorum var mı yok mu kontrol edelim
+        // bizimki mi yazmış ayrıca, öyleyse kaldırabilir yoksa siktirsin gitsin yeter artık
+        $yorum = $this->yorumBilgisiAl($yorumUuid);
+        if($yorum === null || $yorum["yazarUuid"] !== $this->bizimki["uuid"]){
+            return null;
+        }
+
+        // kaldırıyoz bu sefer
+        $sql = "UPDATE yorumlar SET kaldirildi = 1 WHERE uuid = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $kontrol = $stmt->execute([$yorumUuid]);
+
+        if($kontrol === false){
+            \Core\Logger::warning("Burada garip şeyler oluyor, yorumSil.\nyorumUuid: $yorumUuid");
+            return null;
+        }
+
+        // kaldırıldı dışında aynı bilgiler
+        $yorum["kaldirildi"] = 1;
+        return $yorum;
+    }
+
+    /**
+     * Bizimki oy verecekmiş bak hele. Sen o yaşlara geldin mi evladım?
+     * Ülkenin geleceği için oy verme yaşına ulaştın imi?
+     * 
+     * @param string $yorumUuid Yorumun uuid'si.
+     * @param bool $likeDislike like->true, dislike->false vereceksiniz.
+     * 
+     * @return ?array Yorumun güncel like dislike sayıları, hata olduysa null.
+     */
+    public function yorumOyVer($yorumUuid, $likeDislike){
+        // yemegePuanVer'den kopyalıyorum direkt, değiştirecem.
+        // vazgeçtim karışık geldi, hem burda ortalamayla filan uğraşmıyoruz
+
+        if($this->bizimki === null){
+            return null;
+        }
+
+        try{
+            $this->pdo->beginTransaction();
+
+            // yine upsert yapacaz
+            $bizimkininEskiOyu = $this->bizimkininYorumaVerdigiOyuAl($yorumUuid);
+
+            if($bizimkininEskiOyu === $likeDislike){
+                // zaten aynı oyu vermiş, sen mal mısın oğlum?
+                $this->pdo->rollBack();
+                return null;
+            }
+
+            if($bizimkininEskiOyu === null){
+                // oy vermemiş, insert
+                $sql = "INSERT INTO likedislike (like, kullaniciId, yorumId) VALUES (?, ?, ?) RETURNING *";
+            }
+            else{
+                // oy vermiş, update
+                $sql = "UPDATE likedislike SET like = ? WHERE kullaniciId = ? AND yorumId = ? RETURNING *";
+            }
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$likeDislike, $this->bizimki["uuid"], $yorumUuid]);
+            $guncelOy = $stmt->fetch();
+            $stmt->closeCursor();
+
+            if($guncelOy === false){
+                // oy veremedik, neden? asla bilemem oğlum aslan. sen bişeyler mi yaptın bu telefona?
+                // ne indirdin sen bunlar ne cillop gibi? internetten ne türlü şeyler indirdin sen bakayım?
+                \Core\Logger::warning("Burada garip şeyler oluyor, yorumOyVer oy verme.\nyorumUuid: $yorumUuid\nlikeDislike: $likeDislike");
+                
+                $this->pdo->rollBack();
+                return null;
+            }
+
+            // şimdi de yorumu güncelleyecez
+            $likeDiff = 0;
+            $dislikeDiff = 0;
+            if($bizimkininEskiOyu === null){
+                // direkt koyuyoruz
+                if($likeDislike){
+                    $likeDiff = 1;
+                }
+                else{
+                    $dislikeDiff = 1;
+                }
+            }
+            else if($bizimkininEskiOyu !== $likeDislike){
+                // eski oyunu siliyoruz, sıfırlıyoruz, yeni oyu koyuyoruz
+                // defterde tablo çizdim ona göre
+                if($likeDislike){
+                    $likeDiff = 1;
+                    $dislikeDiff = -1;
+                }
+                else{
+                    $likeDiff = -1;
+                    $dislikeDiff = 1;
+                }
+            }
+            
+            $sql = 
+            "UPDATE yorumlar
+            SET 
+                like = like + ?,
+                dislike = dislike + ?
+            WHERE uuid = ? RETURNING like, dislike
+            ";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$likeDiff, $dislikeDiff, $yorumUuid]);
+            $guncelYorumOylari = $stmt->fetch();
+            $stmt->closeCursor();
+
+            if($guncelYorumOylari === false){
+                // işte anladın sen yukarıda 100 tane var be abi neden olduğunu asla bilemeyiz falan filan
+
+                \Core\Logger::warning("Burada garip şeyler oluyor, yorumOyVer yorumlar tablo güncelleme.\nyorumUuid: $yorumUuid\nlikeDislike: $likeDislike");
+
+                $this->pdo->rollBack();
+                return null;
+            }
+
+            $this->pdo->commit();
+        } catch(\PDOException $e){
+            $this->pdo->rollBack();
+            \Core\Logger::error("yemegePuanVer PDOException\n" . $e->getMessage());
+            return null;
+        }
+
+        return [
+            "like" => $guncelYorumOylari["like"],
+            "dislike" => $guncelYorumOylari["dislike"]
+        ];
+    }
+
+    /**
+     * Bizimki oyunu silmek istiyor, yanlış basmıştır heralde, dimi?
+     * 
+     * @param string $yorumUuid Yorumun uuid'si
+     * 
+     * @return ?array Güncel oy bilgileri, aslında verecek bişey yok ama olsun, yorumId veririz en kötü.
+     */
+    public function yorumOySil($yorumUuid){
+        if($this->bizimki === null){
+            return null;
+        }
+
+        try {
+            $this->pdo->beginTransaction();
+
+            // önce oy vermiş mi vermemiş mi kontrol edelim
+            $bizimkininEskiOyu = $this->bizimkininYorumaVerdigiOyuAl($yorumUuid);
+
+            if($bizimkininEskiOyu === null){
+                // vermemiş, neyi siliyosun oğlum sen?
+                return null;
+            }
+
+            // siliyoruz
+            $sql = "DELETE FROM likedislike WHERE kullaniciId = ? AND yorumId = ?";
+            $stmt = $this->pdo->prepare($sql);
+            $kontrol = $stmt->execute([$this->bizimki["uuid"], $yorumUuid]);
+            if($kontrol === false){
+                // oy niye silinmedi Aslan? mal mal şeyler oluyor (olmaz heralde ama olsun)
+                \Core\Logger::warning("Burada garip şeyler oluyor, yorumOySil silme.\nyorumUuid: $yorumUuid");
+
+                return null;
+            }
+
+            // yorumu güncelliyoz
+            $sql = 
+            "UPDATE yorumlar
+            SET 
+                like = like - CASE WHEN ? THEN 1 ELSE 0 END,
+                dislike = dislike - CASE WHEN ? THEN 1 ELSE 0 END
+            WHERE uuid = ? RETURNING like, dislike
+            ";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$bizimkininEskiOyu, !$bizimkininEskiOyu, $yorumUuid]);
+            $guncelYorumOylari = $stmt->fetch();
+            $stmt->closeCursor();
+
+            if($guncelYorumOylari === false){
+                \Core\Logger::warning("Burada garip şeyler oluyor, yorumOySil yorumlar tablo güncelleme.\nyorumUuid: $yorumUuid\nlikeDislike: $likeDislike");
+
+                $this->pdo->rollBack();
+                return null;
+            }
+
+            $this->pdo->commit();
+        } catch (\PDOException $e) {
+            $this->pdo->rollBack();
+            \Core\Logger::error("yorumOySil PDOException\n" . $e->getMessage());
+            return null;
+        }
+
+        return [
+            "like" => $guncelYorumOylari["like"],
+            "dislike" => $guncelYorumOylari["dislike"]
         ];
     }
 }

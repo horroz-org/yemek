@@ -86,6 +86,7 @@ function tablolariOlustur(){
 
             kaldirildi BOOLEAN NOT NULL,
 
+            yemekTarih DATE NOT NULL,
             zaman DATETIME NOT NULL
         )
     ");
