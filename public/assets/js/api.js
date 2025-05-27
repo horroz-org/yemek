@@ -94,3 +94,17 @@ async function yemekPuaniSil(tarih) {
 
     return xhr.status === 200 ? xhr.response : null;
 }
+
+async function yorumYap(yorumObj){
+    var xhr = await apiPost("yorum/yorumyap.php", yorumObj);
+
+    return xhr.status === 200 ? xhr.response : null;
+}
+
+async function yorumSil(yorumUuid) {
+    var xhr = await apiPost("yorum/yorumsil.php", {
+        yorumUuid: yorumUuid
+    });
+
+    return xhr.status === 200 ? xhr.response : null;
+}

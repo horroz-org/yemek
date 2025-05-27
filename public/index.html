@@ -56,7 +56,7 @@
                         </div>
 
                         <div class="yorum-menu">
-                            <div class="puan-yorum-bilgi"><div id="degerlendirme-sayisi"></div>değerlendirme ve <div id="yorum-sayisi"></div>yorum</div>
+                            <div class="puan-yorum-bilgi"><div id="degerlendirme-sayisi">0</div>değerlendirme ve <div id="yorum-sayisi">0</div>yorum</div>
                             <div id="yorumyazbuton" class="buton">
                                 Yorum Yaz
                             </div>
@@ -87,6 +87,24 @@
                             </div>
                         </div>
                     </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- ekranın ortasında çıkacak olan formlar. yorum yazma/cevap verme-->
+        <div class="ekran-formlar" style="display: none;">
+            <div id="yorum-form" style="display: none;">
+                <div class="yorum-form-ust">
+                    <div id="form-kapat-buton">x</div>
+                    <div id="yorum-input-baslik">Yorumunuz:</div>
+                    <textarea id="yorum-yazi" placeholder="Vah vah..."></textarea>
+                </div>
+                <div class="yorum-form-alt">
+                    <div class="herkese-acik-div">
+                        <input type="checkbox" id="herkese-acik-checkbox" checked>
+                        <label for="herkese-acik-checkbox">Herkese açık</label><br>
+                    </div>
+                    <div id="yorum-gonder-buton" class="buton">Gönder</div>
                 </div>
             </div>
         </div>

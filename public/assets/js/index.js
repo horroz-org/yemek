@@ -4,10 +4,11 @@ const yorumDerinlikRem = 2;
 var kullanici;
 var suAnkiTarih;
 
+var cevapVerilenYorumId = null; // şu anda cevap veriyorsa id, dümdüz yorum yazıyorsa null
 
-function basla(){
+async function basla(){
     uiAyarla();
-    authBak();
+    await authBak();
 
     const tParam = getQueryParam("t");
     if(tParam !== null && isIsoDate(tParam)){
@@ -29,16 +30,15 @@ function basla(){
  * 
  * giriş yapmışsa da kullanıcı adını sağ üste yazdıracağım ben
 */
-function authBak(){
-    girisYapildiMi().then(userData => {
-        if (userData === false) {
-            anonimAyarla();
-            return;
-        }
+async function authBak(){
+    var userData = await girisYapildiMi();
+    if (userData === false) {
+        anonimAyarla();
+        return;
+    }
 
-        kullanici = userData;
-        adamAyarla(userData);
-    });
+    kullanici = userData;
+    adamAyarla(userData);
 }
 
 function anonimAyarla(){
@@ -107,10 +107,13 @@ function uiYemekYok(){
     tarihElement.textContent = formatter.format(suAnkiTarih);
 
     menuElement.textContent = "Bilmiyoruz.";
-    puanWrapperElement.style.visibility = "hidden";
-    butonGridElement.style.visibility = "hidden";
-    pyBilgiElement.style.visibility = "hidden";
-    yorumYazButon.style.visibility = "hidden";
+    puanWrapperElement.style.display = "none";
+    butonGridElement.style.display = "none";
+    pyBilgiElement.style.display = "none";
+    yorumYazButon.style.display = "none";
+
+    var yorumlarListe = document.getElementById("yorumlar-liste");
+    yorumlarListe.innerHTML = "";
 }
 
 function uiYemekVar(){
@@ -119,10 +122,10 @@ function uiYemekVar(){
     var pyBilgiElement = document.querySelector(".puan-yorum-bilgi");
     var yorumYazButon = document.getElementById("yorumyazbuton");
 
-    puanWrapperElement.style.removeProperty("visibility");
-    butonGridElement.style.removeProperty("visibility");
-    pyBilgiElement.style.removeProperty("visibility");
-    yorumYazButon.style.removeProperty("visibility");
+    puanWrapperElement.style.removeProperty("display");
+    butonGridElement.style.removeProperty("display");
+    pyBilgiElement.style.removeProperty("display");
+    yorumYazButon.style.removeProperty("display");
 }
 
 function yemekGoster(yemek){
@@ -208,30 +211,37 @@ function yorumSirala(tree, siralama) {
 
 function yorumlariEkle(tree, derinlik = 0) {
     tree.forEach(function (yorum) {
-        yorumEkle(yorum.uuid, yorum.yazarKullaniciAdi, yorum.zaman, yorum.yorum, yorum.like - yorum.dislike, yorum.bizimkininOyu, derinlik);
+        yorumEkle(yorum, derinlik);
         if (yorum.children.length > 0) {
             yorumlariEkle(yorum.children, derinlik + 1);
         }
     });
 }
 
-function yorumEkle(id, yazar, tarih, metin, puan, oyBegeni, derinlik = 0){
+function yorumEkle(yorum, derinlik = 0){
     const template = document.getElementById("yorum-template");
     const clone = template.content.cloneNode(true);
 
-    clone.querySelector(".yorumkutu").id = id;
-    clone.querySelector(".yorum-yazar").textContent = yazar;
-    clone.querySelector(".yorum-yazar").href = "/profil/?u=" + yazar;
-    clone.querySelector(".yorum-tarih").textContent = tarih;
-    clone.querySelector(".yorum-metin").textContent = metin;
-    clone.querySelector(".vote-sayi").textContent = puan;
-    if(oyBegeni !== null){
-        if(oyBegeni){
+    clone.querySelector(".yorumkutu").id = yorum.uuid;
+    clone.querySelector(".yorum-yazar").textContent = yorum.yazarKullaniciAdi;
+    clone.querySelector(".yorum-yazar").href = "/profil/?u=" + yorum.yazarKullaniciAdi;
+    clone.querySelector(".yorum-tarih").textContent = yorum.zaman;
+    clone.querySelector(".yorum-metin").textContent = yorum.yorum;
+    clone.querySelector(".vote-sayi").textContent = yorum.like - yorum.dislike;
+    if(yorum.bizimkininOyu !== null){
+        if(yorum.bizimkininOyu){
             clone.querySelector(".upvote").classList.add("vote-secildi");
         }
         else {
             clone.querySelector(".downvote").classList.add("vote-secildi");
         }
+    }
+
+    if(kullanici !== null && yorum.yazarUuid === kullanici.uuid){
+        var sikayetButon = clone.querySelector(".sikayet-buton");
+        sikayetButon.classList.remove("sikayet-buton");
+        sikayetButon.classList.add("sil-buton");
+        sikayetButon.textContent = "-";
     }
 
     clone.querySelector(".yorumkutu").style.marginLeft = (derinlik * yorumDerinlikRem) + "rem";
@@ -254,11 +264,76 @@ function oncekiYemek() {
 }
 
 function cevapVer(yorumId){
-    alert("yoruma cevap verdiniz tebrikler " + yorumId);
+    cevapVerilenYorumId = yorumId;
+    yorumFormAc(true);
 }
 
-function sikayetEt(yorumId) {
+function sikayetEtEvent(yorumId) {
     alert("yorumu şikayet ettiniz tebrikler " + yorumId);
+}
+
+async function yorumSilEvent(yorumId) {
+    if(!confirm("Yorumu silmek istediğinize emin misiniz?")){
+        return;
+    }
+
+    var sonuc = await yorumSil(yorumId);
+    if(sonuc === null){
+        alert("Kötü şeyler oluverdi.");
+        return;
+    }
+    
+    // yorum silindi, cache'den de sil, yeniden yükle
+    var yemekTarih = isoDate(suAnkiTarih);
+    yemekCache[yemekTarih].yorumlar.forEach((yorum, index) => {
+        if(yorum.uuid === yorumId){
+            yemekCache[yemekTarih].yorumlar.splice(index, 1);
+            return;
+        }
+    });
+
+    yorumlariGoster(yemekCache[yemekTarih].yorumlar, Siralama.varsayilan);
+}
+
+function yorumYaziKontrol(yazi){
+    return true;
+}
+
+async function yorumGonderEvent() {
+    var yorumYaziElement = document.getElementById("yorum-yazi");
+    var herkeseAcikElement = document.getElementById("herkese-acik-checkbox");
+
+    var yemekTarih = isoDate(suAnkiTarih);
+    var yorumYazi = yorumYaziElement.value.trim();
+    var herkeseAcik = herkeseAcikElement.checked;
+    var ustYorumId = cevapVerilenYorumId;
+
+    if(!yorumYaziKontrol(yorumYazi)){
+        // normalde hata mesajını kırmızıyla yorumun oraya yazacam sonra hallederim ama onu
+        alert("Yorumunuz değişik.");
+        return;
+    }
+
+    var gonderilecekYorum = {
+        yemekTarih: yemekTarih,
+        yorum: yorumYazi,
+        herkeseAcik: herkeseAcik,
+        ustYorumId: ustYorumId
+    };
+
+    var sonuc = await yorumYap(gonderilecekYorum);
+    if(sonuc === null){
+        // hata çıktı
+        alert("Kötü şeyler oluverdi.");
+        return;
+    }
+
+    // formu kapatak
+    yorumFormKapat();
+
+    yemekCache[yemekTarih].yorumlar.push(sonuc);
+    yorumlariGoster(yemekCache[yemekTarih].yorumlar, Siralama.varsayilan);
+    document.getElementById(sonuc.uuid).scrollIntoView({ behavior: "smooth" });
 }
 
 function yorumUiEventAyarla(){
@@ -267,9 +342,18 @@ function yorumUiEventAyarla(){
             cevapVer(yorumkutu.id);
         });
 
-        yorumkutu.querySelector(".sikayet-buton").addEventListener("click", () => {
-            sikayetEt(yorumkutu.id);
-        });
+        var sikayetButon = yorumkutu.querySelectorAll(".sikayet-buton");
+        if(sikayetButon.length > 0){
+            sikayetButon[0].addEventListener("click", () => {
+                sikayetEtEvent(yorumkutu.id);
+            });
+        }
+        else{
+            var silButon = yorumkutu.querySelector(".sil-buton");
+            silButon.addEventListener("click", async () => {
+                await yorumSilEvent(yorumkutu.id);
+            });
+        }
 
         yorumkutu.querySelectorAll(".vote-ok").forEach(voteOk => {
             voteOk.addEventListener("click", async () => {
@@ -352,13 +436,40 @@ function yorumOyGuncelle(yorumUuid, likeDislike, oylar){
     });
 }
 
+function yorumFormAc(cevapMi = false){
+    var formlarElement = document.querySelector(".ekran-formlar");
+    var yorumFormElement = document.getElementById("yorum-form");
+    var yorumInputBaslikElement = document.getElementById("yorum-input-baslik");
+    var yorumYaziElement = document.getElementById("yorum-yazi");
+
+    yorumYaziElement.value = "";
+
+    formlarElement.style.removeProperty("display");
+    yorumFormElement.style.removeProperty("display");
+    
+    yorumInputBaslikElement.textContent = cevapMi ? "Cevabınız:" : "Yorumunuz:";
+}
+
+function yorumFormKapat(){
+    var formlarElement = document.querySelector(".ekran-formlar");
+    var yorumFormElement = document.getElementById("yorum-form");
+
+    formlarElement.style.display = "none";
+    yorumFormElement.style.display = "none";
+}
+
 function uiAyarla(){
     document.querySelector(".topbar-logovebaslik").addEventListener("click", () => {
         window.location.href = "/";
     });
 
     document.getElementById("yorumyazbuton").addEventListener("click", () => {
-        alert("yorum yazdınız tebrikler");
+        cevapVerilenYorumId = null;
+        yorumFormAc(false);
+    });
+
+    document.getElementById("form-kapat-buton").addEventListener("click", () => {
+        yorumFormKapat();
     });
 
     document.getElementById("sagyemekok").addEventListener("click", () => {
@@ -367,6 +478,10 @@ function uiAyarla(){
 
     document.getElementById("solyemekok").addEventListener("click", () => {
         oncekiYemek();
+    });
+
+    document.getElementById("yorum-gonder-buton").addEventListener("click", async () => {
+        await yorumGonderEvent();
     });
 
     document.querySelectorAll('.puanbuton').forEach(puanbuton => {

@@ -394,6 +394,19 @@ a:hover {
     color: red;
 }
 
+.sil-buton {
+    padding: 0;
+    background-color: rgb(153, 50, 204, 0.1);
+    border: 1px solid darkorchid;
+
+    width: 1rem;
+    height: 1rem;
+
+    text-align: center;
+    font-weight: bold;
+    color: darkorchid;
+}
+
 .sikayet-buton:hover {
     background-color: rgb(255, 0, 0, 0.2);
 }
@@ -425,4 +438,88 @@ a:hover {
 
 .cevap-buton {
     padding: 0.2rem;
+}
+
+/* YORUM YAZMA VE CEVAP VERME FORMLARI */
+.ekran-formlar {
+    position: fixed;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    top: 0;
+    
+    height: 100%;
+    width: 100%;
+
+    background-color: rgb(0, 0, 0, 0.5);
+
+    z-index: 1000;
+}
+
+#yorum-form {
+    position: relative;
+
+    background-color: white;
+    border: 1px solid black;
+
+    padding: 1rem;
+    padding-bottom: 0.6rem;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 0.4rem;
+}
+
+#yorum-yazi {
+    width: 18rem;
+    height: 4em;
+}
+
+#form-kapat-buton {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+
+    width: 1rem;
+    height: 1rem;
+    text-align: center;
+
+    color: red;
+    background-color: rgb(255, 0, 0, 0.1);
+    border: 1px solid red;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.yorum-form-alt{
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+.herkese-acik-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1rem;
+}
+
+#yorum-gonder-buton{
+    padding: 0.3rem 2rem;
+}
+
+#yorum-input-baslik {
+    font-weight: bold;
+}
+
+textarea {
+    outline: none;
 }

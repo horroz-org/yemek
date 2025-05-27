@@ -39,6 +39,11 @@ if($bizimki === null){
 $yu = new YemekUzmani($bizimki);
 $guncelYorum = $yu->yorumYaz($yemekTarih, $yorum, $herkeseAcik, $ustYorumId);
 
+// zaten bizimki yorum yazdı, onun adını hemen koyalım
+$guncelYorum["yazarKullaniciAdi"] = $bizimki["kullaniciAdi"];
+// zaten daha yeni yazdı oğlum ne ara beğenecek?
+$guncelYorum["bizimkininOyu"] = null;
+
 if($guncelYorum === null){
     OutputManager::error("Sen kötü şeyler yapmışsın.");
     die();
