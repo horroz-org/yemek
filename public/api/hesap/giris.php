@@ -44,7 +44,7 @@ if($bizimki !== null){
     if($zdiff >= dogrulamaCooldown * 60){
         // geçmiş, yeniden gönder
 
-        Mail::dogrulamaGonder($bizimki);
+        Mail::dogrulamaGonder($bizimki["email"]);
 
         OutputManager::error("Doğrulama kodunu yine gönderdik, mailine baksana oğlum.");
         die();

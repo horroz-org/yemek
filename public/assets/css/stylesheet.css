@@ -589,11 +589,11 @@ a:hover {
     gap: 0.5rem;
 }
 
-#giris-kayit-form-kutu input {
+#giris-kayit-form-kutu {
     width: 19rem;
 }
 
-#giris-kayit-form-kutu label {
+.font-kalin {
     font-weight: bold;
 }
 
@@ -605,9 +605,15 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 1rem;
 }
 
 #hata-mesaji {
     color: red;
+}
+
+.kayit-kabul-wrapper {
+    display: flex;
+    align-items: center;
+
+    margin-top: 0.3rem;
 }

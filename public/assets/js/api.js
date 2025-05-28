@@ -118,3 +118,13 @@ async function girisYap(kullaniciAdi, sifre){
 
     return (xhr.status === 200 || xhr.status === 400) ? xhr.response : null;
 }
+
+async function kayitOl(kullaniciAdi, eposta, sifre) {
+    var xhr = await apiPost("hesap/kayit.php", {
+        kullaniciAdi: kullaniciAdi,
+        eposta: eposta,
+        sifre: sifre
+    });
+
+    return (xhr.status === 200 || xhr.status === 400) ? xhr.response : null;
+}

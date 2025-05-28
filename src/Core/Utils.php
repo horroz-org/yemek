@@ -2,6 +2,7 @@
 namespace Core;
 
 use Core\OutputManager;
+use Core\Dotenv;
 
 class Utils {
     public static function generateUUIDv7() {
@@ -91,7 +92,27 @@ class Utils {
         die();
     }
 
-    public static function sifreKontrol(){
-        
+    // değişik karakterler falan filan var mı diye bakacaz
+    // Minimum 3 harfli olsun
+    public static function kullaniciAdiKontrol($kullaniciAdi){
+        // bakarız
+    }
+
+    // ceayet açık
+    public static function epostaKontrol($eposta){
+        if(filter_var($eposta, FILTER_VALIDATE_EMAIL)){
+            $parcalar = explode('@', $eposta, 1);
+            $domain = $parcalar[1];
+
+            return $domain === Dotenv::getValue("EPOSTA_DOMAIN");
+        }
+
+        return false;
+    }
+
+    // küçük harf büyük harf rakam olacak
+    // en az 8 hane olacak
+    public static function sifreKontrol($sifre){
+        return (strlen($sifre) >= 8) && preg_match('/[A-Z]/', $str) && preg_match('/[a-z]/', $str) && preg_match('/[0-9]/', $str);
     }
 }
