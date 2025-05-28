@@ -25,6 +25,12 @@ if(!is_int($puan) || !Utils::isIsoDate($tarih)){
     Utils::buAdamBiseylerYapmayaCalisiyo();
 }
 
+// gelecekteki yemeğe nasıl puan verecen lan dingil?
+if(time() < strtotime($tarih)){
+    OutputManager::error("Senin zaman makinan mı var ulan?");
+    die();
+}
+
 $bizimki = Auth::bizimkiKim();
 if($bizimki === null){
     OutputManager::error("Ulan sen kendini ne sandın? Giriş yapmadan puan mu verilir denyo? Bunlarla uğraşacağına bi hesap açıver?");

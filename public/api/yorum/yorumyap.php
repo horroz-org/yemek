@@ -30,6 +30,12 @@ if(!Utils::isIsoDate($yemekTarih) || !is_string($yorum) || !is_bool($herkeseAcik
     Utils::buAdamBiseylerYapmayaCalisiyo();
 }
 
+// mixteyp
+if(time() < strtotime($yemekTarih)){
+    OutputManager::error("Senin zaman makinan mı var ulan dingil?");
+    die();
+}
+
 $bizimki = Auth::bizimkiKim();
 if($bizimki === null){
     OutputManager::error("Ulan adama bak hem giriş yapmamış hem de yorum yazacakmış. Şımarık.");
