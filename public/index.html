@@ -11,20 +11,23 @@
         <script src="/assets/js/utils.js"></script>
     </head>
     <body>
-        <div class="layout">
+        <div class="index-layout">
             <div class="topbar">
                 <div class="topbar-sol">
-                    <div class="topbar-logovebaslik">
-                        <img src="/assets/img/logo.png" alt="Horroz.org Logo" class="topbar-logo">
-                        <div class="topbar-baslik">yemek.horroz.org</div>
-                    </div>
+                    <a href="/" class="a-renksiz">
+                        <div class="topbar-logovebaslik">
+                            <img src="/assets/img/logo.png" alt="Horroz.org Logo" class="topbar-logo">
+                            <div class="topbar-baslik">yemek.horroz.org</div>
+                        </div>
+                    </a>
                     <div class="topbar-sol-butonlar">
                         <a href="https://github.com/horroz-org/yemek">GitHub</a>
                         <a href="https://wiki.horroz.org/wiki/Horrozpedi:Bağış">Bağış</a>
                     </div>
                 </div>
                 <div class="topbar-sag">
-                    <a id="kullanici-adi" href="#">Giriş Yap</a>
+                    <a href="/kayit/">Kayıt Ol</a>
+                    <a href="/giris/">Giriş Yap</a>
                 </div>
             </div>
             <div class="anakutu">
@@ -64,7 +67,7 @@
                     </div>
                 </div>
                 <div class="ickutu">
-                    <div class="kocadiv" id="yorumlar-liste"></div>
+                    <div id="yorumlar-liste"></div>
 
                     <!-- Yorum template -->
                     <template id="yorum-template">

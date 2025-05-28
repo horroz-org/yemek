@@ -35,13 +35,21 @@ class Auth {
         return hash_equals($clientSignature, $expectedSignature) ? $data : false;
     }
 
-    public static function generateToken($kullanici, $expiration = "+1 year"){
+    /**
+     * Giriş tokeni oluşturmaktadır.
+     * 
+     * @param array $kullanici Klasik kullanıcı işte, ["uuid"] filan var biliyosun sen onu
+     * @param \DateTime $expiration Tokenin ölüm zamanı (DateTime tipinde olacak)
+     * 
+     * @return string token
+     */
+    public static function generateToken($kullanici, $expiration){
         $base62 = new \Tuupola\Base62;
         $secret = Dotenv::getValue("AUTH_SECRET");
-
+        
         $data = [
             "uid" => $kullanici["uuid"],
-            "exp" => (new \DateTime())->modify($expiration)->getTimestamp()
+            "exp" => $expiration->getTimestamp()
         ];
         $dataJson = json_encode($data);
         
@@ -65,7 +73,7 @@ class Auth {
         }
         
         $yu = new YemekUzmani(false); // anonim çünkü kontrol noktasındayız oğlum
-        $kullanici = $yu->kullaniciAlGuvenli($tokenData["uid"]);
+        $kullanici = $yu->kullaniciAl($tokenData["uid"]);
         
         return $kullanici;
     }

@@ -108,3 +108,13 @@ async function yorumSil(yorumUuid) {
 
     return xhr.status === 200 ? xhr.response : null;
 }
+
+// cookie değerini veya error diye json veriyoz ya onu döndürür
+async function girisYap(kullaniciAdi, sifre){
+    var xhr = await apiPost("hesap/giris.php", {
+        kullaniciAdi: kullaniciAdi,
+        sifre: sifre
+    });
+
+    return (xhr.status === 200 || xhr.status === 400) ? xhr.response : null;
+}

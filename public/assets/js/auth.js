@@ -21,10 +21,47 @@ async function girisYapildiMi() {
             return JSON.parse(xhr.response);
         }
         else{
+            // sıkıntı çıkmasın
+            deleteCookie("YEMEK_SESSION");
+            
             return false;
         }
     } catch{
         // vah vah
         return false;
     }
+}
+
+/**
+ * Bakalım giriş yapmış mı
+ * yapmamışsa cevap yaz yorum yaz yemeğe puan verme yoruma oy verme report butonları khapaly olacak
+ * aslında report açık olabilir ama her yorum için 1 kere tutarım dbde
+ * ve uyarı çıkar eğer giriş yapmadan rapor ederseniz ip'niz kaydedilir diye
+ * 
+ * giriş yapmışsa da kullanıcı adını sağ üste yazdıracağım ben
+*/
+async function authBak() {
+    var userData = await girisYapildiMi();
+    if (userData === false) {
+        anonimAyarla();
+        return;
+    }
+
+    kullanici = userData;
+    adamAyarla(userData);
+}
+
+function anonimAyarla() {
+    kullanici = null;
+
+    var topbarSagElement = document.querySelector(".topbar-sag");
+    topbarSagElement.innerHTML = "";
+    topbarSagElement.innerHTML += '<a href="/kayit/">Kayıt Ol</a>';
+    topbarSagElement.innerHTML += '<a href="/giris/">Giriş Yap</a>';
+}
+
+function adamAyarla(kullanici) {
+    var topbarSagElement = document.querySelector(".topbar-sag");
+    topbarSagElement.innerHTML = "";
+    topbarSagElement.innerHTML += '<a href="/profil/">' + kullanici.kullaniciAdi + '</a>';
 }

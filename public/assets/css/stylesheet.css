@@ -7,7 +7,33 @@ body {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.2);
 }
 
-.layout {
+input,
+select,
+textarea,
+button {
+    font-family: inherit;
+}
+
+input,
+textarea {
+    outline: none;
+}
+
+fieldset {
+    border-style: solid;
+    border-color: gray;
+}
+
+.a-renksiz * {
+    color: black;
+    text-decoration: none;
+}
+
+.a-renksiz:hover {
+    text-decoration: none;
+}
+
+.index-layout {
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -21,6 +47,8 @@ body {
     flex: 1;
     display: flex;
     flex-direction: row;
+
+    margin-top: 50px; /* topbar artık fixed oldu, iç içe giriyor, topbar yüksekliğinde margin-top */
 
     min-height: 0;
 }
@@ -42,6 +70,13 @@ body {
     overflow: auto;
 }
 
+#yorumlar-liste {
+    height: 100%;
+    width: 100%;
+
+    overflow: auto;
+}
+
 .ortalayandiv {
     display: flex;
     flex-direction: column;
@@ -53,6 +88,10 @@ body {
     padding: 0.7rem;
     background-color: rgb(0, 0, 0, 0.03);
     border: 1px solid black;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     cursor: pointer;
 
@@ -73,11 +112,13 @@ body {
   .anakutu {
     flex-direction: column;
   }
-  .layout {
+  .index-layout {
     height: calc(200vh - 50px);
   }
-  .kocadiv {
+  #yorumlar-liste {
     overflow: visible;
+    height: auto;
+    padding-bottom: 0.5rem; /* en alttaki yorum bitişik oluyor o yüzden */
   }
   .topbar-baslik {
     display: none;
@@ -86,8 +127,12 @@ body {
 
 /* TOPBAR */
 .topbar {
-    position: sticky;
+    position: fixed;
+    
     top: 0;
+    right: 0;
+    left: 0;
+
     height: 50px;
 
     background-color: white;
@@ -104,6 +149,14 @@ body {
 .topbar-sol {
     display: flex;
     align-items: center;
+}
+
+.topbar-sag {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    gap: 1rem;
 }
 
 .topbar-sol-butonlar {
@@ -310,6 +363,10 @@ a:hover {
     margin-bottom: 1rem;
 }
 
+.yorum-metin {
+    white-space: pre-line;
+}
+
 .puan-yorum-bilgi {
     display: flex;
     flex-direction: row;
@@ -320,12 +377,6 @@ a:hover {
     gap: 0.5rem;
     margin-bottom: 1rem;
     margin-top: 1rem;
-}
-
-#yorumyazbuton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .yorumkutu {
@@ -520,6 +571,43 @@ a:hover {
     font-weight: bold;
 }
 
-textarea {
-    outline: none;
+/* KAYIT */
+.giris-kayit-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 100vh;
+}
+
+#giris-kayit-form-kutu {
+    
+    padding: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#giris-kayit-form-kutu input {
+    width: 19rem;
+}
+
+#giris-kayit-form-kutu label {
+    font-weight: bold;
+}
+
+#giris-kayit-buton {
+    padding: 0.3rem 2rem;
+}
+
+#giris-kayit-buton-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+#hata-mesaji {
+    color: red;
 }

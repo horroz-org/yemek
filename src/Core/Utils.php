@@ -90,4 +90,8 @@ class Utils {
         OutputManager::error("Sen çok mu akıllısın he?");
         die();
     }
+
+    public static function sifreKontrol(){
+        
+    }
 }

@@ -3,7 +3,8 @@
     "type": "project",
     "license": "GPL-3.0-or-later",
     "require": {
-        "tuupola/base62": "^2.1"
+        "tuupola/base62": "^2.1",
+        "phpmailer/phpmailer": "^6.10"
     },
     "autoload": {
         "psr-4": {

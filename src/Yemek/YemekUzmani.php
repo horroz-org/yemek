@@ -232,6 +232,40 @@ class YemekUzmani {
             "isim" => $row["isim"],
             "hash" => $row["hash"],
             "email" => $row["email"],
+            "emailDogrulandi" => $row["emailDogrulandi"],
+            "dogrulamaNeZamanGonderdik" => $row["dogrulamaNeZamanGonderdik"],
+            "prestij" => $row["prestij"],
+            "rutbe" => $row["rutbe"],
+            "katilmaTarihi" => $row["katilmaTarihi"],
+            "admin" => $row["admin"]
+        ];
+    }
+
+    /**
+     * Kullanıcı adı verilen adamın bilgilerini alır.
+     * 
+     * @param string $kullaniciAdi adamın kullanıcı adı
+     * 
+     * @return ?array Adamın bilgileri, yoksa null.
+     */
+    public function kullaniciAlAdIle($kullaniciAdi): ?array {
+        $sql = "SELECT * FROM kullanicilar WHERE kullaniciAdi = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$kullaniciAdi]);
+        $row = $stmt->fetch();
+        $stmt->closeCursor();
+        if($row === false){
+            return null;
+        }
+
+        return [
+            "uuid" => $row["uuid"],
+            "kullaniciAdi" => $row["kullaniciAdi"],
+            "isim" => $row["isim"],
+            "hash" => $row["hash"],
+            "email" => $row["email"],
+            "emailDogrulandi" => $row["emailDogrulandi"],
+            "dogrulamaNeZamanGonderdik" => $row["dogrulamaNeZamanGonderdik"],
             "prestij" => $row["prestij"],
             "rutbe" => $row["rutbe"],
             "katilmaTarihi" => $row["katilmaTarihi"],

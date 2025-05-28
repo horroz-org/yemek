@@ -1,7 +1,7 @@
 var yemekCache = [];
 
 const yorumDerinlikRem = 2;
-var kullanici;
+var kullanici = null;
 var suAnkiTarih;
 
 var cevapVerilenYorumId = null; // şu anda cevap veriyorsa id, dümdüz yorum yazıyorsa null
@@ -20,38 +20,6 @@ async function basla(){
 
     var simdiIsoDate = isoDate(suAnkiTarih); // yyyy-mm-dd
     herseyiGoster(simdiIsoDate);
-}
-
-/**
- * Bakalım giriş yapmış mı
- * yapmamışsa cevap yaz yorum yaz yemeğe puan verme yoruma oy verme report butonları khapaly olacak
- * aslında report açık olabilir ama her yorum için 1 kere tutarım dbde
- * ve uyarı çıkar eğer giriş yapmadan rapor ederseniz ip'niz kaydedilir diye
- * 
- * giriş yapmışsa da kullanıcı adını sağ üste yazdıracağım ben
-*/
-async function authBak(){
-    var userData = await girisYapildiMi();
-    if (userData === false) {
-        anonimAyarla();
-        return;
-    }
-
-    kullanici = userData;
-    adamAyarla(userData);
-}
-
-function anonimAyarla(){
-    kullanici = null;
-    var kullaniciAdiElement = document.getElementById("kullanici-adi");
-    kullaniciAdiElement.textContent = "Giriş Yap";
-    kullaniciAdiElement.href = "/giris/";
-}
-
-function adamAyarla(kullanici){
-    var kullaniciAdiElement = document.getElementById("kullanici-adi");
-    kullaniciAdiElement.textContent = kullanici.kullaniciAdi;
-    kullaniciAdiElement.href = "/profil/";
 }
 
 // tarih yyyy-mm-dd olacak
@@ -139,7 +107,8 @@ function yemekGoster(yemek){
     tarihElement.textContent = formatter.format(new Date(yemek.tarih));
 
     menuElement.textContent = yemek.menu;
-    puanElement.textContent = yemek.puan;
+    // 4.66666667 gibi sayılar gelmesin diye tek basamağa yuvarlamaktayız
+    puanElement.textContent = puanTrunc(yemek.puan);
     puanSayisiElement.textContent = yemek.puanSayisi;
 
     document.querySelectorAll(".puan-secildi").forEach(function(buton){
@@ -194,10 +163,10 @@ function yorumTreeYap(yorumlar) {
 }
 
 class Siralama {
-    varsayilan(a, b) { return this.enYuksekOy(a, b); }
-    enYuksekOy(a, b) { return (b.like - b.dislike) - (a.like - a.dislike); }
-    enYeni(a, b) { return new Date(b.tarih) - new Date(a.tarih); }
-    enEski(a, b) { return new Date(a.tarih) - new Date(b.tarih); }
+    static varsayilan(a, b) { return Siralama.enYuksekOy(a, b); }
+    static enYuksekOy(a, b) { return (b.like - b.dislike) - (a.like - a.dislike); }
+    static enYeni(a, b) { return new Date(b.zaman) - new Date(a.zaman); }
+    static enEski(a, b) { return new Date(a.zaman) - new Date(b.zaman); }
 };
 
 function yorumSirala(tree, siralama) {
@@ -225,7 +194,7 @@ function yorumEkle(yorum, derinlik = 0){
     clone.querySelector(".yorumkutu").id = yorum.uuid;
     clone.querySelector(".yorum-yazar").textContent = yorum.yazarKullaniciAdi;
     clone.querySelector(".yorum-yazar").href = "/profil/?u=" + yorum.yazarKullaniciAdi;
-    clone.querySelector(".yorum-tarih").textContent = yorum.zaman;
+    clone.querySelector(".yorum-tarih").textContent = zamanFarki(new Date(), new Date(yorum.zaman));
     clone.querySelector(".yorum-metin").textContent = yorum.yorum;
     clone.querySelector(".vote-sayi").textContent = yorum.like - yorum.dislike;
     if(yorum.bizimkininOyu !== null){
@@ -408,14 +377,16 @@ function yorumUiEventAyarla(){
 }
 
 function puanGuncelle(puan, puanSayisi, verilenPuan){
+    var duzgunPuan = puanTrunc(puan);
+
     var puanElement = document.getElementById("puan");
     var puanSayisiElement = document.getElementById("degerlendirme-sayisi");
 
-    puanElement.textContent = puan;
+    puanElement.textContent = duzgunPuan;
     puanSayisiElement.textContent = puanSayisi;
 
     // cache
-    yemekCache[isoDate(suAnkiTarih)].yemek.puan = puan;
+    yemekCache[isoDate(suAnkiTarih)].yemek.puan = duzgunPuan;
     yemekCache[isoDate(suAnkiTarih)].yemek.puanSayisi = puanSayisi;
     yemekCache[isoDate(suAnkiTarih)].yemek.verilenPuan = verilenPuan;
 }
@@ -448,6 +419,8 @@ function yorumFormAc(cevapMi = false){
     yorumFormElement.style.removeProperty("display");
     
     yorumInputBaslikElement.textContent = cevapMi ? "Cevabınız:" : "Yorumunuz:";
+
+    yorumYaziElement.focus();
 }
 
 function yorumFormKapat(){
@@ -459,10 +432,6 @@ function yorumFormKapat(){
 }
 
 function uiAyarla(){
-    document.querySelector(".topbar-logovebaslik").addEventListener("click", () => {
-        window.location.href = "/";
-    });
-
     document.getElementById("yorumyazbuton").addEventListener("click", () => {
         cevapVerilenYorumId = null;
         yorumFormAc(false);

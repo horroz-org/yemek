@@ -7,6 +7,15 @@ function getCookie(name) {
     return value ? decodeURIComponent(value) : null;
 }
 
+function setCookie(name, value, exp) {
+    let expires = "expires=" + (new Date(exp)).toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+function deleteCookie(name){
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
 function isoDate(date){
     return date.toISOString().split('T')[0];
 }
@@ -34,4 +43,27 @@ function getQueryParam(parameter){
 
 function alertPopup(message) {
     alert(message);
+}
+
+// ödünç alındı: https://www.media-division.com/easy-human-readable-date-difference/
+function zamanFarki(date1, date2) {
+    if (!(date1 instanceof Date && date2 instanceof Date))
+        throw new RangeError('Invalid date arguments');
+
+    const timeIntervals = [31536000, 2628000, 604800, 86400, 3600, 60, 1];
+    const intervalNames = ['yıl', 'ay', 'hafta', 'gün', 'saat', 'dakika', 'saniye'];
+    const diff = Math.abs(date2.getTime() - date1.getTime()) / 1000;
+    const index = timeIntervals.findIndex(i => (diff / i) >= 1);
+    if(index === -1){
+        return "şimdi";
+    }
+
+    const n = Math.floor(diff / timeIntervals[index]);
+    const interval = intervalNames[index];
+    return n.toString() + " " + interval + " önce";
+}
+
+function puanTrunc(puan, basamakSayisi = 1){
+    var onUzeriBasamakSayisi = 10 ** basamakSayisi;
+    return Math.trunc(puan * onUzeriBasamakSayisi) / onUzeriBasamakSayisi;
 }
