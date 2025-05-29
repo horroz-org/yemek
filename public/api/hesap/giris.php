@@ -60,7 +60,7 @@ if($bizimki !== null){
 // şimdi düzgün giriş yapabiliriz artık
 // istenen adamı alalım
 $yu = new YemekUzmani(false);
-$adam = $yu->kullaniciAlAdIle($kullaniciAdi);
+$adam = $yu->kullaniciAlParametreIle("kullaniciAdi", $kullaniciAdi);
 if($adam === null){
     OutputManager::error("Lan böyle birisi yok?");
     die();

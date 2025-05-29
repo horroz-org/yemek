@@ -37,32 +37,47 @@ if($bizimki !== null){
 }
 
 // her şeyi bi kontrol edelim
-$kullaniciAdiKontrol = Utils::kullaniciAdiKontrol($eposta);
+$kullaniciAdiKontrol = Utils::kullaniciAdiKontrol($kullaniciAdi);
 $epostaKontrol = Utils::epostaKontrol($eposta);
 $sifreKontrol = Utils::sifreKontrol($sifre);
-if(!$kullaniciAdiKontrol || !$epostaKontrol || !$sifreKontrol){
-    OutputManager::error("Kullanıcı adında, epostanda veya şifrende fena bir yanlışlık var.");
+if(!$kullaniciAdiKontrol){
+    OutputManager::error("Kullanıcı adında fena bir yanlışlık var, düzelt.");
+    die();
+}
+if(!$epostaKontrol){
+    OutputManager::error("Eposta kötü. Okul epostası olması lazım oğlum.");
+    die();
+}
+if(!$sifreKontrol){
+    OutputManager::error("Şifrenin en az 6 karakterli olması, en az bi büyük ve bi küçük karakter bi de rakam içermesi lazım.");
     die();
 }
 
 // böyle birisi var mı diye bakalım
-$adam = $yu->kullaniciAlAdIle($kullaniciAdi);
+$yu = new YemekUzmani(false);
+$adam = $yu->kullaniciAlParametreIle("kullaniciAdi", $kullaniciAdi);
 if($adam !== null){
     OutputManager::error("Bu isim alınmış.");
     die();
 }
 
+$adam = $yu->kullaniciAlParametreIle("email", $eposta);
+if($adam !== null){
+    OutputManager::error("Bu eposta daha önce kullanılmış???");
+    die();
+}
+
 // yeni kullanıcı oluşturak
-$yu = new YemekUzmani(false);
-$yeniKullanici = $yu->kullaniciEkle($kullaniciAdi, $eposta, $sifre);
+// doğrulamayı ne zaman gönderdik (birazdan)
+$dogrulamaZamani = (new \DateTime())->format("Y-m-d H:i:s");
+$yeniKullanici = $yu->kullaniciEkle($kullaniciAdi, $eposta, $sifre, $dogrulamaZamani);
 if($yeniKullanici === null){
     // valla bişeyler çok fena ters gitmiş
     OutputManager::error("Çüş. Sen mi yaptın bunu?");
-    \Core\Logger::error("Kullanıcı eklenemedi.\n$kullaniciAdi\n$eposta\n$sifre");
     die();
 }
 
 // doğrulamayı atalım hemencecik
-Mail::dogrulamaGonder($email);
+Mail::dogrulamaGonder($eposta);
 
-OutputManager::info("Kayıt yaptık. E-postana gelen linke bas, hesabını doğrula. Mail gelmediyse spama bak, hala yoksa 5 dk sonra giriş kısmından yeniden denersin.");
+OutputManager::info("Kayıt yaptık. E-postana gelen linke bas, hesabını doğrula. Mail gelmediyse spama bak, hala yoksa 5 dk sonra giriş kısmından yeniden girmeye çalış, orda yeniden kod gelir.");

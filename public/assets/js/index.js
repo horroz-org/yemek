@@ -308,12 +308,22 @@ async function yorumGonderEvent() {
 function yorumUiEventAyarla(){
     document.querySelectorAll('.yorumkutu').forEach(yorumkutu => {
         yorumkutu.querySelector(".cevap-buton").addEventListener("click", () => {
+            if (kullanici == null) {
+                giriseGit();
+                return;
+            }
+            
             cevapVer(yorumkutu.id);
         });
 
         var sikayetButon = yorumkutu.querySelectorAll(".sikayet-buton");
         if(sikayetButon.length > 0){
             sikayetButon[0].addEventListener("click", () => {
+                if (kullanici == null) {
+                    giriseGit();
+                    return;
+                }
+                
                 sikayetEtEvent(yorumkutu.id);
             });
         }
@@ -327,7 +337,7 @@ function yorumUiEventAyarla(){
         yorumkutu.querySelectorAll(".vote-ok").forEach(voteOk => {
             voteOk.addEventListener("click", async () => {
                 if(kullanici === null){
-                    window.location.href = "/giris/";
+                    giriseGit();
                     return;
                 }
 
@@ -433,6 +443,11 @@ function yorumFormKapat(){
 
 function uiAyarla(){
     document.getElementById("yorumyazbuton").addEventListener("click", () => {
+        if (kullanici == null) {
+            giriseGit();
+            return;
+        }
+
         cevapVerilenYorumId = null;
         yorumFormAc(false);
     });
@@ -449,14 +464,21 @@ function uiAyarla(){
         oncekiYemek();
     });
 
-    document.getElementById("yorum-gonder-buton").addEventListener("click", async () => {
+    // arrow fonksiyonlarda this yok
+    document.getElementById("yorum-gonder-buton").addEventListener("click", async function () {
+        if(this.classList.contains("kapali-buton")){
+            return;
+        }
+
+        this.classList.add("kapali-buton");
         await yorumGonderEvent();
+        this.classList.remove("kapali-buton");
     });
 
     document.querySelectorAll('.puanbuton').forEach(puanbuton => {
         puanbuton.addEventListener("click", async () => {
             if(kullanici == null){
-                window.location.href = "/giris/";
+                giriseGit();
                 return;
             }
 

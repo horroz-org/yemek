@@ -56,6 +56,44 @@ class Auth {
         return $base62->encode($dataJson) . "." . $base62->encode(hash_hmac("sha3-256", $dataJson, $secret, true));
     }
 
+    public static function generateMailToken($eposta, $expiration){
+        $base62 = new \Tuupola\Base62;
+        $secret = Dotenv::getValue("EPOSTA_SECRET");
+        
+        $data = [
+            "eposta" => $eposta,
+            "exp" => $expiration->getTimestamp()
+        ];
+        $dataJson = json_encode($data);
+        
+        return $base62->encode($dataJson) . "." . $base62->encode(hash_hmac("sha3-256", $dataJson, $secret, true));
+    }
+
+    public static function verifyMailToken(){
+        $base62 = new \Tuupola\Base62;
+        $secret = Dotenv::getValue("EPOSTA_SECRET");
+        
+        $parts = explode(".", $token);
+        if(count($parts) != 2){
+            return false;
+        }
+
+        $dataJson = $base62->decode($parts[0]);
+        try{
+            $data = json_decode($dataJson, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            return false;
+        }
+
+        if((new \DateTime())->getTimestamp() > $data["exp"]){
+            return false;
+        }
+        
+        $clientSignature = bin2hex($base62->decode($parts[1]));
+        $expectedSignature = hash_hmac("sha3-256", $dataJson, $secret);
+        return hash_equals($clientSignature, $expectedSignature) ? $data : false;
+    }
+
     /**
      * Bizimki kim? Kim giriş yapmış şu an? Bizimki nerelerde? Ne içiyor nereler ide?
      * 

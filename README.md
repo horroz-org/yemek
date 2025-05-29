@@ -10,12 +10,14 @@ cd public
 php -S 0.0.0.0:8080
 ```
 
-## Yapılacaklar
+## Neler kaldı
 - [ ] Utils.php:34 sakııııııın ama sakın unutma
-- [ ] Mail::dogrulamaGonder($eposta)
-- [ ] YemekUzmani::kullaniciEkle($kullaniciAdi, $eposta, $sifre)
-- [ ] Utils::kullaniciAdiKontrol
-- [ ] Utils::epostaKontrol ve Utils::sifreKontrol test etme
+- [X] Mail::dogrulamaGonder($eposta)
+- [X] YemekUzmani::kullaniciEkle($kullaniciAdi, $eposta, $sifre)
+- [X] Utils::kullaniciAdiKontrol
+- [X] Utils::epostaKontrol ve Utils::sifreKontrol test etme
+- [ ] epostaDogrula.php
+- [ ] yorum kontrol
 
 ## Bağış
 Acilen [horroz.org'a yardımda bulunun](https://wiki.horroz.org/wiki/Horrozpedi:Bağış), batıyoruz. Şaka şaka. Ayağımı şu köşeye sileyim de ses çıkarmayın. Kim getirttirdi sizi buraya? Gelmeyin. (Galmayın.)

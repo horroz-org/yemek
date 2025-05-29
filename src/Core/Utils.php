@@ -94,14 +94,28 @@ class Utils {
 
     // değişik karakterler falan filan var mı diye bakacaz
     // Minimum 3 harfli olsun
+    // 2025-05-29 20:40 tamamen değiştiriyorum
+    // boşluk moşluk olmasın
+    // salak salak şeyler yaparlar kesin
+    const izinVerilenKullaniciAdiKarakterleri = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_-.";
     public static function kullaniciAdiKontrol($kullaniciAdi){
-        // bakarız
+        if(strlen($kullaniciAdi) < 3){
+            return false;
+        }
+
+        foreach (str_split($kullaniciAdi) as $harf) {
+            if(!str_contains(self::izinVerilenKullaniciAdiKarakterleri, $harf)){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     // ceayet açık
     public static function epostaKontrol($eposta){
         if(filter_var($eposta, FILTER_VALIDATE_EMAIL)){
-            $parcalar = explode('@', $eposta, 1);
+            $parcalar = explode('@', $eposta, 2);
             $domain = $parcalar[1];
 
             return $domain === Dotenv::getValue("EPOSTA_DOMAIN");
@@ -112,7 +126,8 @@ class Utils {
 
     // küçük harf büyük harf rakam olacak
     // en az 8 hane olacak
-    public static function sifreKontrol($sifre){
-        return (strlen($sifre) >= 8) && preg_match('/[A-Z]/', $str) && preg_match('/[a-z]/', $str) && preg_match('/[0-9]/', $str);
+    // vazgeçtim en az 6 hane olsun
+    public static function sifreKontrol($str){
+        return (strlen($str) >= 6) && preg_match('/[A-Z]/', $str) && preg_match('/[a-z]/', $str) && preg_match('/[0-9]/', $str);
     }
 }

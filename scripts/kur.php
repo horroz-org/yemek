@@ -110,14 +110,14 @@ function tablolariOlustur(){
             uuid TEXT UNIQUE NOT NULL,
 
             kullaniciAdi TEXT NOT NULL,
-            isim TEXT NOT NULL,
+            isim TEXT,
             hash TEXT NOT NULL,
             email TEXT NOT NULL,
             emailDogrulandi BOOLEAN NOT NULL,
             dogrulamaNeZamanGonderdik DATETIME,
 
             prestij INTEGER NOT NULL,
-            rutbe TEXT,
+            rutbe INTEGER,
 
             katilmaTarihi DATETIME NOT NULL,
             admin BOOLEAN NOT NULL
@@ -131,11 +131,10 @@ function adminAyarla(){
 
     $adminUUID = Utils::generateUUIDv4();
     $adminUsername = soru("-> Admin kullanıcı adı ne olsun?", "admin");
-    $adminName = soru("-> İsmi ne olsun peki?", "Yönetici");
     $adminPass = soru("-> Şifre ne olsun abicim?", "aslanmax");
     $adminHash = password_hash($adminPass, PASSWORD_BCRYPT);
     $dateNow = date('Y-m-d H:i:s');
-    $pdo->prepare("INSERT INTO kullanicilar (uuid, kullaniciAdi, isim, hash, email, emailDogrulandi, prestij, rutbe, katilmaTarihi, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        ->execute([$adminUUID, $adminUsername, $adminName, $adminHash, "aslan@horroz.org", true, 0, "Pro", $dateNow, true]);
+    $pdo->prepare("INSERT INTO kullanicilar (uuid, kullaniciAdi, hash, email, emailDogrulandi, prestij, rutbe, katilmaTarihi, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        ->execute([$adminUUID, $adminUsername, $adminHash, "aslan@horroz.org", true, 0, -1, $dateNow, true]);
     echo(":: Admin eklendi."); echo("\n");
 }

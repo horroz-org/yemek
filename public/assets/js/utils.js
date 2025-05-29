@@ -41,6 +41,13 @@ function getQueryParam(parameter){
     return null;
 }
 
+// mesela https://bok.net/pro.php?ikizkenar=28 ise
+// path /pro.php?ikizkenar=28 olur
+function getUrlPath(){
+    // incelediğim keadarı ile böyle
+    return window.location.pathname + window.location.search;
+}
+
 function alertPopup(message) {
     alert(message);
 }
@@ -66,4 +73,8 @@ function zamanFarki(date1, date2) {
 function puanTrunc(puan, basamakSayisi = 1){
     var onUzeriBasamakSayisi = 10 ** basamakSayisi;
     return Math.trunc(puan * onUzeriBasamakSayisi) / onUzeriBasamakSayisi;
+}
+
+function giriseGit(){
+    window.location.href = "/giris/?r=" + encodeURIComponent(getUrlPath());
 }

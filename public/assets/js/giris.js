@@ -1,9 +1,16 @@
 // auth.js'ye taşırım belki kullanici'yı sonra 
 var kullanici = null;
 
+// query parametresi ?r= falan filan
+// redirParam'ı direk window.location.href = yapacaz
+// öyle
+var redirParam = null;
+
 async function basla(){
     uiAyarla();
     await authBak();
+
+    redirParam = getQueryParam("r");
 
     if(kullanici !== null){
         var gkfkElement = document.getElementById("giris-kayit-form-kutu");
@@ -28,7 +35,12 @@ function bilgileriKontrolEt(kullaniciAdi, sifre){
 }
 
 function uiAyarla() {
-    document.getElementById("giris-kayit-buton").addEventListener("click", async () => {
+    document.getElementById("giris-kayit-buton").addEventListener("click", async function () {
+        if (this.classList.contains("kapali-buton")) {
+            return;
+        }
+        this.classList.add("kapali-buton");
+
         var kullaniciAdiElement = document.getElementById("kullanici-adi-input");
         var sifreElement = document.getElementById("sifre-input");
 
@@ -42,18 +54,24 @@ function uiAyarla() {
         var tokenInfo = await girisYap(kullaniciAdi, sifre);
         if(tokenInfo === null){
             formHataYaz("Değişik bir şeyler oldu, sıçtık.");
+            this.classList.remove("kapali-buton");
             return;
         }
 
         // hata verdiyse hatayı yazak kırmızıylan
         if("error" in tokenInfo){
             formHataYaz(tokenInfo.error);
+            this.classList.remove("kapali-buton");
             return;
         }
 
         setCookie("YEMEK_SESSION", tokenInfo.token, tokenInfo.expiration);
 
-        window.location.href = "/";
+        var gidilenYer = "/";
+        if(redirParam !== null){
+            gidilenYer = redirParam;
+        }
+        window.location.href = gidilenYer;
     });
 }
 

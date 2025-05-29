@@ -217,41 +217,28 @@ class YemekUzmani {
      * @return ?array Adamın bilgileri, yoksa nulliye.
      */
     public function kullaniciAl($adamId): ?array {
-        $sql = "SELECT * FROM kullanicilar WHERE uuid = ?";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$adamId]);
-        $row = $stmt->fetch();
-        $stmt->closeCursor();
-        if($row === false){
-            return null;
-        }
-
-        return [
-            "uuid" => $row["uuid"],
-            "kullaniciAdi" => $row["kullaniciAdi"],
-            "isim" => $row["isim"],
-            "hash" => $row["hash"],
-            "email" => $row["email"],
-            "emailDogrulandi" => $row["emailDogrulandi"],
-            "dogrulamaNeZamanGonderdik" => $row["dogrulamaNeZamanGonderdik"],
-            "prestij" => $row["prestij"],
-            "rutbe" => $row["rutbe"],
-            "katilmaTarihi" => $row["katilmaTarihi"],
-            "admin" => $row["admin"]
-        ];
+        return $this->kullaniciAlParametreIle("uuid", $adamId);
     }
 
     /**
-     * Kullanıcı adı verilen adamın bilgilerini alır.
+     * Parametre verilen adamın bilgilerini alır.
      * 
-     * @param string $kullaniciAdi adamın kullanıcı adı
+     * @param string $param parametre
+     * @param string $deger parametrenin değeri
      * 
      * @return ?array Adamın bilgileri, yoksa null.
      */
-    public function kullaniciAlAdIle($kullaniciAdi): ?array {
-        $sql = "SELECT * FROM kullanicilar WHERE kullaniciAdi = ?";
+    public function kullaniciAlParametreIle($param, $deger): ?array {
+        // injection olmaz ama yine de
+        $kabulEdilenParametreler = ["uuid", "kullaniciAdi", "email"];
+        if(!in_array($param, $kabulEdilenParametreler)){
+            \Core\Logger::warning("Nasıl oldu bu oğlum? (kullaniciAlParametreIle)\nparametre: $param");
+            return null;
+        }
+
+        $sql = "SELECT * FROM kullanicilar WHERE $param = ?";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$kullaniciAdi]);
+        $stmt->execute([$deger]);
         $row = $stmt->fetch();
         $stmt->closeCursor();
         if($row === false){
@@ -833,5 +820,31 @@ class YemekUzmani {
             "like" => $guncelYorumOylari["like"],
             "dislike" => $guncelYorumOylari["dislike"]
         ];
+    }
+
+    public function kullaniciEkle($kullaniciAdi, $eposta, $sifre, $dogrulamaNeZamanGonderdik = null){
+        $yeniKul = [
+            "uuid" => Utils::generateUUIDv4(),
+            "kullaniciAdi" => $kullaniciAdi,
+            "hash" => password_hash($sifre, PASSWORD_BCRYPT),
+            "email" => $eposta,
+            "emailDogrulandi" => 0,
+            "dogrulamaNeZamanGonderdik" => $dogrulamaNeZamanGonderdik,
+            "prestij" => 0,
+            "rutbe" => 0,
+            "katilmaTarihi" => (new \DateTime())->format("Y-m-d H:i:s"),
+            "admin" => 0
+        ];
+
+        $sql = "INSERT INTO kullanicilar (uuid, kullaniciAdi, hash, email, emailDogrulandi, dogrulamaNeZamanGonderdik, prestij, rutbe, katilmaTarihi, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->pdo->prepare($sql);
+        $kontrol = $stmt->execute([$yeniKul["uuid"], $yeniKul["kullaniciAdi"], $yeniKul["hash"], $yeniKul["email"], $yeniKul["emailDogrulandi"], $yeniKul["dogrulamaNeZamanGonderdik"], $yeniKul["prestij"], $yeniKul["rutbe"], $yeniKul["katilmaTarihi"], $yeniKul["admin"]]);
+    
+        if($kontrol === false){
+            \Core\Logger::error("Oğlum yeni adam ekleyemedik.\n" . print_r($yeniKul, true));
+            return null;
+        }
+
+        return $yeniKul;
     }
 }

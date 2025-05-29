@@ -29,7 +29,12 @@ function bilgileriKontrolEt(kullaniciAdi, eposta, sifre, kabulEdiyorum) {
 }
 
 function uiAyarla() {
-    document.getElementById("giris-kayit-buton").addEventListener("click", async () => {
+    document.getElementById("giris-kayit-buton").addEventListener("click", async function () {
+        if (this.classList.contains("kapali-buton")) {
+            return;
+        }
+        this.classList.add("kapali-buton");
+
         var kullaniciAdiElement = document.getElementById("kullanici-adi-input");
         var epostaElement = document.getElementById("eposta-input");
         var sifreElement = document.getElementById("sifre-input");
@@ -41,18 +46,21 @@ function uiAyarla() {
         var kabulEdiyorum = kabulEdiyorumElement.checked; // client side olsun sadece
 
         if (!bilgileriKontrolEt(kullaniciAdi, eposta, sifre, kabulEdiyorum)) {
+            this.classList.remove("kapali-buton");
             return;
         }
 
         var kayitInfo = await kayitOl(kullaniciAdi, eposta, sifre);
         if (kayitInfo === null) {
             formMesajYaz("Değişik bir şeyler oldu, sıçtık.");
+            this.classList.remove("kapali-buton");
             return;
         }
 
         // hata verdiyse hatayı yazak kırmızıylan
         if ("error" in kayitInfo) {
             formMesajYaz(kayitInfo.error);
+            this.classList.remove("kapali-buton");
             return;
         }
 
@@ -67,6 +75,8 @@ function uiAyarla() {
         }
 
         formMesajYaz("Bu ne oğlum? Git birine de ki, böyle bi mesaj yazdı de. Harbiden de ama ciddiyim.");
+
+        this.classList.remove("kapali-buton");
     });
 }
 

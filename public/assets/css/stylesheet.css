@@ -100,7 +100,14 @@ fieldset {
     user-select: none;
 }
 
-.buton:hover {
+.kapali-buton {
+    border-color: gray;
+    color: gray;
+
+    cursor: auto;
+}
+
+.buton:hover :not(.kapali-buton) {
     background-color: rgb(0, 0, 0, 0.1);
 }
 
