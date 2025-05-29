@@ -16,23 +16,23 @@ class Auth {
         
         $parts = explode(".", $token);
         if(count($parts) != 2){
-            return false;
+            return null;
         }
 
         $dataJson = $base62->decode($parts[0]);
         try{
             $data = json_decode($dataJson, true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            return false;
+            return null;
         }
 
         if((new \DateTime())->getTimestamp() > $data["exp"]){
-            return false;
+            return null;
         }
         
         $clientSignature = bin2hex($base62->decode($parts[1]));
         $expectedSignature = hash_hmac("sha3-256", $dataJson, $secret);
-        return hash_equals($clientSignature, $expectedSignature) ? $data : false;
+        return hash_equals($clientSignature, $expectedSignature) ? $data : null;
     }
 
     /**
@@ -69,29 +69,29 @@ class Auth {
         return $base62->encode($dataJson) . "." . $base62->encode(hash_hmac("sha3-256", $dataJson, $secret, true));
     }
 
-    public static function verifyMailToken(){
+    public static function verifyMailToken($token){
         $base62 = new \Tuupola\Base62;
         $secret = Dotenv::getValue("EPOSTA_SECRET");
         
         $parts = explode(".", $token);
         if(count($parts) != 2){
-            return false;
+            return null;
         }
 
         $dataJson = $base62->decode($parts[0]);
         try{
             $data = json_decode($dataJson, true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            return false;
+            return null;
         }
 
         if((new \DateTime())->getTimestamp() > $data["exp"]){
-            return false;
+            return null;
         }
         
         $clientSignature = bin2hex($base62->decode($parts[1]));
         $expectedSignature = hash_hmac("sha3-256", $dataJson, $secret);
-        return hash_equals($clientSignature, $expectedSignature) ? $data : false;
+        return hash_equals($clientSignature, $expectedSignature) ? $data : null;
     }
 
     /**
@@ -106,7 +106,7 @@ class Auth {
         
         $token = $_COOKIE["YEMEK_SESSION"];
         $tokenData = self::verifyToken($token);
-        if($tokenData === false){
+        if($tokenData === null){
             return null;
         }
         

@@ -822,6 +822,16 @@ class YemekUzmani {
         ];
     }
 
+    /**
+     * Yeni kullanıcı ekliyoz.
+     * 
+     * @param string $kullaniciAdi kullanıcı adı
+     * @param string $eposta eposta
+     * @param string $sifre şifre
+     * @param string $dogrulamaNeZamanGonderdik doğrulama kodunu ne zaman gönderdik? (hiç göndermediysen null)
+     * 
+     * @return ?array Eklenen kullanıcının bilgileri
+     */
     public function kullaniciEkle($kullaniciAdi, $eposta, $sifre, $dogrulamaNeZamanGonderdik = null){
         $yeniKul = [
             "uuid" => Utils::generateUUIDv4(),
@@ -846,5 +856,33 @@ class YemekUzmani {
         }
 
         return $yeniKul;
+    }
+
+    /**
+     * Epostayı doğrulandı olarak işaretliyoz. (Artık hesabına girebilir.)
+     * (Vallahi bilerek bu kadar uzun isim koydum fonksiyona)
+     * 
+     * @param string $eposta eposta
+     * 
+     * @return bool tamam mı değil mi
+     */
+    public function epostaDogrulandiOlarakIsaretle($eposta){
+        $sql = "UPDATE kullanicilar SET emailDogrulandi = ? WHERE email = ?";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([true, $eposta]); // inşallah bool döndürüyodur (öyleymiş)
+    }
+
+    /**
+     * Adama şimdi kod göndermişiz, dogrulamaNeZamanGonderdik = şimdi yapacaz.
+     * 
+     * @param string $adamId adamın uuid
+     * 
+     * @return bool tamam mı değil mi
+     */
+    public function adamaSimdiDogrulamaGonderdik($adamId){
+        $simdi = new \DateTime();
+        $sql = "UPDATE kullanicilar SET dogrulamaNeZamanGonderdik = ? WHERE uuid = ?";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([$simdi->format("Y-m-d H:i:s"), $adamId]);
     }
 }

@@ -78,6 +78,11 @@ if($yeniKullanici === null){
 }
 
 // doğrulamayı atalım hemencecik
-Mail::dogrulamaGonder($eposta);
+$kontrol = Mail::dogrulamaGonder($eposta);
+if(!$kontrol){
+    // zaten Mail::mailGonder'de loglandığı için loglamayalım yine.
+    OutputManager::error("Mail gönderemiyoruz vallahi, bir sıkıntı olmuş.");
+    die();
+}
 
 OutputManager::info("Kayıt yaptık. E-postana gelen linke bas, hesabını doğrula. Mail gelmediyse spama bak, hala yoksa 5 dk sonra giriş kısmından yeniden girmeye çalış, orda yeniden kod gelir.");

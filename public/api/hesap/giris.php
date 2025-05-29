@@ -10,12 +10,13 @@ require_once dirname(__DIR__, 3) . "/src/init.php";
 
 use Core\Utils;
 use Core\OutputManager;
+use Core\Dotenv;
+use Core\Logger;
 use Yemek\YemekUzmani;
 use Yemek\Auth;
 use Yemek\Mail;
 
-// dakika
-const dogrulamaCooldown = 5;
+$dogrulamaCooldown = Dotenv::getValue("DOGRULAMA_COOLDOWN");
 
 $zorunluKeyler = ["kullaniciAdi", "sifre"];
 $postData = Utils::getPostData($zorunluKeyler);
@@ -29,32 +30,8 @@ if(!is_string($kullaniciAdi) || !is_string($sifre)){
 
 $bizimki = Auth::bizimkiKim();
 if($bizimki !== null){
-    if($bizimki["emailDogrulandi"]){
-        OutputManager::error("Ulan sen giriş yapmışsın? Kimi kandırıyon?");
-        die();
-    }
-    // email doğrulanmamış
-
-    $dogrulamaZamani = strtotime($bizimki["dogrulamaNeZamanGonderdik"]);
-    $simdi = time();
-
-    $zdiff = $simdi - $dogrulamaZamani;
-
-    // doğrulama mail cooldown geçmiş mi?
-    if($zdiff >= dogrulamaCooldown * 60){
-        // geçmiş, yeniden gönder
-
-        Mail::dogrulamaGonder($bizimki["email"]);
-
-        OutputManager::error("Doğrulama kodunu yine gönderdik, mailine baksana oğlum.");
-        die();
-    }
-    else{
-        // geçmemiş, sabırsıza küfür et
-
-        OutputManager::error("Mailine kod göndermiştik, girmemişsin. $zdiff saniye sonra yine dene, o zaman yine gönderelim hala gelmediyse.");
-        die();
-    }
+    OutputManager::error("Ulan sen giriş yapmışsın? Kimi kandırıyon?");
+    die();
 }
 
 // şimdi düzgün giriş yapabiliriz artık
@@ -64,6 +41,41 @@ $adam = $yu->kullaniciAlParametreIle("kullaniciAdi", $kullaniciAdi);
 if($adam === null){
     OutputManager::error("Lan böyle birisi yok?");
     die();
+}
+
+//Eemail doğrulanmış mı?
+if(!$adam["emailDogrulandi"]){
+    // email doğrulanmamış
+
+    $dogrulamaZamani = strtotime($adam["dogrulamaNeZamanGonderdik"]);
+    $simdi = time();
+
+    $zdiff = $simdi - $dogrulamaZamani;
+
+    // doğrulama mail cooldown geçmiş mi?
+    if($zdiff >= $dogrulamaCooldown * 60){
+        // geçmiş, yeniden gönder
+
+        if(!Mail::dogrulamaGonder($adam["email"])){
+            // zaten Mail::mailGonder'de loglanıyor, şimdi loga gerek yok
+            OutputManager::error("Fena sıkıntı olmuş galiba, bunu birine söyle.");
+            die();
+        }
+        if(!$yu->adamaSimdiDogrulamaGonderdik($adam["uuid"])){
+            Logger::error("adamaSimdiDogrulamaGonderdik sıkıntı oldu.\n" . print_r($adam, true));
+            OutputManager::error("Fena sıkıntı olmuş galiba, bunu birine söyle.");
+            die();
+        }
+
+        OutputManager::error("Doğrulama kodunu yine gönderdik, mailine baksana oğlum.");
+        die();
+    }
+    else{
+        // geçmemiş, sabırsıza küfür et
+        $kalanSure = 60 * $dogrulamaCooldown - $zdiff;
+        OutputManager::error("Mailine kod göndermiştik, girmemişsin. $kalanSure saniye sonra yine dene, o zaman yine gönderelim hala gelmediyse.");
+        die();
+    }
 }
 
 $beklenenHash = $adam["hash"];

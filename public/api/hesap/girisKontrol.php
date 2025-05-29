@@ -27,7 +27,7 @@ if(!isset($_COOKIE["YEMEK_SESSION"])){
 
 $token = $_COOKIE["YEMEK_SESSION"];
 $tokenData = Auth::verifyToken($token);
-if($tokenData === false){
+if($tokenData === null){
     OutputManager::error("Yaş yetmiş, iş bitmiş.", 401);
     die();
 }

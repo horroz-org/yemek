@@ -107,7 +107,7 @@ fieldset {
     cursor: auto;
 }
 
-.buton:hover :not(.kapali-buton) {
+.buton:hover {
     background-color: rgb(0, 0, 0, 0.1);
 }
 
@@ -623,4 +623,22 @@ a:hover {
     align-items: center;
 
     margin-top: 0.3rem;
+}
+
+.sifre-input-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.2rem;
+}
+
+#sifre-input {
+    width: 100%;
+}
+
+#sifre-goster-buton {
+    flex: 0;
+    padding: 0.1rem 0.1rem;
+    cursor: auto;
 }

@@ -16,7 +16,7 @@ php -S 0.0.0.0:8080
 - [X] YemekUzmani::kullaniciEkle($kullaniciAdi, $eposta, $sifre)
 - [X] Utils::kullaniciAdiKontrol
 - [X] Utils::epostaKontrol ve Utils::sifreKontrol test etme
-- [ ] epostaDogrula.php
+- [X] epostaDogrula.php
 - [ ] yorum kontrol
 
 ## Bağış
