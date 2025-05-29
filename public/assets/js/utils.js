@@ -78,3 +78,29 @@ function puanTrunc(puan, basamakSayisi = 1){
 function giriseGit(){
     window.location.href = "/giris/?r=" + encodeURIComponent(getUrlPath());
 }
+
+function htmlEscape(str){
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+function yorumIsle(yorum){
+    var metin = yorum;
+
+    metin = htmlEscape(metin);
+
+    // etiketleri <a> yapacaz,
+    // mesela @pro
+    // <a href='/profil/?u=pro'>@pro</a>
+    // olacak
+    var regex = /@([a-zA-Z0-9_]{3,})/g;
+    metin = metin.replace(regex, (match, kullanici) => {
+        return "<a href='/profil/?u=" + kullanici + "'>" + match + "</a>";
+    });
+
+    return metin;
+}

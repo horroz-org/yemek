@@ -97,7 +97,7 @@ class Utils {
     // 2025-05-29 20:40 tamamen değiştiriyorum
     // boşluk moşluk olmasın
     // salak salak şeyler yaparlar kesin
-    const izinVerilenKullaniciAdiKarakterleri = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_-.";
+    const izinVerilenKullaniciAdiKarakterleri = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_";
     public static function kullaniciAdiKontrol($kullaniciAdi){
         if(strlen($kullaniciAdi) < 3){
             return false;

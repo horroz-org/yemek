@@ -17,6 +17,7 @@ php -S 0.0.0.0:8080
 - [X] Utils::kullaniciAdiKontrol
 - [X] Utils::epostaKontrol ve Utils::sifreKontrol test etme
 - [X] epostaDogrula.php
+- [ ] şikayet
 - [ ] yorum kontrol
 
 ## Bağış

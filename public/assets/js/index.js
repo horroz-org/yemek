@@ -195,7 +195,7 @@ function yorumEkle(yorum, derinlik = 0){
     clone.querySelector(".yorum-yazar").textContent = yorum.yazarKullaniciAdi;
     clone.querySelector(".yorum-yazar").href = "/profil/?u=" + yorum.yazarKullaniciAdi;
     clone.querySelector(".yorum-tarih").textContent = zamanFarki(new Date(), new Date(yorum.zaman));
-    clone.querySelector(".yorum-metin").textContent = yorum.yorum;
+    clone.querySelector(".yorum-metin").innerHTML = yorumIsle(yorum.yorum);
     clone.querySelector(".vote-sayi").textContent = yorum.like - yorum.dislike;
     if(yorum.bizimkininOyu !== null){
         if(yorum.bizimkininOyu){
