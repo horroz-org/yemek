@@ -11,7 +11,7 @@ php -S 0.0.0.0:8080
 ```
 
 ## Neler kaldı
-- [ ] Utils.php:34 sakııııııın ama sakın unutma
+- [X] Utils.php:34 sakııııııın ama sakın unutma
 - [X] Mail::dogrulamaGonder($eposta)
 - [X] YemekUzmani::kullaniciEkle($kullaniciAdi, $eposta, $sifre)
 - [X] Utils::kullaniciAdiKontrol
@@ -19,6 +19,13 @@ php -S 0.0.0.0:8080
 - [X] epostaDogrula.php
 - [ ] şikayet
 - [ ] yorum kontrol
+- [ ] Profil
+    - [X] yorum/yorumlariniAl.php
+    - [X] hesap/kullaniciAl.php
+    - [ ] yorum kısmında daha fazla göster tuşu olacak falan filan
+    - [ ] yoruma gite basınca yoruma gidecek idir
+- [ ] query string kontrolünü getQueryData()'ya geçir her yerde
+- [ ] api php dosyalarının adlarını deve yapacaz (deve cüce oyunu)
 
 ## Bağış
 Acilen [horroz.org'a yardımda bulunun](https://wiki.horroz.org/wiki/Horrozpedi:Bağış), batıyoruz. Şaka şaka. Ayağımı şu köşeye sileyim de ses çıkarmayın. Kim getirttirdi sizi buraya? Gelmeyin. (Galmayın.)

@@ -49,7 +49,7 @@ if($adam["emailDogrulandi"]){
 }
 
 // sonunda geldik buralara
-$kontrol = $yu->epostaDogrulandiOlarakIsaretle();
+$kontrol = $yu->epostaDogrulandiOlarakIsaretle($eposta);
 if($kontrol === false){
     Logger::error("İnanılmaz kötü şeyler olmakta. (epostaDogrula.php)\n" . print_r($tokenData, true));
     die("Gerçekten kötü kötü şeyler oldu az önce. (Olmamış ta olabilir, emin değilim.)

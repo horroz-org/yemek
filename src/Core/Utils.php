@@ -36,7 +36,6 @@ class Utils {
 
     // https://stackoverflow.com/questions/136505/searching-for-uuids-in-text-with-regex
     public static function validateUUIDv4($str){
-        return true; // şimdilik örnek db'de uuid'ler uuid değil o yüzden test için
         $regex = '/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
         return preg_match($regex, $str);
     }
@@ -65,6 +64,31 @@ class Utils {
         foreach ($defaults as $key => $value) {
             if (array_key_exists($key, $json)) {
                 $finalData[$key] = $json[$key];
+            } else {
+                $finalData[$key] = $value;
+            }
+        }
+
+        return $finalData;
+    }
+
+    // getPostData'yı azıcık çekiştirdim
+    public static function getQueryData($checkKeys = [], $defaults = []) {
+        $finalData = [];
+        if (!empty($checkKeys)) {
+            foreach ($checkKeys as $key) {
+                if (!array_key_exists($key, $_GET)) {
+                    OutputManager::error("'$key' lazım efendiler?", 400);
+                    die();
+                }
+                $finalData[$key] = $_GET[$key];
+            }
+        }
+
+        // varsayilanlari da ekle
+        foreach ($defaults as $key => $value) {
+            if (array_key_exists($key, $_GET)) {
+                $finalData[$key] = $_GET[$key];
             } else {
                 $finalData[$key] = $value;
             }

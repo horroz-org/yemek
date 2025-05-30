@@ -885,4 +885,56 @@ class YemekUzmani {
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([$simdi->format("Y-m-d H:i:s"), $adamId]);
     }
+
+    /**
+     * Adamın yorumlarının listesini al. (yeniden eskiye)
+     * Adam var mı yok mu bunu çağırmadan önce kontrol et, burda kontrol yok.
+     * (Adam yoksa [] döner aslında ama olsun)
+     * 
+     * @param string $adamId adamın uuid
+     * @param int $limit ikk kaç tanesini alalım
+     * @param ?\DateTime $eskiTarih hangi tarihten eski yorumlar alınsın?
+     * mesela 2025 verdiyse sadece o tarihten önce yapılmış yorumları alır.
+     * (profil kısmındaki 'daha fazla göster' kısmı için)
+     * null ise şimdi demek
+     * 
+     * @return array yorumların listesi
+     */
+    public function adaminYorumlariniAl($adamId, $limit, $eskiTarih = null){
+        $eskiTarihObj = ($eskiTarih === null) ? new \DateTime() : $eskiTarih;
+        $eskiTarihStr = $eskiTarih->format("Y-m-d H:i:s");
+
+        // daha eskiler lazım, zaman <= ? değil de zaman < ? yaptım
+        $sql = "SELECT * FROM yorumlar WHERE yazarUuid = ? AND zaman < ? AND kaldirildi = 0 ORDER BY datetime(zaman) DESC LIMIT ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$adamId, $eskiTarihStr, $limit]);
+        $rows = $stmt->fetchAll();
+        $stmt->closeCursor();
+
+        $yorumlar = [];
+        foreach($rows as $row){
+            $yorumlar[] = [
+                "uuid" => $row["uuid"],
+
+                "yazarUuid" => $row["yazarUuid"],
+
+                "ustYorumId" => $row["ustYorumId"],
+
+                "yorum" => $row["yorum"],
+                "adaminYemekPuani" => $row["adaminYemekPuani"],
+                "herkeseAcik" => $row["herkeseAcik"],
+
+                "like" => $row["like"],
+                "dislike" => $row["dislike"],
+
+                // zaten kaldırılmışları seçmiyoruz bile
+                // "kaldirildi" => $row["kaldirildi"],
+                
+                "yemekTarih" => (new \DateTime($row["yemekTarih"]))->format('Y-m-d'), // emin olalım
+                "zaman" => (new \DateTime($row["zaman"]))->format('Y-m-d H:i:s') // emin olalım
+            ];
+        }
+
+        return $yorumlar;
+    }
 }

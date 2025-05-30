@@ -25,7 +25,7 @@ async function basla(){
 // tarih yyyy-mm-dd olacak
 function herseyiGoster(tarih){
     if(tarih in yemekCache){
-        if ("error" in yemekCache[tarih]) {
+        if (yemekCache[tarih] === null) {
             uiYemekYok();
         }
         else {
@@ -46,7 +46,7 @@ function herseyiGoster(tarih){
 // cache yenilemek için başka yerlerde kullanacaz diye ayırdım bunu herseyiGoster'den
 function yemekBilgiAlGoster(tarih){
     topluAl(tarih).then(bilgiler => {
-        if("error" in bilgiler){
+        if(bilgiler === null){
             uiYemekYok();
         }
         else{

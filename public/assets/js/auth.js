@@ -18,7 +18,7 @@ async function girisYapildiMi() {
     try{
         const xhr = await apiGet("hesap/girisKontrol.php");
         if(xhr.status === 200){
-            return JSON.parse(xhr.response);
+            return xhr.response;
         }
         else{
             // sıkıntı çıkmasın

@@ -588,7 +588,6 @@ a:hover {
 }
 
 #giris-kayit-form-kutu {
-    
     padding: 1rem;
 
     display: flex;
@@ -641,4 +640,39 @@ a:hover {
     flex: 0;
     padding: 0.1rem 0.1rem;
     cursor: auto;
+}
+
+/* PROFIL */
+.profil-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+
+    padding-top: 5rem;
+}
+
+#kullanici-adi-kutu {
+    font-weight: bold;
+    font-size: 3rem;
+}
+
+#rutbe-kutu, #prestij-kutu {
+    font-weight: bold;
+}
+
+.profil-attr-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+
+    font-size: 1rem;
+}
+
+.yoruma-git-buton {
+    padding: 0.2rem;
+}
+
+#profil-yorumlar-liste {
+    margin-top: 3rem;
 }

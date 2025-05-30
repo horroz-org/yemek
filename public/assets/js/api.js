@@ -4,7 +4,8 @@ async function apiGet(endpoint) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open("GET", apiUrl + endpoint, true);
-
+        xhr.responseType = "json";
+        
         xhr.onload = function () {
             resolve(xhr);
         };
@@ -54,11 +55,7 @@ async function apiPost(endpoint, data) {
 
 async function topluAl(tarih) {
     const xhr = await apiGet("yemek/toplual.php?tarih=" + tarih);
-    try{
-        return JSON.parse(xhr.response);
-    } catch{
-        throw new Error("Fop.");
-    }
+    return xhr.status === 200 ? xhr.response : null;
 }
 
 async function yorumOyVer(yorumUuid, likeDislike) {
@@ -127,4 +124,22 @@ async function kayitOl(kullaniciAdi, eposta, sifre) {
     });
 
     return (xhr.status === 200 || xhr.status === 400) ? xhr.response : null;
+}
+
+// profil görüntüleme fln. için kullanıcı bilgisi al
+async function kullaniciAl(kullaniciAdi) {
+    var xhr = await apiGet("hesap/kullaniciAl.php?kullaniciAdi=" + kullaniciAdi);
+    return xhr.status === 200 ? xhr.response : null;
+}
+
+// adamın bütün yorumlarını al
+// eskiTarih'in açıklaması YemekUzmani.php'de var
+async function yorumlariniAl(uuid, limit, eskiTarih) {
+    var xhr = await apiPost("yorum/yorumlariniAl.php", {
+        uuid: uuid,
+        limit: limit,
+        eskiTarih: eskiTarih
+    });
+
+    return xhr.status === 200 ? xhr.response : null;
 }
