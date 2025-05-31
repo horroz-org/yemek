@@ -54,12 +54,12 @@ async function apiPost(endpoint, data) {
 }
 
 async function topluAl(tarih) {
-    const xhr = await apiGet("yemek/toplual.php?tarih=" + tarih);
+    const xhr = await apiGet("yemek/topluAl.php?tarih=" + tarih);
     return xhr.status === 200 ? xhr.response : null;
 }
 
 async function yorumOyVer(yorumUuid, likeDislike) {
-    var xhr = await apiPost("yorum/oyver.php", {
+    var xhr = await apiPost("yorum/oyVer.php", {
         yorumUuid: yorumUuid,
         like: likeDislike
     });
@@ -68,7 +68,7 @@ async function yorumOyVer(yorumUuid, likeDislike) {
 }
 
 async function yorumOySil(yorumUuid) {
-    var xhr = await apiPost("yorum/oysil.php", {
+    var xhr = await apiPost("yorum/oySil.php", {
         yorumUuid: yorumUuid,
     });
 
@@ -76,7 +76,7 @@ async function yorumOySil(yorumUuid) {
 }
 
 async function yemegePuanVer(puan, tarih) {
-    var xhr = await apiPost("yemek/puanver.php", {
+    var xhr = await apiPost("yemek/puanVer.php", {
         puan: puan,
         tarih: tarih
     });
@@ -85,7 +85,7 @@ async function yemegePuanVer(puan, tarih) {
 }
 
 async function yemekPuaniSil(tarih) {
-    var xhr = await apiPost("yemek/puansil.php", {
+    var xhr = await apiPost("yemek/puanSil.php", {
         tarih: tarih
     });
 
@@ -93,13 +93,13 @@ async function yemekPuaniSil(tarih) {
 }
 
 async function yorumYap(yorumObj){
-    var xhr = await apiPost("yorum/yorumyap.php", yorumObj);
+    var xhr = await apiPost("yorum/yorumYap.php", yorumObj);
 
     return xhr.status === 200 ? xhr.response : null;
 }
 
 async function yorumSil(yorumUuid) {
-    var xhr = await apiPost("yorum/yorumsil.php", {
+    var xhr = await apiPost("yorum/yorumSil.php", {
         yorumUuid: yorumUuid
     });
 

@@ -17,16 +17,17 @@ php -S 0.0.0.0:8080
 - [X] Utils::kullaniciAdiKontrol
 - [X] Utils::epostaKontrol ve Utils::sifreKontrol test etme
 - [X] epostaDogrula.php
-- [ ] şikayet
-- [ ] yorum kontrol
+- [X] api php dosyalarının adlarını deve yapacaz (deve cüce oyunu)
 - [X] Profil
     - [X] yorum/yorumlariniAl.php
     - [X] hesap/kullaniciAl.php
     - [X] yorum kısmında daha fazla göster tuşu olacak falan filan
     - [X] yoruma gite basınca yoruma gidecek idir
+- [ ] şikayet
+- [ ] yorum kontrol
 - [ ] query string kontrolünü getQueryData()'ya geçir her yerde
-- [ ] api php dosyalarının adlarını deve yapacaz (deve cüce oyunu)
 - [ ] prestij güncellemesi
+- [ ] yemekKoy.php
 
 ## Bağış
 Acilen [horroz.org'a yardımda bulunun](https://wiki.horroz.org/wiki/Horrozpedi:Bağış), batıyoruz. Şaka şaka. Ayağımı şu köşeye sileyim de ses çıkarmayın. Kim getirttirdi sizi buraya? Gelmeyin. (Galmayın.)
