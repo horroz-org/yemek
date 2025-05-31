@@ -23,11 +23,12 @@ php -S 0.0.0.0:8080
     - [X] hesap/kullaniciAl.php
     - [X] yorum kısmında daha fazla göster tuşu olacak falan filan
     - [X] yoruma gite basınca yoruma gidecek idir
+- [X] query string kontrolünü getQueryData()'ya geçir her yerde
 - [ ] şikayet
 - [ ] yorum kontrol
-- [ ] query string kontrolünü getQueryData()'ya geçir her yerde
 - [ ] prestij güncellemesi
 - [ ] yemekKoy.php
+- [ ] zaman makinesi olayları (yapmıştık heralde ama yine bakalım çok önemli çünkü)
 
 ## Bağış
 Acilen [horroz.org'a yardımda bulunun](https://wiki.horroz.org/wiki/Horrozpedi:Bağış), batıyoruz. Şaka şaka. Ayağımı şu köşeye sileyim de ses çıkarmayın. Kim getirttirdi sizi buraya? Gelmeyin. (Galmayın.)

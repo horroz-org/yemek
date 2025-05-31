@@ -11,12 +11,10 @@ use Yemek\YemekUzmani;
 use Yemek\Auth;
 use Yemek\Mail;
 
-if(!isset($_GET["t"])){
-    OutputManager::error("Token versene oğlum evladım?");
-    die();
-}
+$zorunluKeyler = ["t"];
+$qData = Utils::getQueryData($zorunluKeyler);
 
-$token = trim($_GET["t"]);
+$token = $qData["t"];
 
 $tokenData = Auth::verifyMailToken($token);
 if($tokenData === null){

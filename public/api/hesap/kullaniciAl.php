@@ -8,9 +8,9 @@ use Yemek\YemekUzmani;
 use Yemek\Auth;
 
 $zorunluKeyler = ["kullaniciAdi"];
-$postData = Utils::getQueryData($zorunluKeyler);
+$qData = Utils::getQueryData($zorunluKeyler);
 
-$kullaniciAdi = $postData["kullaniciAdi"];
+$kullaniciAdi = $qData["kullaniciAdi"];
 
 // alıverdirdirelim
 $yu = new YemekUzmani(null);

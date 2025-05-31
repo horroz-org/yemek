@@ -6,13 +6,11 @@ use Core\OutputManager;
 use Yemek\YemekUzmani;
 use Yemek\Auth;
 
-if(!isset($_GET["tarih"])){
-    OutputManager::error("Tarih niye vermedin?");
-    die();
-}
+$zorunluKeyler = ["tarih"];
+$qData = Utils::getQueryData($zorunluKeyler);
 
-$tarih = trim($_GET["tarih"]);
-if(!Utils::isIsoDate($_GET["tarih"])){
+$tarih = $qData["tarih"];
+if(!Utils::isIsoDate($tarih)){
     Utils::buAdamBiseylerYapmayaCalisiyo();
 }
 
