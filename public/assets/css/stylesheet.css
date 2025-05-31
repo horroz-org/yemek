@@ -60,6 +60,7 @@ fieldset {
 
     max-height: 100%;
     min-height: 0;
+    min-width: 0;
 }
 
 .kocadiv {
@@ -355,6 +356,7 @@ a:hover {
 
 .yorum-metin {
     white-space: pre-line;
+    word-wrap: break-word;
 }
 
 .puan-yorum-bilgi {
