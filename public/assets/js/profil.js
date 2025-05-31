@@ -3,7 +3,7 @@ var kullanici = null;
 // şu an profiline baktığımız kullanıcı
 var gosterilenKullanici = null;
 
-const yorumAlmaLimit = 2;
+const yorumAlmaLimit = 20;
 var suAnkiEskiTarih = new Date();
 var devamiVar = true;
 
@@ -57,7 +57,7 @@ async function yorumlarinDevaminiKoy(){
         yorumEkle(yorum);
     });
 
-    if(yorumlarListe.length > 0){
+    if(yorumlarListe.length === yorumAlmaLimit){
         suAnkiEskiTarih = new Date(yorumlarListe[yorumlarListe.length - 1].zaman);
     }
     else{
