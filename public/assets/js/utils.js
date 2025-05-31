@@ -104,3 +104,19 @@ function yorumIsle(yorum){
 
     return metin;
 }
+
+// klasik dediğim Y-m-d H:i:s
+// anasını siktiğimin javascriptinde tarih formatlamak için düzgün bişey yok
+function klasikTarihSaatFormat(date){
+    const pad = n => n.toString().padStart(2, '0');
+
+    const Y = date.getFullYear();
+    const m = pad(date.getMonth() + 1);
+    const d = pad(date.getDate());
+
+    const H = pad(date.getHours());
+    const i = pad(date.getMinutes());
+    const s = pad(date.getSeconds());
+
+    return `${Y}-${m}-${d} ${H}:${i}:${s}`;
+}

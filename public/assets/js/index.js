@@ -19,11 +19,26 @@ async function basla(){
     }
 
     var simdiIsoDate = isoDate(suAnkiTarih); // yyyy-mm-dd
-    herseyiGoster(simdiIsoDate);
+    await herseyiGoster(simdiIsoDate);
+
+    yorumaKaydir();
+}
+
+function yorumaKaydir(){
+    if (window.location.hash) {
+        const target = document.getElementById(window.location.hash.substring(1));
+        if (target){
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+}
+
+function hashSil(){
+    history.replaceState(null, null, ' ');
 }
 
 // tarih yyyy-mm-dd olacak
-function herseyiGoster(tarih){
+async function herseyiGoster(tarih){
     if(tarih in yemekCache){
         if (yemekCache[tarih] === null) {
             uiYemekYok();
@@ -39,28 +54,28 @@ function herseyiGoster(tarih){
         }
     }
     else{
-        yemekBilgiAlGoster(tarih);
+        await yemekBilgiAlGoster(tarih);
     }
 }
 
 // cache yenilemek için başka yerlerde kullanacaz diye ayırdım bunu herseyiGoster'den
-function yemekBilgiAlGoster(tarih){
-    topluAl(tarih).then(bilgiler => {
-        if(bilgiler === null){
-            uiYemekYok();
-        }
-        else{
-            var yemek = bilgiler.yemek;
-            var yorumlar = bilgiler.yorumlar;
-            
-            uiYemekVar();
+async function yemekBilgiAlGoster(tarih){
+    var bilgiler = await topluAl(tarih);
 
-            yemekGoster(yemek);
-            yorumlariGoster(yorumlar, Siralama.varsayilan);
-        }
+    if (bilgiler === null) {
+        uiYemekYok();
+    }
+    else {
+        var yemek = bilgiler.yemek;
+        var yorumlar = bilgiler.yorumlar;
 
-        yemekCache[tarih] = bilgiler;
-    });
+        uiYemekVar();
+
+        yemekGoster(yemek);
+        yorumlariGoster(yorumlar, Siralama.varsayilan);
+    }
+
+    yemekCache[tarih] = bilgiler;
 }
 
 function uiYemekYok(){
@@ -223,6 +238,8 @@ function sonrakiYemek(){
     var suAnkiIsoDate = isoDate(suAnkiTarih);
     setQueryParam("t", suAnkiIsoDate);
     herseyiGoster(suAnkiIsoDate);
+
+    hashSil();
 }
 
 function oncekiYemek() {
@@ -230,6 +247,8 @@ function oncekiYemek() {
     var suAnkiIsoDate = isoDate(suAnkiTarih);
     setQueryParam("t", suAnkiIsoDate);
     herseyiGoster(isoDate(suAnkiTarih));
+
+    hashSil();
 }
 
 function cevapVer(yorumId){

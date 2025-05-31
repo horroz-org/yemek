@@ -19,13 +19,14 @@ php -S 0.0.0.0:8080
 - [X] epostaDogrula.php
 - [ ] şikayet
 - [ ] yorum kontrol
-- [ ] Profil
+- [X] Profil
     - [X] yorum/yorumlariniAl.php
     - [X] hesap/kullaniciAl.php
-    - [ ] yorum kısmında daha fazla göster tuşu olacak falan filan
-    - [ ] yoruma gite basınca yoruma gidecek idir
+    - [X] yorum kısmında daha fazla göster tuşu olacak falan filan
+    - [X] yoruma gite basınca yoruma gidecek idir
 - [ ] query string kontrolünü getQueryData()'ya geçir her yerde
 - [ ] api php dosyalarının adlarını deve yapacaz (deve cüce oyunu)
+- [ ] prestij güncellemesi
 
 ## Bağış
 Acilen [horroz.org'a yardımda bulunun](https://wiki.horroz.org/wiki/Horrozpedi:Bağış), batıyoruz. Şaka şaka. Ayağımı şu köşeye sileyim de ses çıkarmayın. Kim getirttirdi sizi buraya? Gelmeyin. (Galmayın.)

@@ -3,8 +3,9 @@ var kullanici = null;
 // şu an profiline baktığımız kullanıcı
 var gosterilenKullanici = null;
 
-const yorumAlmaLimit = 20;
+const yorumAlmaLimit = 2;
 var suAnkiEskiTarih = new Date();
+var devamiVar = true;
 
 async function basla() {
     uiAyarla();
@@ -33,25 +34,35 @@ async function basla() {
         }
     }
 
-    await profilAyarla(gosterilenKullanici);
+    await profilAyarla();
 }
 
-async function profilAyarla(kullaniciBilgi) {
-    var uuid = kullaniciBilgi.uuid;
-    var kullaniciAdi = kullaniciBilgi.kullaniciAdi;
-    var rutbe = kullaniciBilgi.rutbe;
-    var prestij = kullaniciBilgi.prestij;
-
+async function profilAyarla() {
     // isim falan yerine koy
-    document.getElementById("kullanici-adi-kutu").textContent = kullaniciAdi;
-    document.getElementById("rutbe-kutu").textContent = rutbe;
-    document.getElementById("prestij-kutu").textContent = prestij;
+    document.getElementById("kullanici-adi-kutu").textContent = gosterilenKullanici.kullaniciAdi;
+    document.getElementById("rutbe-kutu").textContent = gosterilenKullanici.rutbe;
+    document.getElementById("prestij-kutu").textContent = gosterilenKullanici.prestij;
 
     // yorumları al koy
-    var yorumlarListe = await yorumlariniAl(uuid, yorumAlmaLimit, isoDate(suAnkiEskiTarih));
+    await yorumlarinDevaminiKoy();
+
+    if (!devamiVar) {
+        document.getElementById("devamini-goster").style.display = "none";
+    }
+}
+
+async function yorumlarinDevaminiKoy(){
+    var yorumlarListe = await yorumlariniAl(gosterilenKullanici.uuid, yorumAlmaLimit, klasikTarihSaatFormat(suAnkiEskiTarih));
     yorumlarListe.forEach(yorum => {
         yorumEkle(yorum);
     });
+
+    if(yorumlarListe.length > 0){
+        suAnkiEskiTarih = new Date(yorumlarListe[yorumlarListe.length - 1].zaman);
+    }
+    else{
+        devamiVar = false;
+    }
 }
 
 // index.js'den alıverdim
@@ -66,11 +77,19 @@ function yorumEkle(yorum) {
     clone.querySelector(".yorum-metin").innerHTML = yorumIsle(yorum.yorum);
     clone.querySelector(".vote-sayi").textContent = yorum.like - yorum.dislike;
 
+    // yoruma git butonu
+    clone.querySelector(".yoruma-git-buton").href = "/?t=" + yorum.yemekTarih + "#" + yorum.uuid;
+
     document.getElementById("profil-yorumlar-liste").appendChild(clone);
 }
 
 function uiAyarla() {
-
+    document.getElementById("devamini-goster").addEventListener("click", async function() {
+        await yorumlarinDevaminiKoy();
+        if(!devamiVar){
+            this.style.display = "none";
+        }
+    });
 }
 
 window.addEventListener("load", basla);

@@ -115,23 +115,6 @@ fieldset {
     display: none;
 }
 
-@media (max-width: 768px) {
-  .anakutu {
-    flex-direction: column;
-  }
-  .index-layout {
-    height: calc(200vh - 50px);
-  }
-  #yorumlar-liste {
-    overflow: visible;
-    height: auto;
-    padding-bottom: 0.5rem; /* en alttaki yorum bitişik oluyor o yüzden */
-  }
-  .topbar-baslik {
-    display: none;
-  }
-}
-
 /* TOPBAR */
 .topbar {
     position: fixed;
@@ -655,6 +638,7 @@ a:hover {
 #kullanici-adi-kutu {
     font-weight: bold;
     font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
 #rutbe-kutu, #prestij-kutu {
@@ -675,4 +659,36 @@ a:hover {
 
 #profil-yorumlar-liste {
     margin-top: 3rem;
+
+    width: 50%;
+}
+
+#devamini-goster {
+    margin-bottom: 1rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .anakutu {
+        flex-direction: column;
+    }
+
+    .index-layout {
+        height: calc(200vh - 50px);
+    }
+
+    #yorumlar-liste {
+        overflow: visible;
+        height: auto;
+        padding-bottom: 0.5rem;
+        /* en alttaki yorum bitişik oluyor o yüzden */
+    }
+
+    #profil-yorumlar-liste {
+        width: calc(100% - 4rem);
+    }
+
+    .topbar-baslik {
+        display: none;
+    }
 }
