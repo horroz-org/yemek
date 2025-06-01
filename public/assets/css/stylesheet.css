@@ -275,6 +275,12 @@ a:hover {
     font-weight: bold;
 }
 
+/** MENU **/
+#menu {
+    white-space: pre-line;
+    word-wrap: break-word;
+}
+
 /** PUAN YAZISI **/
 .puan-wrapper {
     margin-top: 1rem;

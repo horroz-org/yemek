@@ -25,12 +25,15 @@ php -S 0.0.0.0:8080
     - [X] yoruma gite basınca yoruma gidecek idir
     - [ ] rütbe
 - [X] query string kontrolünü getQueryData()'ya geçir her yerde
+- [X] yemekKoy.php
+- [X] sksdb scraper
+    - [ ] site bok gibi olduğu için bazı özel durumlar var onları ayarlamak lazım
 - [ ] yorum textarea kalan karakterler sağ altta yazacak
 - [ ] yorum textarea Devamını göster tuşu olacak
+- [ ] kalori yazsın
 - [ ] şikayet
 - [ ] yorum kontrol
 - [ ] prestij güncellemesi
-- [ ] yemekKoy.php
 - [ ] zaman makinesi olayları (yapmıştık heralde ama yine bakalım çok önemli çünkü)
 - [ ] topbarda kullanıcı adına tıklayınca küçük menü
 

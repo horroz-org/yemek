@@ -64,7 +64,7 @@ class YemekUzmani {
             Utils::buAdamBiseylerYapmayaCalisiyo();
         }
 
-        $sql = "SELECT * FROM yemek WHERE tarih = ?";
+        $sql = "SELECT * FROM yemekler WHERE tarih = ?";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$tarih]); 
         $row = $stmt->fetch(); // 1 row olacak zaten
@@ -377,7 +377,7 @@ class YemekUzmani {
                 $yeniOrtalama = $eskiOrtalama + ($puan - $eskiPuan) / $kacKisi;
             }
     
-            $sql = "UPDATE yemek SET puan = ?, puanSayisi = ? WHERE tarih = ? RETURNING puan, puanSayisi";
+            $sql = "UPDATE yemekler SET puan = ?, puanSayisi = ? WHERE tarih = ? RETURNING puan, puanSayisi";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$yeniOrtalama, $kacKisi, $yemekTarih]);
 
@@ -441,7 +441,7 @@ class YemekUzmani {
             }
     
             $stmt = $this->pdo->prepare("
-            UPDATE yemek
+            UPDATE yemekler
             SET 
                 puan = 
                     CASE 
@@ -936,5 +936,18 @@ class YemekUzmani {
         }
 
         return $yorumlar;
+    }
+
+    /**
+     * yemekKoy.php için
+     * 
+     * @param array $yemek yemek data
+     * 
+     * @return bool oldu mu olmadı mı
+     */
+    public function yemekKoy($yemek){
+        $sql = "INSERT INTO yemekler (tarih, menu, kalori, puan, puanSayisi) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([$yemek["tarih"], $yemek["menu"], $yemek["kalori"], 0, 0]);
     }
 }
