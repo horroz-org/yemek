@@ -22,6 +22,12 @@ if(!Utils::isIsoDate($tarih)){
     Utils::buAdamBiseylerYapmayaCalisiyo();
 }
 
+// kafayı yedirttiniz (sanal alemde)
+if(time() < strtotime($tarih)){
+    OutputManager::error("Beni yemin ediyorum dellendirdiniz. Deli oldum deli. Deli gibi oldum ben deli gibi oldum. Delirdim sonunda. Hadi bakalım kim kimi parçalıyormuş.");
+    die();
+}
+
 $bizimki = Auth::bizimkiKim();
 if($bizimki === null){
     OutputManager::error("Ulan sen nesin? Hem giriş yapmamış, hem de puan silmeye çalışıyo denyoya bak?");

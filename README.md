@@ -34,7 +34,8 @@ php -S 0.0.0.0:8080
 - [ ] şikayet
 - [ ] yorum kontrol
 - [ ] prestij güncellemesi
-- [ ] zaman makinesi olayları (yapmıştık heralde ama yine bakalım çok önemli çünkü)
+- [ ] zaman makinesi olayları (yapmıştık heralde ama yine bakalım çok önemli çünkü) (şaka yaptım o kadar önemli değil ama olsun)
+    - [X] puanSil'de kalmış bi tane 
 - [ ] topbarda kullanıcı adına tıklayınca küçük menü
 
 ## Bağış
