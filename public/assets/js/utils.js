@@ -17,7 +17,13 @@ function deleteCookie(name){
 }
 
 function isoDate(date){
-    return date.toISOString().split('T')[0];
+    const pad = n => n.toString().padStart(2, '0');
+
+    const Y = date.getFullYear();
+    const m = pad(date.getMonth() + 1);
+    const d = pad(date.getDate());
+
+    return `${Y}-${m}-${d}`;
 }
 
 function isIsoDate(text){
