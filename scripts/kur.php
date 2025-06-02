@@ -99,7 +99,8 @@ function tablolariOlustur(){
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             kullaniciId TEXT NOT NULL,
             yorumId TEXT NOT NULL,
-            like BOOLEAN NOT NULL
+            like BOOLEAN NOT NULL,
+            zaman DATETIME NOT NULL -- prestij güncelleme için
         )
     ");
     echo(":: Tablo oluşturuldu: likedislike\n");

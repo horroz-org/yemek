@@ -28,12 +28,12 @@ php -S 0.0.0.0:8080
 - [X] yemekKoy.php
 - [X] sksdb scraper
     - [ ] site bok gibi olduğu için bazı özel durumlar var onları ayarlamak lazım
+- [X] prestij güncellemesi (workers/prestij/prestijGuncelle.php'ye bakın, orda başta yazdığım şey hala var. hatta prestij güncellemesini 3 günde bire kadar çıkarabilirim onun için, bakarız.)
 - [ ] yorum textarea kalan karakterler sağ altta yazacak
 - [ ] yorum textarea Devamını göster tuşu olacak
 - [ ] kalori yazsın
 - [ ] şikayet
 - [ ] yorum kontrol
-- [ ] prestij güncellemesi
 - [ ] zaman makinesi olayları (yapmıştık heralde ama yine bakalım çok önemli çünkü) (şaka yaptım o kadar önemli değil ama olsun)
     - [X] puanSil'de kalmış bi tane 
 - [ ] topbarda kullanıcı adına tıklayınca küçük menü

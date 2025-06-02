@@ -32,7 +32,7 @@ if($tokenData === null){
     die();
 }
 
-$yu = new YemekUzmani(false); // anonim çünkü kontrol noktasındayız oğlum
+$yu = new YemekUzmani(null); // anonim çünkü kontrol noktasındayız oğlum
 $kullanici = $yu->kullaniciAlGuvenli($tokenData["uid"]);
 
 if($kullanici === null){

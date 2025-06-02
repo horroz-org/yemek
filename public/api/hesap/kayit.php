@@ -54,7 +54,7 @@ if(!$sifreKontrol){
 }
 
 // böyle birisi var mı diye bakalım
-$yu = new YemekUzmani(false);
+$yu = new YemekUzmani(null);
 $adam = $yu->kullaniciAlParametreIle("kullaniciAdi", $kullaniciAdi);
 if($adam !== null){
     OutputManager::error("Bu isim alınmış.");

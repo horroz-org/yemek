@@ -24,7 +24,7 @@ class YemekUzmani {
      * 
      * @var \PDO
      */
-    private $pdo = null;
+    public $pdo = null;
 
     /**
      * Bizim adam kim? Biz kime çalışıyoruz oğlum?
@@ -658,6 +658,16 @@ class YemekUzmani {
         // yemegePuanVer'den kopyalıyorum direkt, değiştirecem.
         // vazgeçtim karışık geldi, hem burda ortalamayla filan uğraşmıyoruz
 
+        // ne oluyo bilmiyorum ama likeDislike json'da false geliyo
+        // sonra yazdırmaya çalışınca "" oluyor, null mu oluyor ne oluyorsa
+        // bilmiyorum, db'ye bile 0 diye değil de boş string gibi bişeyle
+        // geçiyor çok saçma
+        // çözümünü bilen var mı?
+        // şimdilik şöyle olsun
+        // 
+        // Yapılacak: bunu diğer bool alan yerlere de yap
+        $likeDislike = $likeDislike ? 1 : 0;
+
         if($this->bizimki === null){
             return null;
         }
@@ -676,14 +686,14 @@ class YemekUzmani {
 
             if($bizimkininEskiOyu === null){
                 // oy vermemiş, insert
-                $sql = "INSERT INTO likedislike (like, kullaniciId, yorumId) VALUES (?, ?, ?) RETURNING *";
+                $sql = "INSERT INTO likedislike (like, zaman, kullaniciId, yorumId) VALUES (?, ?, ?, ?) RETURNING *";
             }
             else{
                 // oy vermiş, update
-                $sql = "UPDATE likedislike SET like = ? WHERE kullaniciId = ? AND yorumId = ? RETURNING *";
+                $sql = "UPDATE likedislike SET like = ?, zaman = ? WHERE kullaniciId = ? AND yorumId = ? RETURNING *";
             }
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([$likeDislike, $this->bizimki["uuid"], $yorumUuid]);
+            $stmt->execute([$likeDislike, (new \DateTime())->format("Y-m-d H:i:s"), $this->bizimki["uuid"], $yorumUuid]);
             $guncelOy = $stmt->fetch();
             $stmt->closeCursor();
 

@@ -110,7 +110,7 @@ class Auth {
             return null;
         }
         
-        $yu = new YemekUzmani(false); // anonim çünkü kontrol noktasındayız oğlum
+        $yu = new YemekUzmani(null); // anonim çünkü kontrol noktasındayız oğlum
         $kullanici = $yu->kullaniciAl($tokenData["uid"]);
         
         return $kullanici;
