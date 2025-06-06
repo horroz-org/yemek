@@ -1,4 +1,4 @@
-# Neler kaldı
+# Önemli şeyler
 - [X] Utils.php:34 sakııııııın ama sakın unutma
 - [X] Mail::dogrulamaGonder($eposta)
 - [X] YemekUzmani::kullaniciEkle($kullaniciAdi, $eposta, $sifre)
@@ -30,11 +30,21 @@
     - [X] puanSil'de kalmış bi tane
 - [X] captcha bokundan kurtuluyoruz
 - [X] profilde adminlerin ismi kırmızı yazsın
+- [X] topbarda kullanıcı adına tıklayınca küçük menü (veya çıkış yap butonu) (menüyle uğraşmadım çıkış butonunu koyuver idim)
+    - [X] hatta github butonu yerine küçük logo olsun topbar kalabalık olmasın, ledırbord da koyacaz çünkü daha
 - [ ] şikayet
-- [ ] topbarda kullanıcı adına tıklayınca küçük menü (veya çıkış yap butonu)
-    - [ ] hatta github butonu yerine küçük logo olsun topbar kalabalık olmasın, ledırbord da koyacaz çünkü daha
 
 # Daha önemsiz şeyler
+- [ ] TemplateManager (sooper iş) (html'ler php'ye geçecek)
 - [ ] belki profilde açıklama olabilir
 - [ ] eposta doğrulama .env'de isteğe bağlı olsun, açıp kapatıl isin
 - [ ] ledırbord
+- [ ] admin panel
+- [ ] yemek tarihi seçme
+- [ ] mobile hoverli şeylere basınca takılı kalıyo
+- [ ] sayfada herşey yüklenene kadar bomboş olsun, ortada yükleniyor filan yazsın belki
+- [ ] çıkışta da redir koyalım
+
+# İlerde yaparız belki
+- [ ] her sayfayı index.php'ye bağlayak, ordan route yapak, mis olur
+- [ ] Core More ayırak bi ara, composer paketi yapak, sonra da kullanırız

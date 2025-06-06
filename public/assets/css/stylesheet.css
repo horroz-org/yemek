@@ -158,6 +158,30 @@ fieldset {
     margin-left: 1rem;
 }
 
+.github-logo {
+    display: flex;
+}
+
+.github-logo img {
+    height: 23px;
+}
+
+.github-logo img:hover {
+    opacity: 0.8;
+}
+
+#topbar-cikis-buton {
+    display: flex;
+}
+
+#topbar-cikis-buton img {
+    height: 1rem;
+}
+
+#topbar-cikis-buton img:hover {
+    opacity: 0.8;
+}
+
 .topbar-baslik {
     font-weight: 500;
     font-size: 1.1rem;

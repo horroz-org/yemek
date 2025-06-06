@@ -54,14 +54,23 @@ async function authBak() {
 function anonimAyarla() {
     kullanici = null;
 
-    var topbarSagElement = document.querySelector(".topbar-sag");
-    topbarSagElement.innerHTML = "";
-    topbarSagElement.innerHTML += '<a href="/kayit/">Kayıt Ol</a>';
-    topbarSagElement.innerHTML += '<a href="/giris/">Giriş Yap</a>';
+    document.querySelectorAll(".topbar-kayit-giris-buton").forEach(function (element) {
+        element.style.removeProperty("display");
+    });
+
+    document.querySelectorAll(".topbar-profil-butonlar").forEach(function (element) {
+        element.style.display = "none";
+    });
 }
 
 function adamAyarla(kullanici) {
-    var topbarSagElement = document.querySelector(".topbar-sag");
-    topbarSagElement.innerHTML = "";
-    topbarSagElement.innerHTML += '<a href="/profil/">' + kullanici.kullaniciAdi + '</a>';
+    document.querySelectorAll(".topbar-kayit-giris-buton").forEach(function (element) {
+        element.style.display = "none";
+    });
+
+    document.querySelectorAll(".topbar-profil-butonlar").forEach(function (element) {
+        element.style.removeProperty("display");
+    });
+
+    document.querySelector(".topbar-kullanici-adi").textContent = kullanici.kullaniciAdi;
 }
