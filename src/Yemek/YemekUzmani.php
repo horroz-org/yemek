@@ -74,8 +74,9 @@ class YemekUzmani {
         }
 
         return [
-            "menu" => $row["menu"],
             "tarih" => $row["tarih"],
+            "menu" => $row["menu"],
+            "kalori" => $row["kalori"],
             "puan" => $row["puan"],
             "puanSayisi" => $row["puanSayisi"]
         ];

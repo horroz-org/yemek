@@ -1,4 +1,4 @@
-# Neler Kaldı
+# Neler kaldı
 - [X] Utils.php:34 sakııııııın ama sakın unutma
 - [X] Mail::dogrulamaGonder($eposta)
 - [X] YemekUzmani::kullaniciEkle($kullaniciAdi, $eposta, $sifre)
@@ -11,19 +11,27 @@
     - [X] hesap/kullaniciAl.php
     - [X] yorum kısmında daha fazla göster tuşu olacak falan filan
     - [X] yoruma gite basınca yoruma gidecek idir
-    - [ ] rütbe
+    - [X] rütbe
 - [X] query string kontrolünü getQueryData()'ya geçir her yerde
 - [X] yemekKoy.php
 - [X] sksdb scraper
     - [ ] site bok gibi olduğu için bazı özel durumlar var onları ayarlamak lazım
 - [X] prestij güncellemesi (workers/prestij/prestijGuncelle.php'ye bakın, orda başta yazdığım şey hala var. hatta prestij güncellemesini 3 günde bire kadar çıkarabilirim onun için, bakarız.)
 - [X] yorum textarea Devamını göster tuşu olacak (gerek kalmadı yorumlar zaten az satır olacak ama yine de yapılsa iyi olur)
-- [X] yorum kontrol
-    - [ ] sunucu kontrolde bazı sabitler var onları bi şekilde .env'e taşırız belki
+- [X] yorum kontrol (sunucu kontrolde bazı sabitler var onları bi şekilde .env'e taşırız belki)
 - [X] yorum textarea kalan karakterler sağ altta yazacak
-- [ ] kalori yazsın
+- [X] kalori yazsın
+    - [ ] çok iyi durmuyo azcık boşluk olsa iyi olur bence bi el atın
+- [X] rütbeyi neden db'de tutuyoz ulan biz? hesaplarız her zaman işte kısaca? ledırbordda da hesaplayıp buluruz ulan niye tutuyoz biz bunu? manyak mıyız? (sildim)
+- [X] Örnek .env
+- [X] db'de isim değeriyle ilgili bişeyler yapak, silelim bence
 - [ ] şikayet
 - [ ] zaman makinesi olayları (yapmıştık heralde ama yine bakalım çok önemli çünkü) (şaka yaptım o kadar önemli değil ama olsun)
     - [X] puanSil'de kalmış bi tane
 - [ ] topbarda kullanıcı adına tıklayınca küçük menü (veya çıkış yap butonu)
 - [ ] yorum kutusunda puanları görecekler
+
+# Daha önemsiz şeyler
+- [ ] belki profilde açıklama olabilir
+- [ ] eposta doğrulama .env'de isteğe bağlı olsun, açıp kapatıl isin
+- [ ] ledırbord

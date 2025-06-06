@@ -24,11 +24,14 @@ if($adam === null){
 // admin vermesek te olur aslında ama belki ilerde
 // bu kullanıcı yönetici haklarına sahiptir filan
 // yazabiliriz profile, kalsın o yüzden
-$sunlariVer = ["uuid", "kullaniciAdi", "prestij", "rutbe", "katilmaTarihi", "admin"];
+$sunlariVer = ["uuid", "kullaniciAdi", "prestij", "katilmaTarihi", "admin"];
 
 $sonData = [];
 foreach ($sunlariVer as $key) {
     $sonData[$key] = $adam[$key];
 }
+
+// rütbeyi ayarlıyak
+$sonData["rutbe"] = Utils::rutbeYaziAl($adam["prestij"]);
 
 OutputManager::outputJSON($sonData);

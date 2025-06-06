@@ -119,7 +119,6 @@ function tablolariOlustur(){
             dogrulamaNeZamanGonderdik DATETIME,
 
             prestij INTEGER NOT NULL,
-            rutbe INTEGER,
 
             katilmaTarihi DATETIME NOT NULL,
             admin BOOLEAN NOT NULL
@@ -136,7 +135,7 @@ function adminAyarla(){
     $adminPass = soru("-> Şifre ne olsun abicim?", "aslanmax");
     $adminHash = password_hash($adminPass, PASSWORD_BCRYPT);
     $dateNow = date('Y-m-d H:i:s');
-    $pdo->prepare("INSERT INTO kullanicilar (uuid, kullaniciAdi, hash, email, emailDogrulandi, prestij, rutbe, katilmaTarihi, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        ->execute([$adminUUID, $adminUsername, $adminHash, "aslan@horroz.org", true, 0, -1, $dateNow, true]);
+    $pdo->prepare("INSERT INTO kullanicilar (uuid, kullaniciAdi, hash, email, emailDogrulandi, prestij, katilmaTarihi, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        ->execute([$adminUUID, $adminUsername, $adminHash, "aslan@horroz.org", true, 0, $dateNow, true]);
     echo(":: Admin eklendi."); echo("\n");
 }

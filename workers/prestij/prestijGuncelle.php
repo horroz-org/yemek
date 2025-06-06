@@ -113,7 +113,7 @@ function prestijGuncelle($sonGuncelleme){
 function prestijSifirla(){
     global $yu;
 
-    $sql = "UPDATE kullanicilar SET prestij = 0, rutbe = 0";
+    $sql = "UPDATE kullanicilar SET prestij = 0";
     $stmt = $yu->pdo->prepare($sql);
     return $stmt->execute();
 }

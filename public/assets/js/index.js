@@ -121,7 +121,9 @@ function yemekGoster(yemek){
     const formatter = new Intl.DateTimeFormat("tr-TR", { dateStyle: 'long' });
     tarihElement.textContent = formatter.format(new Date(yemek.tarih));
 
-    menuElement.textContent = yemek.menu;
+    // çok iyi durmamakta, düzenlemeniz önerilir ama belki.
+    menuElement.innerHTML = yemek.menu + "\n" + "<b>Kalori:</b> " + yemek.kalori;
+
     // 4.66666667 gibi sayılar gelmesin diye tek basamağa yuvarlamaktayız
     puanElement.textContent = puanTrunc(yemek.puan);
     puanSayisiElement.textContent = yemek.puanSayisi;

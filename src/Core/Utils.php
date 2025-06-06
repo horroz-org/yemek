@@ -186,4 +186,24 @@ class Utils {
 
         return true;
     }
+
+    public static function rutbeHesapla($prestij){
+        $logBase = floatval(Dotenv::getValue("RUTBE_LOG_BASE"));
+        $prestijCarpan = floatval(Dotenv::getValue("RUTBE_PRESTIJ_CARPAN"));
+        
+        return floor(log($prestij * $prestijCarpan + 1, $logBase));
+    }
+
+    public static function rutbeYaziAl($prestij){
+        $rutbeler = Dotenv::getValue("RUTBELER");
+        $rSayilar = array_keys($rutbeler);
+        $rMax = max($rSayilar);
+        
+        $index = self::rutbeHesapla($prestij);
+        
+        // adamın rütbesi maksimumu aşıyorsa maksimumda takılı kalsın
+        $index = ($index > $rMax) ? $rMax : $index;
+
+        return $rutbeler[$index];
+    }
 }
