@@ -1,6 +1,8 @@
 # [yemek.horroz.org](https://yemek.horroz.org)
 [Horroz.org](https://horroz.org) yemek değerlendirme ana bilgisayar sistemleri San. ve Tic. Ltd. Şti. gururla sunar.
 
+Daha açmadık, açıyoz yavaş yavaş.
+
 ## Ben bunu nası çalıştıracam kendim?
 Şöyle efenim:
 ```bash
@@ -23,9 +25,9 @@ php -S 0.0.0.0:8080
 ```
 
 ### İşçileri crontab'a ekleyin:
-- **workers/prestij/prestijGuncelle.php** -> Her hafta önerilir, 2-3 günde bir de iyi. Siz bilirsiniz. [Ama dosyanın başını okuyun önce](workers/prestij/prestijGuncelle.php), ondan sonra karar verin.
+- ``workers/prestij/prestijGuncelle.php`` -> 2-3 günde bir iyi ama siz bilirsiniz. [Zamanı ayarlamadan önce dosyanın başını okuyun](workers/prestij/prestijGuncelle.php), ondan sonra karar verin.
 
-- **scripts/yemekAl...php ve scripts/yemekKoy.php** -> bunları da ayarlarsınız, otomatik alıp koyar rahatçana.
+- ``scripts/yemekAl...php`` ve ``scripts/yemekKoy.php`` -> bunları da ayarlarsınız, otomatik alıp koyar rahatçana.
 
 ## Neler kaldı
 [Bak bakalım sen de yardım edersin belki](TODO.md)

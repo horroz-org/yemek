@@ -28,10 +28,11 @@
 - [X] yorum kutusunda puanları görecekler (renkler biraz kötü ama olsun idare eder)
 - [X] zaman makinesi olayları (yapmıştık heralde ama yine bakalım çok önemli çünkü) (şaka yaptım o kadar önemli değil ama olsun) (şimdi baktım kalmamış heralde)
     - [X] puanSil'de kalmış bi tane
-- [ ] captcha bokundan kurtuluyoruz
+- [X] captcha bokundan kurtuluyoruz
+- [X] profilde adminlerin ismi kırmızı yazsın
 - [ ] şikayet
 - [ ] topbarda kullanıcı adına tıklayınca küçük menü (veya çıkış yap butonu)
-- [ ] profilde adminlerin ismi kırmızı yazsın
+    - [ ] hatta github butonu yerine küçük logo olsun topbar kalabalık olmasın, ledırbord da koyacaz çünkü daha
 
 # Daha önemsiz şeyler
 - [ ] belki profilde açıklama olabilir

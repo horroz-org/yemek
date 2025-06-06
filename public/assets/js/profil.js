@@ -39,7 +39,13 @@ async function basla() {
 
 async function profilAyarla() {
     // isim falan yerine koy
-    document.getElementById("kullanici-adi-kutu").textContent = gosterilenKullanici.kullaniciAdi;
+    var kulAdiKutu = document.getElementById("kullanici-adi-kutu");
+    kulAdiKutu.textContent = gosterilenKullanici.kullaniciAdi;
+
+    if(gosterilenKullanici.admin){
+        kulAdiKutu.style.color = "var(--admin-color)";
+    }
+
     document.getElementById("rutbe-kutu").textContent = gosterilenKullanici.rutbe;
     document.getElementById("prestij-kutu").textContent = gosterilenKullanici.prestij;
 
