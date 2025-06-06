@@ -154,4 +154,36 @@ class Utils {
     public static function sifreKontrol($str){
         return (strlen($str) >= 6) && preg_match('/[A-Z]/', $str) && preg_match('/[a-z]/', $str) && preg_match('/[0-9]/', $str);
     }
+
+    const minimumYorumKarakterSayisi = 3;
+    const maksimumYorumKarakterSayisi = 400;
+    const maksimumYorumSatirSayisi = 4;
+    const izinVerilenYorumKarakterleri = "abcçdefgğhıijklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ01234567890_.,!?-:;\"'()[]{}<>@#&$%*+=/\\|^~`\n ";
+    /**
+     * Yorumu kontrol ediyoz.
+     * 
+     * @param string $yorum
+     * 
+     * @return bool iyi mi değil mi
+     */
+    public static function yorumKontrol($yorum){
+        // maks min karakter
+        if(self::minimumYorumKarakterSayisi > strlen($yorum) || strlen($yorum) > self::maksimumYorumKarakterSayisi){
+            return false;
+        }
+
+        foreach (str_split($yorum) as $harf) {
+            if(!str_contains(self::izinVerilenYorumKarakterleri, $harf)){
+                return false;
+            }
+        }
+
+        // maksimum satır sayısı
+        $satirlar = explode("\n", $yorum);
+        if(count($satirlar) > self::maksimumYorumSatirSayisi){
+            return false;
+        }
+
+        return true;
+    }
 }

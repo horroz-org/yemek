@@ -520,11 +520,17 @@ a:hover {
     flex-direction: column;
 
     gap: 0.4rem;
+
+    width: 20rem;
 }
 
 #yorum-yazi {
-    width: 18rem;
     height: 4em;
+    box-sizing: border-box;
+    
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
 }
 
 #form-kapat-buton {
@@ -542,6 +548,8 @@ a:hover {
 
     cursor: pointer;
 
+    z-index: 100;
+
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
@@ -551,6 +559,26 @@ a:hover {
 
     align-items: center;
     justify-content: space-between;
+}
+
+.yorum-form-ust {
+    position: relative;
+}
+
+#yorum-form-hata{
+    max-width: 100%;
+    color: red;
+}
+
+#yorum-yazi-karaktersayi {
+    position: absolute;
+    bottom: 7px;
+    right: 7px;
+
+    --normal-color: gray;
+    --kotu-color: red;
+
+    color: var(--normal-color);
 }
 
 .herkese-acik-div {

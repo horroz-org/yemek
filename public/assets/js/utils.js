@@ -126,3 +126,35 @@ function klasikTarihSaatFormat(date){
 
     return `${Y}-${m}-${d} ${H}:${i}:${s}`;
 }
+
+// sunucuda tarafında da var bu
+// orayı değiştirirken burayı da değiştirin
+// yada burayı değiştirirken orayı da değiştirin
+// anladınız siz
+//
+// sabitleri direkt Utils.php'den kıpırdım, merak etmeyin.
+const minimumYorumKarakterSayisi = 3;
+const maksimumYorumKarakterSayisi = 400;
+const maksimumYorumSatirSayisi = 4;
+const izinVerilenYorumKarakterleri = "abcçdefgğhıijklmnoöpqrsştuüvwxyzABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ01234567890_.,!?-:;\"'()[]{}<>@#&$%*+=/\\|^~`\n ";
+function yorumKontrol(yorum){
+    // maks min karakter
+    if (minimumYorumKarakterSayisi > yorum.length || yorum > maksimumYorumKarakterSayisi) {
+        return "Yorumun çok uzun oğlum. " + minimumYorumKarakterSayisi + "-" + maksimumYorumKarakterSayisi + " karakter arası lazım.";
+    }
+
+    for (let i = 0; i < yorum.length; i++) {
+        const harf = yorum[i];
+        if (!izinVerilenYorumKarakterleri.includes(harf)) {
+            return "Yorumunda kötü karakterler var: " + harf;
+        }
+    }
+
+    // maksimum satır sayısı
+    const satirlar = yorum.split('\n');
+    if (satirlar.length > maksimumYorumSatirSayisi) {
+        return "Maksimum " + maksimumYorumSatirSayisi + " satır yazabilirsin.";
+    }
+
+    return true;
+}

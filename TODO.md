@@ -1,0 +1,29 @@
+# Neler Kaldı
+- [X] Utils.php:34 sakııııııın ama sakın unutma
+- [X] Mail::dogrulamaGonder($eposta)
+- [X] YemekUzmani::kullaniciEkle($kullaniciAdi, $eposta, $sifre)
+- [X] Utils::kullaniciAdiKontrol
+- [X] Utils::epostaKontrol ve Utils::sifreKontrol test etme
+- [X] epostaDogrula.php
+- [X] api php dosyalarının adlarını deve yapacaz (deve cüce oyunu)
+- [X] Profil
+    - [X] yorum/yorumlariniAl.php
+    - [X] hesap/kullaniciAl.php
+    - [X] yorum kısmında daha fazla göster tuşu olacak falan filan
+    - [X] yoruma gite basınca yoruma gidecek idir
+    - [ ] rütbe
+- [X] query string kontrolünü getQueryData()'ya geçir her yerde
+- [X] yemekKoy.php
+- [X] sksdb scraper
+    - [ ] site bok gibi olduğu için bazı özel durumlar var onları ayarlamak lazım
+- [X] prestij güncellemesi (workers/prestij/prestijGuncelle.php'ye bakın, orda başta yazdığım şey hala var. hatta prestij güncellemesini 3 günde bire kadar çıkarabilirim onun için, bakarız.)
+- [X] yorum textarea Devamını göster tuşu olacak (gerek kalmadı yorumlar zaten az satır olacak ama yine de yapılsa iyi olur)
+- [X] yorum kontrol
+    - [ ] sunucu kontrolde bazı sabitler var onları bi şekilde .env'e taşırız belki
+- [X] yorum textarea kalan karakterler sağ altta yazacak
+- [ ] kalori yazsın
+- [ ] şikayet
+- [ ] zaman makinesi olayları (yapmıştık heralde ama yine bakalım çok önemli çünkü) (şaka yaptım o kadar önemli değil ama olsun)
+    - [X] puanSil'de kalmış bi tane
+- [ ] topbarda kullanıcı adına tıklayınca küçük menü (veya çıkış yap butonu)
+- [ ] yorum kutusunda puanları görecekler

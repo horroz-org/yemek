@@ -36,6 +36,12 @@ if(time() < strtotime($yemekTarih)){
     die();
 }
 
+// yoruma da bakak
+if(!Utils::yorumKontrol($yorum)){
+    OutputManager::error("Bu nası yorum oğlum? Manyak mısın sen? Kafayı mı yedin?");
+    die();
+}
+
 $bizimki = Auth::bizimkiKim();
 if($bizimki === null){
     OutputManager::error("Ulan adama bak hem giriş yapmamış hem de yorum yazacakmış. Şımarık.");

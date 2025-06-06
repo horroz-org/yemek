@@ -283,8 +283,8 @@ async function yorumSilEvent(yorumId) {
     yorumlariGoster(yemekCache[yemekTarih].yorumlar, Siralama.varsayilan);
 }
 
-function yorumYaziKontrol(yazi){
-    return true;
+function yorumFormHataYaz(mesaj){
+    document.getElementById("yorum-form-hata").textContent = mesaj;
 }
 
 async function yorumGonderEvent() {
@@ -296,9 +296,13 @@ async function yorumGonderEvent() {
     var herkeseAcik = herkeseAcikElement.checked;
     var ustYorumId = cevapVerilenYorumId;
 
-    if(!yorumYaziKontrol(yorumYazi)){
+    // ya true ya da hata mesajı döndürüyo
+    var kontrol = yorumKontrol(yorumYazi);
+    if(kontrol !== true){
         // normalde hata mesajını kırmızıyla yorumun oraya yazacam sonra hallederim ama onu
-        alert("Yorumunuz değişik.");
+        //
+        // uzun zaman (2-3 gün) oldu şimdi yapalım
+        yorumFormHataYaz(kontrol);
         return;
     }
 
@@ -437,12 +441,16 @@ function yorumOyGuncelle(yorumUuid, likeDislike, oylar){
 }
 
 function yorumFormAc(cevapMi = false){
+    yorumFormHataYaz("");
+
     var formlarElement = document.querySelector(".ekran-formlar");
     var yorumFormElement = document.getElementById("yorum-form");
     var yorumInputBaslikElement = document.getElementById("yorum-input-baslik");
     var yorumYaziElement = document.getElementById("yorum-yazi");
+    var kalanKarakterSayisiElement = document.getElementById("yorum-yazi-karaktersayi");
 
     yorumYaziElement.value = "";
+    kalanKarakterSayisiElement.textContent = "0/" + maksimumYorumKarakterSayisi;
 
     formlarElement.style.removeProperty("display");
     yorumFormElement.style.removeProperty("display");
@@ -540,6 +548,24 @@ function uiAyarla(){
                 }
             }
         });
+    });
+
+    // yorum formundaki textarea
+    document.getElementById("yorum-yazi").addEventListener("input", (e) => {
+        var gonderButon = document.getElementById("yorum-gonder-buton");
+        var kalanKarakterSayisiElement = document.getElementById("yorum-yazi-karaktersayi");
+
+        var targetVal = e.target.value.trim();
+        if (minimumYorumKarakterSayisi <= targetVal.length && targetVal.length <= maksimumYorumKarakterSayisi) {
+            kalanKarakterSayisiElement.style.color = "var(--normal-color)";
+            gonderButon.classList.remove("kapali-buton");
+        }
+        else {
+            kalanKarakterSayisiElement.style.color = "var(--kotu-color)";
+            gonderButon.classList.add("kapali-buton");
+        }
+
+        kalanKarakterSayisiElement.textContent = targetVal.length + " / " + maksimumYorumKarakterSayisi;
     });
 
     yorumUiEventAyarla();

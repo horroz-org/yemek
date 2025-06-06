@@ -534,6 +534,9 @@ class YemekUzmani {
         // bi kontrol edelim
         // aslında gerek yok, sonra yaparız
         // burayı okuyan varsa kendisi yapsın pr atsın, ben mi yapacam her şeyi?
+        //
+        // Güncelleme: yorumYap.php'de kontrol ediyoz, kontrol fonksiyonu Utils'de.
+
         // yemek varsa insert, bu kadar.
 
         if($this->yemekAl($yemekTarih) === null){
