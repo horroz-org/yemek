@@ -248,7 +248,6 @@ class YemekUzmani {
         return [
             "uuid" => $row["uuid"],
             "kullaniciAdi" => $row["kullaniciAdi"],
-            "isim" => $row["isim"],
             "hash" => $row["hash"],
             "email" => $row["email"],
             "emailDogrulandi" => $row["emailDogrulandi"],
