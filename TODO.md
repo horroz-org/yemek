@@ -35,7 +35,7 @@
 - [ ] şikayet
 
 # Daha önemsiz şeyler
-- [ ] TemplateManager (sooper iş) (html'ler php'ye geçecek)
+- [X] TemplateManager (sooper iş) (html'ler php'ye geçecek) (template ettik her şeyi, yorumlara gerek yoktu ama olsun, abarttık)
 - [ ] belki profilde açıklama olabilir
 - [ ] eposta doğrulama .env'de isteğe bağlı olsun, açıp kapatıl isin
 - [ ] ledırbord

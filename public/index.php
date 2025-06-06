@@ -1,3 +1,7 @@
+<?php
+require_once dirname(__DIR__, 1) . "/src/init.php";
+use \Core\TemplateManager as TM;
+?>
 <!DOCTYPE html>
 <html lang="tr">
     <head>
@@ -12,27 +16,9 @@
     </head>
     <body>
         <div class="index-layout">
-            <div class="topbar">
-                <div class="topbar-sol">
-                    <a href="/" class="a-renksiz">
-                        <div class="topbar-logovebaslik">
-                            <img src="/assets/img/logo.png" alt="Horroz.org Logo" class="topbar-logo">
-                            <div class="topbar-baslik">yemek.horroz.org</div>
-                        </div>
-                    </a>
-                    <div class="topbar-sol-butonlar">
-                        <a href="https://github.com/horroz-org/yemek" class="github-logo"><img src="/assets/img/github.svg"></a>
-                        <a href="https://wiki.horroz.org/wiki/Horrozpedi:Bağış">Bağış</a>
-                    </div>
-                </div>
-                <div class="topbar-sag">
-                    <a href="/kayit/" class="topbar-kayit-giris-buton">Kayıt Ol</a>
-                    <a href="/giris/" class="topbar-kayit-giris-buton">Giriş Yap</a>
+            <!-- topbar -->
+            <?php TM::print("topbar") ?>
 
-                    <a href="/profil/" class="topbar-kullanici-adi topbar-profil-butonlar"></a>
-                    <a href="/api/hesap/cikis.php" id="topbar-cikis-buton" class="topbar-profil-butonlar"><img src="/assets/img/cikis.svg"></a>
-                </div>
-            </div>
             <div class="anakutu">
                 <div class="ickutu">
                     <div class="kocadiv border ortalayandiv">
@@ -71,35 +57,12 @@
                 </div>
                 <div class="ickutu">
                     <div id="yorumlar-liste"></div>
-
-                    <!-- Yorum template -->
-                    <!-- Bunu değiştirirken profildekini de değiştirin -->
-                    <template id="yorum-template">
-                        <div id="yorum-uuid" class="yorumkutu">
-                            <div class="yorum-ust">
-                                <div class="yorum-ust-sol">
-                                    <a href="#" class="yorum-yazar"></a>
-                                    <div class="yorum-yazar-yemek-puan"></div>
-                                </div>
-                                <div class="yorum-ust-sag">
-                                    <div class="yorum-tarih"></div>
-                                    <div class="sikayet-buton buton">!</div>
-                                </div>
-                            </div>
-                            <div class="yorum-metin"></div>
-                            <div class="yorum-alt">
-                                <div class="vote-kutu">
-                                    <div class="upvote vote-ok"><i class="big-arrow up"></i></div>
-                                    <div class="vote-sayi"></div>
-                                    <div class="downvote vote-ok"><i class="big-arrow down"></i></div>
-                                </div>
-                                <div class="cevap-buton buton">Cevap Ver</div>
-                            </div>
-                        </div>
-                    </template>
                 </div>
             </div>
         </div>
+
+        <!-- Yorum template -->
+        <?php TM::print("yorum") ?>
 
         <!-- ekranın ortasında çıkacak olan formlar. yorum yazma/cevap verme-->
         <div class="ekran-formlar" style="display: none;">

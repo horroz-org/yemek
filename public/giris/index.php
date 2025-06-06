@@ -1,3 +1,7 @@
+<?php
+require_once dirname(__DIR__, 2) . "/src/init.php";
+use \Core\TemplateManager as TM;
+?>
 <!DOCTYPE html>
 <html lang="tr">
     <head>
@@ -11,28 +15,9 @@
         <script src="/assets/js/utils.js"></script>
     </head>
     <body>
-        <div class="topbar">
-            <div class="topbar-sol">
-                <a href="/" class="a-renksiz">
-                    <div class="topbar-logovebaslik">
-                        <img src="/assets/img/logo.png" alt="Horroz.org Logo" class="topbar-logo">
-                        <div class="topbar-baslik">yemek.horroz.org</div>
-                    </div>
-                </a>
-                <div class="topbar-sol-butonlar">
-                    <a href="https://github.com/horroz-org/yemek" class="github-logo"><img src="/assets/img/github.svg"></a>
-                    <a href="https://wiki.horroz.org/wiki/Horrozpedi:Bağış">Bağış</a>
-                </div>
-            </div>
-            <div class="topbar-sag">
-                <a href="/kayit/" class="topbar-kayit-giris-buton">Kayıt Ol</a>
-                <a href="/giris/" class="topbar-kayit-giris-buton">Giriş Yap</a>
+        <!-- topbar -->
+        <?php TM::print("topbar") ?>
         
-                <a href="/profil/" class="topbar-kullanici-adi topbar-profil-butonlar"></a>
-                <a href="/api/hesap/cikis.php" id="topbar-cikis-buton" class="topbar-profil-butonlar"><img
-                        src="/assets/img/cikis.svg"></a>
-            </div>
-        </div>
         <div class="giris-kayit-layout">
             <fieldset id="giris-kayit-form-kutu">
                 <legend>Giriş</legend>
