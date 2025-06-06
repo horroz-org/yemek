@@ -114,7 +114,6 @@ class YemekUzmani {
 
                 "yorum" => $row["yorum"],
                 "adaminYemekPuani" => $row["adaminYemekPuani"],
-                "herkeseAcik" => $row["herkeseAcik"],
 
                 "like" => $row["like"],
                 "dislike" => $row["dislike"],
@@ -255,7 +254,6 @@ class YemekUzmani {
             "emailDogrulandi" => $row["emailDogrulandi"],
             "dogrulamaNeZamanGonderdik" => $row["dogrulamaNeZamanGonderdik"],
             "prestij" => $row["prestij"],
-            "rutbe" => $row["rutbe"],
             "katilmaTarihi" => $row["katilmaTarihi"],
             "admin" => $row["admin"]
         ];
@@ -276,7 +274,7 @@ class YemekUzmani {
 
     /**
      * Güvenli şekilde al, sadece şu bilgiler olacak:
-     * uuid, kullaniciAdi, isim, prestij, rutbe, katilmaTarihi, admin
+     * uuid, kullaniciAdi, isim, prestij, katilmaTarihi, admin
      * 
      * şunlar yok:
      * hash, email
@@ -504,7 +502,6 @@ class YemekUzmani {
 
             "yorum" => $row["yorum"],
             "adaminYemekPuani" => $row["adaminYemekPuani"],
-            "herkeseAcik" => $row["herkeseAcik"],
 
             "like" => $row["like"],
             "dislike" => $row["dislike"],
@@ -521,12 +518,11 @@ class YemekUzmani {
      * 
      * @param string $yemekTarih Yemeğin tarihi.
      * @param string $yorum Yorum metni.
-     * @param bool $herkeseAcik Yorum herkese açık mı?
      * @param ?string $ustYorumId Yorum başka yoruma cevapsa üst yorumun uuid, değilse null.
      * 
      * @return ?array Yorumun bilgileri (oluşturulmuş uuid filan), hata olduysa null.
      */
-    public function yorumYaz($yemekTarih, $yorum, $herkeseAcik = true, $ustYorumId = null): ?array {
+    public function yorumYaz($yemekTarih, $yorum, $ustYorumId = null): ?array {
         if($this->bizimki === null){
             return null;
         }
@@ -553,13 +549,13 @@ class YemekUzmani {
         $yorumUuid = Utils::generateUUIDv4();
         $simdi = (new \DateTime())->format('Y-m-d H:i:s');
 
-        $sql = "INSERT INTO yorumlar (uuid, yazarUuid, ustYorumId, yorum, adaminYemekPuani, herkeseAcik, like, dislike, kaldirildi, yemekTarih, zaman) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO yorumlar (uuid, yazarUuid, ustYorumId, yorum, adaminYemekPuani, like, dislike, kaldirildi, yemekTarih, zaman) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->pdo->prepare($sql);
-        $kontrol = $stmt->execute([$yorumUuid, $this->bizimki["uuid"], $ustYorumId, $yorum, $this->bizimkininYemegeVerdigiPuaniAl($yemekTarih), $herkeseAcik, 0, 0, 0, $yemekTarih, $simdi]);
+        $kontrol = $stmt->execute([$yorumUuid, $this->bizimki["uuid"], $ustYorumId, $yorum, $this->bizimkininYemegeVerdigiPuaniAl($yemekTarih), 0, 0, 0, $yemekTarih, $simdi]);
 
         if($kontrol === false){
             // yorum yazamadık, neden? bilmem. yemeğin tarihi, yazarUuid filan yanlış olabilir belki
-            \Core\Logger::warning("Burada garip şeyler oluyor, yorumYaz.\nyemekTarih: $yemekTarih\nyorum: $yorum\nherkeseAcik: $herkeseAcik\nustYorumId: $ustYorumId");
+            \Core\Logger::warning("Burada garip şeyler oluyor, yorumYaz.\nyemekTarih: $yemekTarih\nyorum: $yorum\nustYorumId: $ustYorumId");
             return null;
         }
 
@@ -571,7 +567,6 @@ class YemekUzmani {
             "yorum" => $yorum,
 
             "adaminYemekPuani" => $this->bizimkininYemegeVerdigiPuaniAl($yemekTarih),
-            "herkeseAcik" => $herkeseAcik,
 
             "like" => 0,
             "dislike" => 0,
@@ -855,14 +850,13 @@ class YemekUzmani {
             "emailDogrulandi" => 0,
             "dogrulamaNeZamanGonderdik" => $dogrulamaNeZamanGonderdik,
             "prestij" => 0,
-            "rutbe" => 0,
             "katilmaTarihi" => (new \DateTime())->format("Y-m-d H:i:s"),
             "admin" => 0
         ];
 
-        $sql = "INSERT INTO kullanicilar (uuid, kullaniciAdi, hash, email, emailDogrulandi, dogrulamaNeZamanGonderdik, prestij, rutbe, katilmaTarihi, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO kullanicilar (uuid, kullaniciAdi, hash, email, emailDogrulandi, dogrulamaNeZamanGonderdik, prestij, katilmaTarihi, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->pdo->prepare($sql);
-        $kontrol = $stmt->execute([$yeniKul["uuid"], $yeniKul["kullaniciAdi"], $yeniKul["hash"], $yeniKul["email"], $yeniKul["emailDogrulandi"], $yeniKul["dogrulamaNeZamanGonderdik"], $yeniKul["prestij"], $yeniKul["rutbe"], $yeniKul["katilmaTarihi"], $yeniKul["admin"]]);
+        $kontrol = $stmt->execute([$yeniKul["uuid"], $yeniKul["kullaniciAdi"], $yeniKul["hash"], $yeniKul["email"], $yeniKul["emailDogrulandi"], $yeniKul["dogrulamaNeZamanGonderdik"], $yeniKul["prestij"], $yeniKul["katilmaTarihi"], $yeniKul["admin"]]);
     
         if($kontrol === false){
             \Core\Logger::error("Oğlum yeni adam ekleyemedik.\n" . print_r($yeniKul, true));
@@ -936,7 +930,6 @@ class YemekUzmani {
 
                 "yorum" => $row["yorum"],
                 "adaminYemekPuani" => $row["adaminYemekPuani"],
-                "herkeseAcik" => $row["herkeseAcik"],
 
                 "like" => $row["like"],
                 "dislike" => $row["dislike"],

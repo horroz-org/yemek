@@ -223,6 +223,11 @@ function yorumEkle(yorum, derinlik = 0){
         }
     }
 
+    if(yorum.adaminYemekPuani !== null){
+        clone.querySelector(".yorum-yazar-yemek-puan").textContent = yorum.adaminYemekPuani + "/10";
+        clone.querySelector(".yorum-yazar-yemek-puan").style.color = colInterpolate([200, 0, 0], [0, 200, 0], yorum.adaminYemekPuani / 10);
+    }
+
     if(kullanici !== null && yorum.yazarUuid === kullanici.uuid){
         var sikayetButon = clone.querySelector(".sikayet-buton");
         sikayetButon.classList.remove("sikayet-buton");
@@ -291,11 +296,9 @@ function yorumFormHataYaz(mesaj){
 
 async function yorumGonderEvent() {
     var yorumYaziElement = document.getElementById("yorum-yazi");
-    var herkeseAcikElement = document.getElementById("herkese-acik-checkbox");
 
     var yemekTarih = isoDate(suAnkiTarih);
     var yorumYazi = yorumYaziElement.value.trim();
-    var herkeseAcik = herkeseAcikElement.checked;
     var ustYorumId = cevapVerilenYorumId;
 
     // ya true ya da hata mesajı döndürüyo
@@ -311,7 +314,6 @@ async function yorumGonderEvent() {
     var gonderilecekYorum = {
         yemekTarih: yemekTarih,
         yorum: yorumYazi,
-        herkeseAcik: herkeseAcik,
         ustYorumId: ustYorumId
     };
 

@@ -40,4 +40,6 @@ if($kullanici === null){
     die();
 }
 
+$kullanici["rutbe"] = Utils::rutbeYaziAl($kullanici["prestij"]);
+
 OutputManager::outputJSON($kullanici);

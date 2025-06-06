@@ -77,6 +77,11 @@ function yorumEkle(yorum) {
     clone.querySelector(".yorum-metin").innerHTML = yorumIsle(yorum.yorum);
     clone.querySelector(".vote-sayi").textContent = yorum.like - yorum.dislike;
 
+    if (yorum.adaminYemekPuani !== null) {
+        clone.querySelector(".yorum-yazar-yemek-puan").textContent = yorum.adaminYemekPuani + "/10";
+        clone.querySelector(".yorum-yazar-yemek-puan").style.color = colInterpolate([200, 0, 0], [0, 200, 0], yorum.adaminYemekPuani / 10);
+    }
+
     // yoruma git butonu
     clone.querySelector(".yoruma-git-buton").href = "/?t=" + yorum.yemekTarih + "#" + yorum.uuid;
 

@@ -422,6 +422,18 @@ a:hover {
     justify-content: space-between;
 }
 
+.yorum-ust-sol {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    gap: 0.5rem;
+}
+
+.yorum-yazar-yemek-puan {
+    font-weight: bold;
+}
+
 .yorum-ust-sag {
     display: flex;
     flex-direction: row;
@@ -581,16 +593,9 @@ a:hover {
     color: var(--normal-color);
 }
 
-.herkese-acik-div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 0.1rem;
-}
-
 #yorum-gonder-buton{
     padding: 0.3rem 2rem;
+    margin-left: auto;
 }
 
 #yorum-input-baslik {

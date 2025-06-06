@@ -158,3 +158,16 @@ function yorumKontrol(yorum){
 
     return true;
 }
+
+/**
+ * Mesela factor 7/10'sa 10 midpoint var 7. alıyoz
+ * palete ihtiyacım yoktu böyle yaptım
+ * 
+ * "rgb(...)" diye döndürüyo
+ */
+function colInterpolate(rgb1, rgb2, factor) {
+    const r = Math.round(rgb1[0] + (rgb2[0] - rgb1[0]) * factor);
+    const g = Math.round(rgb1[1] + (rgb2[1] - rgb1[1]) * factor);
+    const b = Math.round(rgb1[2] + (rgb2[2] - rgb1[2]) * factor);
+    return `rgb(${r}, ${g}, ${b})`;
+}

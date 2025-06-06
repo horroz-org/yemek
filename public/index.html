@@ -70,10 +70,14 @@
                     <div id="yorumlar-liste"></div>
 
                     <!-- Yorum template -->
+                    <!-- Bunu değiştirirken profildekini de değiştirin -->
                     <template id="yorum-template">
                         <div id="yorum-uuid" class="yorumkutu">
                             <div class="yorum-ust">
-                                <a href="#" class="yorum-yazar"></a>
+                                <div class="yorum-ust-sol">
+                                    <a href="#" class="yorum-yazar"></a>
+                                    <div class="yorum-yazar-yemek-puan"></div>
+                                </div>
                                 <div class="yorum-ust-sag">
                                     <div class="yorum-tarih"></div>
                                     <div class="sikayet-buton buton">!</div>
@@ -103,12 +107,8 @@
                     <textarea id="yorum-yazi" placeholder="Vah vah..."></textarea>
                     <div id="yorum-yazi-karaktersayi"></div>
                 </div>
-                <div id="yorum-form-hata">Hata wejkf kj kjewhfkjwe nkw hefkjwehfkjw hefkjhewfkj wjhf wkjehf k</div>
+                <div id="yorum-form-hata"></div>
                 <div class="yorum-form-alt">
-                    <div class="herkese-acik-div">
-                        <input type="checkbox" id="herkese-acik-checkbox" checked>
-                        <label for="herkese-acik-checkbox">Puanımı görsünler</label><br>
-                    </div>
                     <div id="yorum-gonder-buton" class="buton">Gönder</div>
                 </div>
             </div>

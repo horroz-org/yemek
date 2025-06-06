@@ -4,7 +4,6 @@
  * {
  *     "yemekTarih": "2025-01-01",
  *     "yorum": "Selamın aleyküm.",
- *     "herkeseAcik": true,
  *     "ustYorumId": null
  * }
  * 
@@ -18,15 +17,14 @@ use Core\OutputManager;
 use Yemek\YemekUzmani;
 use Yemek\Auth;
 
-$zorunluKeyler = ["yemekTarih", "yorum", "herkeseAcik", "ustYorumId"];
+$zorunluKeyler = ["yemekTarih", "yorum", "ustYorumId"];
 $postData = Utils::getPostData($zorunluKeyler);
 
 $yemekTarih = $postData["yemekTarih"];
 $yorum = $postData["yorum"];
-$herkeseAcik = $postData["herkeseAcik"];
 $ustYorumId = $postData["ustYorumId"];
 
-if(!Utils::isIsoDate($yemekTarih) || !is_string($yorum) || !is_bool($herkeseAcik) || ($ustYorumId !== null && !is_string($ustYorumId))){
+if(!Utils::isIsoDate($yemekTarih) || !is_string($yorum) || ($ustYorumId !== null && !is_string($ustYorumId))){
     Utils::buAdamBiseylerYapmayaCalisiyo();
 }
 
@@ -49,7 +47,7 @@ if($bizimki === null){
 }
 
 $yu = new YemekUzmani($bizimki);
-$guncelYorum = $yu->yorumYaz($yemekTarih, $yorum, $herkeseAcik, $ustYorumId);
+$guncelYorum = $yu->yorumYaz($yemekTarih, $yorum, $ustYorumId);
 
 // zaten bizimki yorum yazdı, onun adını hemen koyalım
 $guncelYorum["yazarKullaniciAdi"] = $bizimki["kullaniciAdi"];
