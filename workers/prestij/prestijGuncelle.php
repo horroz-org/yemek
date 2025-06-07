@@ -125,7 +125,7 @@ function prestijSifirla(){
  */
 function sonGuncellemeAl(){
     if(!file_exists(sonGuncellemeDosya)){
-        echo ":: Son güncelleme dosyası yokmuş, en baştan başlıyoruz.";
+        echo ":: Son güncelleme dosyası yokmuş, en baştan başlıyoruz.\n";
         // echo "-> En baştan başladığımız için herkesin prestijleri sıfırlanıyor.";
 
         // ilk başta yemekuzmanına ekleyecektim prestijSifirla diye

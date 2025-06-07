@@ -36,7 +36,7 @@
 - [X] profil html title
 - [X] yorumu silince direkt silinmeyecek, kaldırılacak, birisi yorumları alırken de kaldırıldı filan diye dönecek metni, ama uuid aynı olacak
 - [X] kaldırılan yorumlarda oy verilmese iyi olabilir ama fark etmez
-- [ ] şifreyi göster tuşu
+- [ ] girişte şifreyi göster tuşu
 
 # Daha önemsiz şeyler
 - [X] TemplateManager (sooper iş) (html'ler php'ye geçecek) (template ettik her şeyi, yorumlara gerek yoktu ama olsun, abarttık)
@@ -48,6 +48,10 @@
 - [ ] mobile hoverli şeylere basınca takılı kalıyo
 - [ ] sayfada herşey yüklenene kadar bomboş olsun, ortada yükleniyor filan yazsın belki
 - [ ] çıkışta da redir koyalım
+
+# Değişik şeyler için skriptler
+- [ ] yeni kullanıcı aç
+- [ ] falan filan
 
 # İlerde yaparız belki
 - [ ] her sayfayı index.php'ye bağlayak, ordan route yapak, mis olur
