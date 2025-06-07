@@ -37,6 +37,7 @@
 - [X] yorumu silince direkt silinmeyecek, kaldırılacak, birisi yorumları alırken de kaldırıldı filan diye dönecek metni, ama uuid aynı olacak
 - [X] kaldırılan yorumlarda oy verilmese iyi olabilir ama fark etmez
 - [X] girişte şifreyi göster tuşu (kayıtta zaten vardı)
+- [X] kaldırılan yorumda şikayet mi olur lan
 
 # Daha önemsiz şeyler
 - [X] TemplateManager (sooper iş) (html'ler php'ye geçecek) (template ettik her şeyi, yorumlara gerek yoktu ama olsun, abarttık)

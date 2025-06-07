@@ -228,11 +228,16 @@ function yorumEkle(yorum, derinlik = 0){
         clone.querySelector(".yorum-yazar-yemek-puan").style.color = colInterpolate([200, 0, 0], [0, 200, 0], yorum.adaminYemekPuani / 10);
     }
 
+    var sikayetButon = clone.querySelector(".sikayet-buton");
     if(kullanici !== null && yorum.yazarUuid === kullanici.uuid){
-        var sikayetButon = clone.querySelector(".sikayet-buton");
         sikayetButon.classList.remove("sikayet-buton");
         sikayetButon.classList.add("sil-buton");
         sikayetButon.textContent = "-";
+    }
+
+    // silindiyse şikayet butonu olmasın
+    if(yorum.yazarUuid === null){
+        sikayetButon.style.display = "none";
     }
 
     clone.querySelector(".yorumkutu").style.marginLeft = (derinlik * yorumDerinlikRem) + "rem";
