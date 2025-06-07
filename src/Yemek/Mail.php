@@ -52,7 +52,7 @@ class Mail {
         $token = Auth::generateMailToken($eposta, $exp);
 
         // urlencode gerek yok aslında base62 olduğundan ama nokta var içinde 1 tane içimiz rahat olsun
-        $link = Dotenv::getValue("APP_URL") . "/api/hesap/epostaDogrula.php?t=" . urlencode($token);
+        $link = Dotenv::getValue("APP_URL") . "/dogrula/?t=" . urlencode($token);
         $mailBody = "Hesabını açtık, bi tek linke basman kaldı. Linke de bastın mı tamamsın.<br><a href='$link'>Bas buraya</a><br><br>Basamıyorsan direkt şu linki kopyala filan:<br>$link";
         
         $kontrol = self::mailGonder($eposta, "Yemek Hesabını Doğrula", $mailBody);
