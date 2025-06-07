@@ -1,8 +1,6 @@
 # [yemek.horroz.org](https://yemek.horroz.org)
 [Horroz.org](https://horroz.org) yemek değerlendirme ana bilgisayar sistemleri San. ve Tic. Ltd. Şti. gururla sunar.
 
-Daha açmadık, açıyoz yavaş yavaş.
-
 ## Ben bunu nası çalıştıracam kendim?
 Şöyle efenim:
 ```bash
