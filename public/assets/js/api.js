@@ -95,7 +95,7 @@ async function yemekPuaniSil(tarih) {
 async function yorumYap(yorumObj){
     var xhr = await apiPost("yorum/yorumYap.php", yorumObj);
 
-    return xhr.status === 200 ? xhr.response : null;
+    return (xhr.status === 200 || xhr.status === 400) ? xhr.response : null;
 }
 
 async function yorumSil(yorumUuid) {
@@ -103,7 +103,7 @@ async function yorumSil(yorumUuid) {
         yorumUuid: yorumUuid
     });
 
-    return xhr.status === 200 ? xhr.response : null;
+    return (xhr.status === 200 || xhr.status === 400) ? xhr.response : null;
 }
 
 // cookie değerini veya error diye json veriyoz ya onu döndürür

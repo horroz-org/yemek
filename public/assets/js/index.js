@@ -287,6 +287,11 @@ async function yorumSilEvent(yorumId) {
         alert("Kötü şeyler oluverdi.");
         return;
     }
+
+    if ("error" in sonuc) {
+        alert(sonuc.error);
+        return;
+    }
     
     // yorum silindi, cache'den de sil, yeniden yükle
     var yemekTarih = isoDate(suAnkiTarih);
@@ -332,6 +337,11 @@ async function yorumGonderEvent() {
     if(sonuc === null){
         // hata çıktı
         alert("Kötü şeyler oluverdi.");
+        return;
+    }
+
+    if("error" in sonuc){
+        yorumFormHataYaz(sonuc.error);
         return;
     }
 
