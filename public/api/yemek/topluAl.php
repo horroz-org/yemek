@@ -33,8 +33,16 @@ if($yorumlar === null){
 }
 
 foreach($yorumlar as &$yorum){
-    $yorum["bizimkininOyu"] = $yu->bizimkininYorumaVerdigiOyuAl($yorum["uuid"]);
-    $yorum["yazarKullaniciAdi"] = $yu->kullaniciAl($yorum["yazarUuid"])["kullaniciAdi"];
+    if($yorum["kaldirildi"] === 1){
+        $yorum["yazarUuid"] = null;
+        $yorum["yazarKullaniciAdi"] = "[silindi]";
+        $yorum["yorum"] = "[silindi]";
+        $yorum["bizimkininOyu"] = null;
+    }
+    else{
+        $yorum["bizimkininOyu"] = $yu->bizimkininYorumaVerdigiOyuAl($yorum["uuid"]);
+        $yorum["yazarKullaniciAdi"] = $yu->kullaniciAl($yorum["yazarUuid"])["kullaniciAdi"];
+    }
 }
 
 OutputManager::outputJSON([

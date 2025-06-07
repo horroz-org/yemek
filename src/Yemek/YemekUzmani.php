@@ -94,7 +94,7 @@ class YemekUzmani {
             return null;
         }
 
-        $sql = "SELECT * FROM yorumlar WHERE yemekTarih = ? AND kaldirildi = 0";
+        $sql = "SELECT * FROM yorumlar WHERE yemekTarih = ?";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$tarih]);
         $rows = $stmt->fetchAll();
@@ -577,13 +577,13 @@ class YemekUzmani {
     }
 
     /**
-     * Bizimki yorumu silmek istemiş, utanmış.
+     * Yorumu tamamen her şeyiyle silmek isteyenlere.
      * 
      * @param string $yorumUuid Yorumun uuid'si
      * 
      * @return ?array Silinen yorumun bilgileri, hata olduysa null.
      */
-    public function yorumSil($yorumUuid): ?array {
+    public function yorumSilTamamen($yorumUuid): ?array {
         if($this->bizimki === null){
             return null;
         }
@@ -610,7 +610,7 @@ class YemekUzmani {
     }
 
     /**
-     * Yorumu kaldır, silme.
+     * Bizimki yorumu silmek istemiş, utanmış.
      * 
      * @param string $yorumUuid Yorumun uuid'si
      * 

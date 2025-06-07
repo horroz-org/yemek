@@ -290,10 +290,11 @@ async function yorumSilEvent(yorumId) {
     
     // yorum silindi, cache'den de sil, yeniden yükle
     var yemekTarih = isoDate(suAnkiTarih);
-    yemekCache[yemekTarih].yorumlar.forEach((yorum, index) => {
+    yemekCache[yemekTarih].yorumlar.forEach((yorum) => {
         if(yorum.uuid === yorumId){
-            yemekCache[yemekTarih].yorumlar.splice(index, 1);
-            return;
+            yorum.yazarUuid = null;
+            yorum.yazarKullaniciAdi = "[silindi]";
+            yorum.yorum = "[silindi]";
         }
     });
 

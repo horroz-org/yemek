@@ -33,8 +33,16 @@ if($bizimki === null){
 }
 
 $yu = new YemekUzmani($bizimki);
-$guncelOylar = $yu->yorumOyVer($yorumUuid, $like);
 
+// bakalım öyle bi yorum var mı
+$yorumBilgi = $yu->yorumBilgisiAl($yorumUuid);
+if($yorumBilgi === null || $yorumBilgi["kaldirildi"] === 1){
+    OutputManager::error("Bu yorumu kaldırmışlar oğlum, dağa kaldırmışlar oğlum...");
+    die();
+}
+
+// artık oyumuzu cebimize atalım
+$guncelOylar = $yu->yorumOyVer($yorumUuid, $like);
 if($guncelOylar === null){
     OutputManager::error("İnanılmaz. (Şaka şaka)");
     die();

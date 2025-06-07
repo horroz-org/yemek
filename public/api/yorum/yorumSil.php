@@ -35,7 +35,7 @@ if($bizimki === null){
 }
 
 $yu = new YemekUzmani($bizimki);
-$silinenYorum = $yu->yorumSil($yorumUuid);
+$silinenYorum = $yu->yorumKaldir($yorumUuid);
 
 if($silinenYorum === null){
     OutputManager::error("Sen çooook ama çok kötü şeyler yapmışsın. (Şaka)");
