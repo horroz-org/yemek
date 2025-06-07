@@ -26,7 +26,10 @@ use \Core\TemplateManager as TM;
                 <input type="text" id="kullanici-adi-input" placeholder="Pro363">
 
                 <label for="sifre-input">Şifre:</label>
-                <input type="password" id="sifre-input" placeholder="........">
+                <div class="sifre-input-wrapper">
+                    <input type="password" id="sifre-input" placeholder="Şifrenizi giriniz, tebrikler.">
+                    <div id="sifre-goster-buton" class="buton">göster</div>
+                </div>
 
                 <div id="hata-mesaji"></div>
 

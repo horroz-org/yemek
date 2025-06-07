@@ -73,6 +73,18 @@ function uiAyarla() {
         }
         window.location.href = gidilenYer;
     });
+
+    document.getElementById("sifre-goster-buton").addEventListener("click", function () {
+        var sifreInputElement = document.getElementById("sifre-input");
+        if (sifreInputElement.type == "text") {
+            sifreInputElement.type = "password";
+            this.textContent = "göster";
+        }
+        else {
+            sifreInputElement.type = "text";
+            this.textContent = "gizle";
+        }
+    });
 }
 
 window.addEventListener("load", basla);

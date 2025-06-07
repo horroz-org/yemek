@@ -36,7 +36,7 @@
 - [X] profil html title
 - [X] yorumu silince direkt silinmeyecek, kaldırılacak, birisi yorumları alırken de kaldırıldı filan diye dönecek metni, ama uuid aynı olacak
 - [X] kaldırılan yorumlarda oy verilmese iyi olabilir ama fark etmez
-- [ ] girişte şifreyi göster tuşu
+- [X] girişte şifreyi göster tuşu (kayıtta zaten vardı)
 
 # Daha önemsiz şeyler
 - [X] TemplateManager (sooper iş) (html'ler php'ye geçecek) (template ettik her şeyi, yorumlara gerek yoktu ama olsun, abarttık)
