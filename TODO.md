@@ -32,7 +32,8 @@
 - [X] profilde adminlerin ismi kırmızı yazsın
 - [X] topbarda kullanıcı adına tıklayınca küçük menü (veya çıkış yap butonu) (menüyle uğraşmadım çıkış butonunu koyuver idim)
     - [X] hatta github butonu yerine küçük logo olsun topbar kalabalık olmasın, ledırbord da koyacaz çünkü daha
-- [ ] şikayet
+- [X] şikayet
+- [X] profil html title
 
 # Daha önemsiz şeyler
 - [X] TemplateManager (sooper iş) (html'ler php'ye geçecek) (template ettik her şeyi, yorumlara gerek yoktu ama olsun, abarttık)

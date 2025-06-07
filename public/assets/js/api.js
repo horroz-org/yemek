@@ -143,3 +143,11 @@ async function yorumlariniAl(uuid, limit, eskiTarih) {
 
     return xhr.status === 200 ? xhr.response : null;
 }
+
+async function sikayetEt(yorumUuid) {
+    var xhr = await apiPost("yorum/sikayet.php", {
+        yorumUuid: yorumUuid
+    });
+
+    return (xhr.status === 200 || xhr.status === 400) ? xhr.response : null;
+}

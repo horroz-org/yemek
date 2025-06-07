@@ -263,8 +263,18 @@ function cevapVer(yorumId){
     yorumFormAc(true);
 }
 
-function sikayetEtEvent(yorumId) {
-    alert("yorumu şikayet ettiniz tebrikler " + yorumId);
+async function sikayetEtEvent(yorumId) {
+    if(!confirm("Emin misin oğlum?")){
+        return;
+    }
+
+    var sikayetBilgi = await sikayetEt(yorumId);
+    if("error" in sikayetBilgi){
+        alert(sikayetBilgi.error);
+        return;
+    }
+
+    alert("Yorumu şikayet ettiniz tebrikler.");
 }
 
 async function yorumSilEvent(yorumId) {
@@ -345,13 +355,13 @@ function yorumUiEventAyarla(){
 
         var sikayetButon = yorumkutu.querySelectorAll(".sikayet-buton");
         if(sikayetButon.length > 0){
-            sikayetButon[0].addEventListener("click", () => {
+            sikayetButon[0].addEventListener("click", async function () {
                 if (kullanici == null) {
                     giriseGit();
                     return;
                 }
                 
-                sikayetEtEvent(yorumkutu.id);
+                await sikayetEtEvent(yorumkutu.id);
             });
         }
         else{

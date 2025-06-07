@@ -55,7 +55,7 @@ function tablolariOlustur(){
             puanSayisi INTEGER NOT NULL
         )
     ");
-    echo(":: Tablo oluşturuldu: yemek\n");
+    echo(":: Tablo oluşturuldu: yemekler\n");
 
     // puanlar
     $pdo->exec("
@@ -103,6 +103,17 @@ function tablolariOlustur(){
         )
     ");
     echo(":: Tablo oluşturuldu: likedislike\n");
+
+    // şikayetler
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS sikayetler (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sikayetciId TEXT NOT NULL,
+            yorumId TEXT NOT NULL,
+            zaman DATETIME NOT NULL
+        )
+    ");
+    echo(":: Tablo oluşturuldu: sikayetler\n");
 
     // kullanıcılar
     $pdo->exec("

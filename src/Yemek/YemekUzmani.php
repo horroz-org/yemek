@@ -956,4 +956,60 @@ class YemekUzmani {
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([$yemek["tarih"], $yemek["menu"], $yemek["kalori"], 0, 0]);
     }
+
+    /**
+     * Bizimkinin şikayetini alalım bakalım neler demiş.
+     * 
+     * @param string $yorumUuid yorumun uuid'si
+     * 
+     * @return ?array varsa direkt veriyoz, yoksa null
+     */
+    public function sikayetAl($yorumUuid){
+        if($this->bizimki === null){
+            return null;
+        }
+
+        $sql = "SELECT * FROM sikayetler WHERE sikayetciId = ? AND yorumId = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$this->bizimki["uuid"], $yorumUuid]);
+        $row = $stmt->fetch();
+        $stmt->closeCursor();
+        if($row === false){
+            return null;
+        }
+
+        return [
+            "sikayetciId" => $row["sikayetciId"],
+            "yorumId" => $row["yorumUuid"],
+            "zaman" => (new \DateTime($row["zaman"]))->format('Y-m-d H:i:s') // emin oluyoruz her zamanki gibi
+        ];
+    }
+
+    /**
+     * Şikayetçi olmuş bizimki.
+     * 
+     * @param string $yorumUuid yorumun uuid'si
+     * 
+     * @return ?array şikayet bilgileri, sıkıntı olduysa null
+     */
+    public function sikayetEt($yorumUuid){
+        if($this->bizimki === null){
+            return null;
+        }
+
+        $sql = "INSERT INTO sikayetler (sikayetciId, yorumId, zaman) VALUES (?, ?, ?) RETURNING *";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$this->bizimki["uuid"], $yorumUuid, (new \DateTime())->format('Y-m-d H:i:s')]);
+        $row = $stmt->fetch();
+        $stmt->closeCursor();
+        if($row === false){
+            return null;
+        }
+
+        return [
+            "sikayetciId" => $row["sikayetciId"],
+            "yorumId" => $row["yorumId"],
+            "zaman" => (new \DateTime($row["zaman"]))->format('Y-m-d H:i:s') // emin oluyoruz her zamanki gibi
+        ];
+    }
 }

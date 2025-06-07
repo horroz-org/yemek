@@ -38,6 +38,9 @@ async function basla() {
 }
 
 async function profilAyarla() {
+    // taytıl tuesday
+    document.title = "@" + gosterilenKullanici.kullaniciAdi + " Yemek Profili";
+
     // isim falan yerine koy
     var kulAdiKutu = document.getElementById("kullanici-adi-kutu");
     kulAdiKutu.textContent = gosterilenKullanici.kullaniciAdi;
