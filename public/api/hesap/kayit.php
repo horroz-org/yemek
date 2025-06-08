@@ -68,21 +68,36 @@ if($adam !== null){
     die();
 }
 
-// yeni kullanıcı oluşturak
-// doğrulamayı ne zaman gönderdik (birazdan)
-$dogrulamaZamani = (new \DateTime())->format("Y-m-d H:i:s");
-$yeniKullanici = $yu->kullaniciEkle($kullaniciAdi, $eposta, $sifre, $dogrulamaZamani);
-if($yeniKullanici === null){
-    // valla bişeyler çok fena ters gitmiş
-    OutputManager::error("Çüş. Sen mi yaptın bunu?");
-    die();
-}
+// bunların hepsini trenzekşına bağlayak
+try{
+    $yu->pdo->beginTransaction();
 
-// doğrulamayı atalım hemencecik
-$kontrol = Mail::dogrulamaGonder($eposta);
-if(!$kontrol){
-    // zaten Mail::mailGonder'de loglandığı için loglamayalım yine.
-    OutputManager::error("Mail gönderemiyoruz vallahi, bir sıkıntı olmuş.");
+    // yeni kullanıcı oluşturak
+    // doğrulamayı ne zaman gönderdik (birazdan)
+    $dogrulamaZamani = (new \DateTime())->format("Y-m-d H:i:s");
+    $yeniKullanici = $yu->kullaniciEkle($kullaniciAdi, $eposta, $sifre, $dogrulamaZamani);
+    if($yeniKullanici === null){
+        // valla bişeyler çok fena ters gitmiş
+        // OutputManager::error("Çüş. Sen mi yaptın bunu?");
+
+        throw new \Exception("Bişeyler çooooook fena ters gitti oğlum.");
+    }
+    
+    // doğrulamayı atalım hemencecik
+    $kontrol = Mail::dogrulamaGonder($eposta);
+    if(!$kontrol){
+        // zaten Mail::mailGonder'de loglandığı için loglamayalım yine.
+        // catch'de loglanacak yine
+        throw new \Exception("Maili gönderemedik oğlum.");
+    }
+
+    $yu->pdo->commit();
+} catch (\Exception $e) {
+    $yu->pdo->rollBack();
+
+    \Core\Logger::error("Kayıtta sıkıntı oldu, ama geri çektik sıkıntı yok.\n" . $e->getMessage() . "\n" . print_r($postData, true));
+    OutputManager::error("Kayıtta sıkıntı oldu, birine söyle bunu. Sonra yine denersin.");
+    
     die();
 }
 
