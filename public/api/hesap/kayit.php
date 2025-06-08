@@ -11,6 +11,7 @@ require_once dirname(__DIR__, 3) . "/src/init.php";
 
 use Core\Utils;
 use Core\OutputManager;
+use Core\Dotenv;
 use Yemek\YemekUzmani;
 use Yemek\Auth;
 use Yemek\Mail;
@@ -41,7 +42,7 @@ $kullaniciAdiKontrol = Utils::kullaniciAdiKontrol($kullaniciAdi);
 $epostaKontrol = Utils::epostaKontrol($eposta);
 $sifreKontrol = Utils::sifreKontrol($sifre);
 if(!$kullaniciAdiKontrol){
-    OutputManager::error("Kullanıcı adında fena bir yanlışlık var, düzelt.");
+    OutputManager::error("Kullanıcı adın " . Dotenv::getValue("MIN_KULLANICI_ADI") . "-" . Dotenv::getValue("MAX_KULLANICI_ADI") . " karakter uzunluğunda olsun; sadece a-z, A-Z, 0-9, ve _ karakterlerini içersin.");
     die();
 }
 if(!$epostaKontrol){
@@ -49,7 +50,7 @@ if(!$epostaKontrol){
     die();
 }
 if(!$sifreKontrol){
-    OutputManager::error("Şifrenin en az 6 karakterli olması, en az bi büyük ve bi küçük karakter bi de rakam içermesi lazım.");
+    OutputManager::error("Şifrenin " . Dotenv::getValue("MIN_SIFRE") . "-" . Dotenv::getValue("MAX_SIFRE") . " karakterli olması, en az bi büyük ve bi küçük karakter bi de rakam içermesi lazım.");
     die();
 }
 

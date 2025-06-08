@@ -123,7 +123,9 @@ class Utils {
     // salak salak şeyler yaparlar kesin
     const izinVerilenKullaniciAdiKarakterleri = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_";
     public static function kullaniciAdiKontrol($kullaniciAdi){
-        if(strlen($kullaniciAdi) < 3){
+        $minKullaniciAdi = Dotenv::getValue("MIN_KULLANICI_ADI");
+        $maxKullaniciAdi = Dotenv::getValue("MAX_KULLANICI_ADI");
+        if(strlen($kullaniciAdi) < $minKullaniciAdi || strlen($kullaniciAdi) > $maxKullaniciAdi){
             return false;
         }
 
@@ -149,10 +151,14 @@ class Utils {
     }
 
     // küçük harf büyük harf rakam olacak
-    // en az 8 hane olacak
-    // vazgeçtim en az 6 hane olsun
     public static function sifreKontrol($str){
-        return (strlen($str) >= 6) && preg_match('/[A-Z]/', $str) && preg_match('/[a-z]/', $str) && preg_match('/[0-9]/', $str);
+        $minSifre = Dotenv::getValue("MIN_SIFRE");
+        $maxSifre = Dotenv::getValue("MAX_SIFRE");
+        if(strlen($str) < $minSifre || strlen($str) > $maxSifre){
+            return false;
+        }
+
+        return preg_match("/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])/", $str);
     }
 
     const minimumYorumKarakterSayisi = 3;
