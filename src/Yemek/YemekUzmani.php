@@ -89,7 +89,7 @@ class YemekUzmani {
      * 
      * @return array Yorumların listesi döner, yorum yoksa boş liste döner.
      */
-    public function yorumlariAl($tarih): array {
+    public function yorumlariAl($tarih): ?array {
         if(!Utils::isIsoDate($tarih)){
             return null;
         }
@@ -456,7 +456,7 @@ class YemekUzmani {
             $stmt->closeCursor();
 
             if($guncelPuan === false){
-                \Core\Logger::warning("Burada garip şeyler oluyor, yemegePuanVer.\npuan: $yeniOrtalama\npuanSayisi: $kacKisi\ntarih: $yemekTarih");
+                \Core\Logger::warning("Burada garip şeyler oluyor, yemekPuanSil.\nguncelPuan: $guncelPuan\ntarih: $yemekTarih");
 
                 $this->pdo->rollBack();
                 return null;
@@ -465,7 +465,7 @@ class YemekUzmani {
             $this->pdo->commit();
         } catch (\PDOException $e) {
             $this->pdo->rollBack();
-            \Core\Logger::error("yemegePuanVer PDOException\n" . $e->getMessage());
+            \Core\Logger::error("yemekPuanSil PDOException\n" . $e->getMessage());
             return null;
         }
 
@@ -811,7 +811,7 @@ class YemekUzmani {
             $stmt->closeCursor();
 
             if($guncelYorumOylari === false){
-                \Core\Logger::warning("Burada garip şeyler oluyor, yorumOySil yorumlar tablo güncelleme.\nyorumUuid: $yorumUuid\nlikeDislike: $likeDislike");
+                \Core\Logger::warning("Burada garip şeyler oluyor, yorumOySil yorumlar tablo güncelleme.\nyorumUuid: $yorumUuid");
 
                 $this->pdo->rollBack();
                 return null;

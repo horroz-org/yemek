@@ -20,12 +20,17 @@ $yemekler = json_decode(file_get_contents($jsonPath), true);
 echo ":: Yemekleri cebimize koyuyoz.\n";
 $yu = new YemekUzmani(null);
 foreach ($yemekler as $yemek) {
-    if($yu->yemekKoy($yemek)){
-        echo "-> Cebe atıldı: " . $yemek["tarih"] . "\n";
+    try{
+        if($yu->yemekKoy($yemek)){
+            echo "-> Cebe atıldı: " . $yemek["tarih"] . "\n";
+        }
+        else{
+            echo "-> Noluyo ulan? Bişeyler oldu az önce:" . $yemek["tarih"] . "\n";
+            die();
+        }
     }
-    else{
-        echo "-> Noluyo ulan? Bişeyler oldu az önce:" . $yemek["tarih"] . "\n";
-        die();
+    catch (\Throwable $th){
+        echo "Atlandı.\n";
     }
 }
 
