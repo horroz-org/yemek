@@ -30,7 +30,7 @@ foreach ($yemekler as $yemek) {
         }
     }
     catch (\Throwable $th){
-        echo "Atlandı.\n";
+        echo "-> Atlandı.\n";
     }
 }
 
