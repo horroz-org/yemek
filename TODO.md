@@ -38,6 +38,7 @@
 - [X] kaldırılan yorumlarda oy verilmese iyi olabilir ama fark etmez
 - [X] girişte şifreyi göster tuşu (kayıtta zaten vardı)
 - [X] kaldırılan yorumda şikayet mi olur lan
+- [ ] hesap oluşturmada direkman mailDogrulandi = 0 olarak kaydetmek yerine ek bi tabloya kaydedip doğrulandıktan sonra gerçek tabloya geçirelim, yoksa birisi rasgele mailleri kaydeder sonra uğraş dur
 
 # Daha önemsiz şeyler
 - [X] TemplateManager (sooper iş) (html'ler php'ye geçecek) (template ettik her şeyi, yorumlara gerek yoktu ama olsun, abarttık)
