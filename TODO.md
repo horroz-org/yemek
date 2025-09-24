@@ -42,14 +42,14 @@
 
 # Daha önemsiz şeyler
 - [X] TemplateManager (sooper iş) (html'ler php'ye geçecek) (template ettik her şeyi, yorumlara gerek yoktu ama olsun, abarttık)
-- [ ] belki profilde açıklama olabilir
+- [ ] yemek tarihi seçme
+- [ ] admin panel
 - [ ] eposta doğrulama .env'de isteğe bağlı olsun, açıp kapatıl isin
 - [ ] ledırbord
-- [ ] admin panel
-- [ ] yemek tarihi seçme
+- [ ] çıkışta da redir koyalım
 - [ ] mobile hoverli şeylere basınca takılı kalıyo
 - [ ] sayfada herşey yüklenene kadar bomboş olsun, ortada yükleniyor filan yazsın belki
-- [ ] çıkışta da redir koyalım
+- [ ] belki profilde açıklama olabilir
 
 # Değişik şeyler için skriptler
 - [ ] yeni kullanıcı aç
