@@ -44,7 +44,7 @@
 - [X] TemplateManager (sooper iş) (html'ler php'ye geçecek) (template ettik her şeyi, yorumlara gerek yoktu ama olsun, abarttık)
 - [X] OutputManager ob flush
 - [ ] yemek tarihi seçme
-- [ ] admin panel
+- [ ] (~) admin panel
 - [ ] eposta doğrulama .env'de isteğe bağlı olsun, açıp kapatıl isin
 - [ ] ledırbord
 - [ ] çıkışta da redir koyalım
