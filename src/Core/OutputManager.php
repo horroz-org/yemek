@@ -23,6 +23,8 @@ class OutputManager{
     }
 
     public static function outputJSON($obj){
+        ob_end_clean();
+
         header("Content-Type: application/json");
         echo json_encode($obj);
     }
@@ -47,6 +49,8 @@ class OutputManager{
     }
 
     public static function outputPlain($text){
+        ob_end_clean();
+
         header("Content-Type: text/plain; charset=UTF-8");
         echo $text;
     }
