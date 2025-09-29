@@ -24,9 +24,10 @@ if(!$bizimki["admin"]){
         <title>Denetim Masası</title>
         <link rel="stylesheet" href="/assets/css/stylesheet.css">
         <link rel="stylesheet" href="/assets/css/admin.css">
-        <script src="/assets/js/admin.js"></script>
+        <script src="/assets/js/admin/admin.js"></script>
         <script src="/assets/js/api.js"></script>
         <script src="/assets/js/utils.js"></script>
+        <script src="/assets/js/lib/datatable.js"></script>
     </head>
     <body>
         <div id="admin-anadiv">

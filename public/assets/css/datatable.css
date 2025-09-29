@@ -1,0 +1,48 @@
+.dt-table {
+    width: 100%;
+    white-space: nowrap;
+}
+
+.dt-table-wrapper {
+    overflow-x: auto;
+}
+
+.dt-table-controls {
+    display: flex;
+    flex-direction: row;
+    height: 1.5rem;
+
+    width: 100%;
+
+    margin-bottom: 0.3rem;
+}
+
+.dt-search-input {
+    width: 100%;
+}
+
+.dt-entry-select-wrapper {
+    display: flex;
+    flex-direction: row;
+    margin-left: 1rem;
+}
+
+.dt-table-obj-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dt-table-info-wrapper {
+    margin: 0.3rem;
+}
+
+.dt-pagination button {
+    margin: 0 0.3rem 0 0.3rem;
+}
+
+.dt-page-active {
+    color: lightgreen;
+    border-color: lightgreen;
+    cursor: auto;
+}

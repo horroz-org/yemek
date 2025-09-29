@@ -1,3 +1,97 @@
 <template id="at-kullanici">
-    K
+    <div id="a-k-wrapper">
+        <div id="a-k-listediv">
+            <div id="a-k-table-baslik">Kullanıcı listesi:</div>
+            
+            <div id="a-k-table" class="dt-table-obj-wrapper">
+                <div class="dt-table-controls">
+                    <input type="text" class="dt-search-input search-box" placeholder="Tabloda ara...">
+                    <div class="dt-entry-select-wrapper">
+                        <label for="dt-entries-select">Sayfa başına:</label>
+                        <select class="dt-entries-select">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="dt-table-wrapper">
+                    <table class="dt-table">
+                        <thead>
+                            <tr>
+                                <th data-column="0">Kul. Adı</th>
+                                <th data-column="1">E-posta</th>
+                                <th data-column="2">@ doğ.</th>
+                                <th data-column="3">Prestij</th>
+                                <th data-column="4">Kat. Tarihi</th>
+                                <th data-column="5">Yasak</th>
+                                <th data-column="6">UUID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="dt-table-info-wrapper">
+                    <span class="dt-table-info"></span>
+                </div>
+
+                <div class="dt-pagination"></div>
+            </div>
+        </div>
+        <div id="a-k-islemlerdiv">
+            
+        </div>
+    </div>
+
+    <script>
+        if(akTable !== null){
+            akTable = new DTable("a-k-table", { pageSize: 15 });
+        }
+    </script>
 </template>
+
+<script>
+    var akTable = null;
+    window.addEventListener("load", () => {
+        akTable = new DTable("a-k-table", { pageSize: 20 });
+    });
+</script>
+
+<link rel="stylesheet" href="/assets/css/datatable.css"></link>
+
+<style>
+#a-k-listediv {
+    flex: 1.8;
+    padding: 2rem;
+}
+
+#a-k-islemlerdiv {
+    flex: 1;
+}
+
+#a-k-table-baslik {
+    margin-bottom: 1rem;
+}
+
+#a-k-wrapper {
+    display: flex;
+    flex-direction: row;
+
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width: 768px) {
+    #a-k-wrapper {
+        flex-direction: column;
+        height: 200vh;
+    }
+
+    #a-k-listediv #a-k-islemlerdiv {
+        flex: auto;
+        height: 100vh;
+    }
+}
+</style>

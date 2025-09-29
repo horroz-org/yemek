@@ -757,3 +757,24 @@ a:hover {
         display: none;
     }
 }
+
+/* TABLE */
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid white;
+    padding: 0.3rem;
+}
+
+tr:hover {
+    background-color: #f2f2f2;
+    color: gray;
+    cursor: pointer;
+}
+
+.tr-selected {
+    background-color: lime;
+    color: black;
+}
